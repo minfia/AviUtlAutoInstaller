@@ -1,12 +1,154 @@
-﻿<Window x:Class="AviUtlAutoInstaller.Views.MainView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AviUtlAutoInstaller.Views"
-        mc:Ignorable="d"
-        Title="MainView" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
-</Window>
+﻿<Controls:MetroWindow x:Class="AviUtlAutoInstaller.Views.MainView"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:local="clr-namespace:AviUtlAutoInstaller.Views"
+                      mc:Ignorable="d"
+                      WindowTitleBrush="#FF333337"
+                      NonActiveWindowTitleBrush="#FF333337"
+                      Background="#FF333337"
+                      GlowBrush="MediumAquamarine"
+                      TitleCharacterCasing="Normal"
+                      Title="AviUtlAutoInstaller"
+                      ResizeMode="NoResize"
+                      Height="300" Width="512"
+                      WindowStartupLocation="CenterScreen"
+                      WindowTransitionsEnabled="False">
+    <DockPanel>
+        <!-- #region Menu Bar -->
+        <Menu DockPanel.Dock="Top"
+              Background="#FF333337"
+              FontSize="12">
+            <MenuItem Header="ファイル(_F)"
+                      Background="#FF333337">
+                <MenuItem Header="終了(_X)"
+                          InputGestureText="Alt+F4"
+                          Command="{Binding ExitCommand}"/>
+            </MenuItem>
+            <MenuItem Header="インストール項目一覧の編集(_E)..."
+                      Background="#FF333337"
+                      Command="{Binding OpenInstallEditorCommand}"/>
+            <MenuItem Header="ヘルプ(_H)"
+                      Background="#FF333337">
+                <MenuItem Header="更新を確認(_U)"
+                          Command="{Binding UpdateCheckCommand}"/>
+                <MenuItem Header="バージョン情報(_A)"
+                          Command="{Binding AboutCommand}"/>
+            </MenuItem>
+        </Menu>
+        <!-- #endregion -->
+
+        <!-- #region Items -->
+        <Grid Margin="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="52"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="24"/>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+
+            <!-- #region InstallSetting -->
+            <TextBlock Grid.Column="0" Grid.Row="0"
+                       Text="インストール先を選択してください"
+                       Padding="0,4,0,4"/>
+            <TextBox Grid.Column="0" Grid.Row="1"
+                     VerticalAlignment="Center"
+                     IsReadOnly="True"
+                     ToolTip="{Binding InstallDirPath, Mode=OneWay}"
+                     Text="{Binding InstallDirPath, Mode=OneWay}">
+            </TextBox>
+            <Button Grid.Column="1" Grid.Row="1"
+                    Style="{DynamicResource MahApps.Styles.Button.Square}"
+                    BorderThickness="0.8"
+                    Height="26" Width="48"
+                    Content="..."
+                    Command="{Binding SelectInstallDir}"/>
+            <!-- #endregion -->
+
+            <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">
+                <Controls:ToggleSwitch Padding="0,8,0,0"
+                                       Header="AviUtlやプラグインの圧縮ファイルをインストール先にバックアップ"
+                                       OnContent="する"
+                                       OffContent="しない"
+                                       IsOn="{Binding IsCopyBackupFiles, Mode=OneWay}"/>
+
+                <!-- #region Progress -->
+                <StackPanel Visibility="{Binding ProgressVisiblity, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Controls:ProgressRing Foreground="DeepSkyBlue"
+                                                   IsActive="{Binding ProgressRingActive}"
+                                                   Height="8" Width="8"/>
+                            <TextBlock Padding="4,0,0,0">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} ({1}/{2})">
+                                        <Binding Path="StateName"/>
+                                        <Binding Path="StateItemNow"/>
+                                        <Binding Path="StateItemMax"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <Controls:MetroProgressBar Foreground="DeepSkyBlue"
+                                                   Padding="0,4,0,0"
+                                                   Height="12"
+                                                   Minimum="0"
+                                                   Maximum="{Binding ItemProgressMax}"
+                                                   Value="{Binding ItemProgressValue}"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Padding="4,8,0,0">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} ({1}/{2})">
+                                        <Binding Path="DownloadFileName"/>
+                                        <Binding Path="DownloadSizeNow"/>
+                                        <Binding Path="DownloadSizeMax"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <Controls:MetroProgressBar Foreground="DeepSkyBlue"
+                                                   Padding="0,4,0,0"
+                                                   Height="12"
+                                                   Minimum="0"
+                                                   Maximum="{Binding DownloadProgressMax}"
+                                                   Value="{Binding DownloadProgressValue}"/>
+                    </StackPanel>
+                </StackPanel>
+                <!--#endregion -->
+            </StackPanel>
+
+            <!-- #region ControlButton -->
+            <StackPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button BorderThickness="0.8"
+                        HorizontalAlignment="Right"
+                        Style="{DynamicResource MahApps.Styles.Button.Square}"
+                        Height="26" Width="80"
+                        Margin="4"
+                        Content="インストール"
+                        IsEnabled="{Binding IsInstallButtonEnable}"
+                        Command="{Binding InstallStartCommand}"/>
+                <Button BorderThickness="0.8"
+                        HorizontalAlignment="Right"
+                        Style="{DynamicResource MahApps.Styles.Button.Square}"
+                        Height="26" Width="80"
+                        Margin="4"
+                        Content="キャンセル"
+                        Command="{Binding InstallCancelCommand}"/>
+            </StackPanel>
+            <!-- #endregion -->
+        </Grid>
+        <!-- #endregion -->
+    </DockPanel>
+</Controls:MetroWindow>
