@@ -4,7 +4,8 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                      xmlns:local="clr-namespace:AviUtlAutoInstaller.Views"
+                      xmlns:vw="clr-namespace:AviUtlAutoInstaller.Views"
+                      xmlns:b="clr-namespace:AviUtlAutoInstaller.Views.Behaviors"
                       mc:Ignorable="d"
                       WindowTitleBrush="#FF333337"
                       NonActiveWindowTitleBrush="#FF333337"
@@ -15,7 +16,8 @@
                       ResizeMode="NoResize"
                       Height="300" Width="512"
                       WindowStartupLocation="CenterScreen"
-                      WindowTransitionsEnabled="False">
+                      WindowTransitionsEnabled="False"
+                      b:WindowClosingBehavior.Callback="{Binding ClosingCallback}">
     <DockPanel>
         <!-- #region Menu Bar -->
         <Menu DockPanel.Dock="Top"
@@ -23,19 +25,50 @@
               FontSize="12">
             <MenuItem Header="ファイル(_F)"
                       Background="#FF333337">
+                <MenuItem Header="開く(_O)">
+                    <MenuItem Header="インストール設定ファイル(_I)..."
+                              InputGestureText="Ctrl+O"
+                              Command="{Binding OpenDialogInstallSettingFileCommand}"
+                              b:FileDialogBehavior.Callback="{Binding OpenDialogInstallSettingFileCallback}"
+                              b:FileDialogBehavior.Title="インストール設定ファイルを開く"
+                              b:FileDialogBehavior.Filter="設定ファイル (*.list)|*.list|すべてのファイル (*.*)|*.*"
+                              b:FileDialogBehavior.Multiselect="False"
+                              b:FileDialogBehavior.OpenSave="Open"/>
+                    <MenuItem Header="ユーザーリポジトリファイル(_U)..."
+                              InputGestureText="Ctrl+Shift+O"
+                              Command="{Binding OpenDialogUserRepoFileCommand}"
+                              b:FileDialogBehavior.Callback="{Binding OpenDialogUserRepoFileCallback}"
+                              b:FileDialogBehavior.Title="ユーザーリポジトリファイルを開く"
+                              b:FileDialogBehavior.Filter="リポジトリファイル (*.urepo)|*.urepo|すべてのファイル (*.*)|*.*"
+                              b:FileDialogBehavior.Multiselect="False"
+                              b:FileDialogBehavior.OpenSave="Open"/>
+                </MenuItem>
+                <Separator/>
                 <MenuItem Header="終了(_X)"
                           InputGestureText="Alt+F4"
                           Command="{Binding ExitCommand}"/>
             </MenuItem>
             <MenuItem Header="インストール項目一覧の編集(_E)..."
                       Background="#FF333337"
-                      Command="{Binding OpenInstallEditorCommand}"/>
+                      Command="{Binding InstallEditCommand}"
+                      b:OpenDialogBehavior.Callback="{Binding InstallEditViewCallback}"
+                      b:OpenDialogBehavior.WindowType="{x:Type vw:InstallEditView}"
+                      b:OpenDialogBehavior.DataContext="{Binding InstallEditViewModel}"
+                      b:OpenDialogBehavior.Modal="True"/>
             <MenuItem Header="ヘルプ(_H)"
                       Background="#FF333337">
                 <MenuItem Header="更新を確認(_U)"
-                          Command="{Binding UpdateCheckCommand}"/>
+                          Command="{Binding UpdateCheckCommand}"
+                          b:OpenDialogBehavior.Callback="{Binding UpdateCheckViewCallback}"
+                          b:OpenDialogBehavior.WindowType="{x:Type vw:UpdateCheckView}"
+                          b:OpenDialogBehavior.DataContext="{Binding UpdateCheckViewModel}"
+                          b:OpenDialogBehavior.Modal="True"/>
                 <MenuItem Header="バージョン情報(_A)"
-                          Command="{Binding AboutCommand}"/>
+                          Command="{Binding AboutCommand}"
+                          b:OpenDialogBehavior.Callback="{Binding AboutViewCallback}"
+                          b:OpenDialogBehavior.WindowType="{x:Type vw:AboutView}"
+                          b:OpenDialogBehavior.DataContext="{Binding AboutViewModel}"
+                          b:OpenDialogBehavior.Modal="True"/>
             </MenuItem>
         </Menu>
         <!-- #endregion -->
