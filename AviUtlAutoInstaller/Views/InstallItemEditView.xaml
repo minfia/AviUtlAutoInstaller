@@ -12,13 +12,98 @@
                       Background="#FF333337"
                       GlowBrush="MediumAquamarine"
                       TitleCharacterCasing="Normal"
-                      Title="InstallItemEditView"
+                      Title="{Binding Title}"
                       ResizeMode="NoResize"
-                      Height="300" Width="512"
+                      SizeToContent="Height"
+                      Height="Auto" Width="400"
                       WindowStartupLocation="CenterScreen"
                       WindowTransitionsEnabled="False"
                       b:WindowClosingBehavior.Callback="{Binding ClosingCallback}">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="36"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical"
+                    Margin="20,12,20,8">
+            <StackPanel Orientation="Vertical"
+                        Margin="0,0,0,8">
+                <TextBlock Text="{Binding NameRrror, UpdateSourceTrigger=PropertyChanged}"
+                           Foreground="#FFFF375F"
+                           FontSize="10"/>
+                <TextBlock Text="名前"/>
+                <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical"
+                        Margin="0,0,0,8">
+                <TextBlock Text="{Binding URLError, UpdateSourceTrigger=PropertyChanged}"
+                           Foreground="#FFFF375F"
+                           FontSize="10"/>
+                <TextBlock Text="URL"/>
+                <TextBox Text="{Binding URL, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical"
+                        Margin="0,0,0,8">
+                <TextBlock Text="{Binding FileNameError, UpdateSourceTrigger=PropertyChanged}"
+                           Foreground="#FFFF375F"
+                           FontSize="10"/>
+                <TextBlock Text="ダウンロードするファイル名"/>
+                <TextBox Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical"
+                        Margin="0,0,0,8">
+                <TextBlock/>
+                <TextBlock Text="ファイルタイプ"/>
+                <ComboBox SelectedIndex="{Binding FileTypeSelectIndex}"
+                          SelectedValue="{Binding FileTypeSelectValue}"
+                          ItemsSource="{Binding FileTypeDic, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedValuePath="Key"
+                          DisplayMemberPath="Value"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical"
+                        Margin="0,0,0,8">
+                <TextBlock Text="{Binding VersionError, UpdateSourceTrigger=PropertyChanged}"
+                           Foreground="#FFFF375F"
+                           FontSize="10"/>
+                <TextBlock Text="バージョン (オプション 識別子として使える)"/>
+                <TextBox Text="{Binding Version, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical"
+                        Margin="0,0,0,8">
+                <TextBlock Text="{Binding ScriptDirNameError, UpdateSourceTrigger=PropertyChanged}"
+                           Foreground="#FFFF375F"
+                           FontSize="10"/>
+                <TextBlock Text="スクリプトフォルダ名 (オプション 記載ない場合はscriptフォルダに展開)"/>
+                <TextBox Text="{Binding ScriptDirName, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical"
+                        Margin="0,0,0,8">
+                <TextBlock Text="{Binding AppendFileError, UpdateSourceTrigger=PropertyChanged}"
+                           Foreground="#FFFF375F"
+                           FontSize="10"/>
+                <TextBlock Text="AviUti指定以外のファイル名または拡張子 (複数選択時はカンマ区切り)"/>
+                <TextBox Text="{Binding AppendFile, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical"
+                        Margin="0,0,0,8">
+                <TextBlock Text="{Binding VideoIDError, UpdateSourceTrigger=PropertyChanged}"
+                           Foreground="#FFFF375F"
+                           FontSize="10"/>
+                <TextBlock Text="コンテンツツリーに登録するニコニコ動画のID (オプション)"/>
+                <TextBox Text="{Binding VideoID, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+        </StackPanel>
+        <Button Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                BorderThickness="0.8"
+                Style="{DynamicResource MahApps.Styles.Button.Square}"
+                Controls:ControlsHelper.ContentCharacterCasing="Normal"
+                Width="120"
+                Content="OK"
+                Command="{Binding AcceptCommand}"
+                CommandParameter="{Binding RelativeSource={
+                                           RelativeSource Mode=FindAncestor,
+                                           AncestorType={x:Type Window}}}"/>
     </Grid>
 </Controls:MetroWindow>
