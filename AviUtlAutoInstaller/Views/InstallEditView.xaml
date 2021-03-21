@@ -12,10 +12,243 @@
                       GlowBrush="MediumAquamarine"
                       TitleCharacterCasing="Normal"
                       Title="インストール項目一覧"
-                      Height="560" Width="1024"
+                      Height="560" Width="1200"
                       WindowStartupLocation="CenterOwner"
                       WindowTransitionsEnabled="False">
-    <Grid>
-        
-    </Grid>
+
+    <Window.Resources>
+        <Style x:Key="TabControlMenu" TargetType="TabItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border Name="Border"
+                                Padding="0,4,0,4"
+                                 Width="60">
+                            <Grid>
+                                <ContentPresenter ContentSource="Header"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Stretch"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#FF222222"/>
+                                <Setter TargetName="Border" Property="BorderThickness" Value="0,0,0,0"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="False">
+                                <Setter TargetName="Border" Property="Background" Value="Transparent"/>
+                                <Setter TargetName="Border" Property="BorderThickness" Value="0,0,0,0"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#FF222222"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="DataGridCheckBoxHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="0,0,1,3"/>
+        </Style>
+        <Style x:Key="DataGridTextHederStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}">
+            <Setter Property="Controls:ControlsHelper.ContentCharacterCasing" Value="Normal"/>
+        </Style>
+    </Window.Resources>
+    <DockPanel>
+        <StatusBar DockPanel.Dock="Bottom"
+                   Background="DimGray"
+                   Height="Auto">
+            <TextBlock Text="ステータス"/>
+            <StatusBarItem HorizontalAlignment="Right">
+                <Controls:MetroProgressBar Foreground="DeepSkyBlue"
+                                           Background="#FF333337"
+                                           Padding="0,0,12,0"
+                                           Width="200" Height="Auto"
+                                           Minimum="0"
+                                           Maximum="100"
+                                           Value="50"/>
+            </StatusBarItem>
+        </StatusBar>
+
+        <TabControl TabStripPlacement="Left">
+            <TabItem Style="{StaticResource TabControlMenu}">
+                <TabItem.Header>
+                    <Path Data="M0,19.875 C0,23.46485 12.983743,26.375 29,26.375 45.016258,26.375 58,23.46485 58,19.875 L58,24.375 58,24.457999 57.995316,24.457999 57.990528,24.542768 C57.593517,28.055082 44.766003,30.875 29,30.875 13.233996,30.875 0.40648231,28.055082 0.0094715059,24.542768 L0.0046860576,24.457999 0,24.457999 0,24.375 z M57.992943,19.75 L58,19.75 58,19.875 z M0,19.75 L0.0070567429,19.75 0,19.875 z M0,13.125 C0,16.714851 12.983743,19.625 29,19.625 45.016258,19.625 58,16.714851 58,13.125 L58,17.625 58,17.707999 57.995316,17.707999 57.990528,17.792768 C57.593517,21.305082 44.766003,24.125 29,24.125 13.233996,24.125 0.40648231,21.305082 0.0094715059,17.792768 L0.0046860576,17.707999 0,17.707999 0,17.625 z M57.992943,13 L58,13 58,13.125 z M0,13 L0.0070567429,13 0,13.125 z M29,0 C44.766003,0 57.593517,2.8199177 57.990528,6.3322315 L57.992943,6.375001 58,6.375001 58,6.5 58,11 58,11.083 57.995316,11.083 57.990528,11.167768 C57.593517,14.680082 44.766003,17.5 29,17.5 13.233996,17.5 0.40648231,14.680082 0.0094715059,11.167768 L0.0046860576,11.083 0,11.083 0,11 0,6.5 0,6.375001 0.0070567429,6.375001 0.0094715059,6.3322315 C0.40648231,2.8199177 13.233996,0 29,0 z"
+                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                          Stretch="Fill"
+                          Fill="White"
+                          Margin="4"
+                          Height="40" Width="40"
+                          ToolTip="プリインストール"/>
+                </TabItem.Header>
+                <DataGrid RowHeaderWidth="0"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          CanUserResizeRows="False"
+                          CanUserReorderColumns="False"
+                          SelectionMode="Single"
+                          AutoGenerateColumns="False"
+                          ItemsSource="{Binding RepoInstallList}"
+                          SelectedIndex="{Binding RepoSelectIndex}"
+                          SelectedItem="{Binding RepoSelectItem}"
+                          FontSize="11">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn CanUserResize="False"
+                                                HeaderStyle="{StaticResource DataGridCheckBoxHeaderStyle}">
+                            <DataGridTemplateColumn.Header>
+                                <CheckBox IsChecked="{Binding SelectAllCheck}"
+                                          DataContext="{Binding RelativeSource={RelativeSource
+                                                        AncestorType={x:Type DataGrid}}, Path=DataContext}"/>
+                            </DataGridTemplateColumn.Header>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              IsChecked="{Binding InstallEnable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="No."
+                                            HeaderStyle="{StaticResource DataGridTextHederStyle}"
+                                            Width="52"
+                                            Binding="{Binding No}"/>
+                        <DataGridTextColumn Header="名前"
+                                            HeaderStyle="{StaticResource DataGridTextHederStyle}"
+                                            Width="132"
+                                            Binding="{Binding Name}"/>
+                        <DataGridTextColumn Header="ファイル名"
+                                            HeaderStyle="{StaticResource DataGridTextHederStyle}"
+                                            Width="120"
+                                            Binding="{Binding FileName}"/>
+                        <DataGridTextColumn Header="バージョン"
+                                            HeaderStyle="{StaticResource DataGridTextHederStyle}"
+                                            Width="80"
+                                            Binding="{Binding Version}"/>
+                        <DataGridTextColumn Header="スクリプトフォルダ名"
+                                            HeaderStyle="{StaticResource DataGridTextHederStyle}"
+                                            Width="140"
+                                            Binding="{Binding ScriptDirName}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Style="{StaticResource TabControlMenu}">
+                <TabItem.Header>
+                    <Path Data="M20,18 C31.045694,18 40,24.268013 40,32 L40,35.75 0,35.75 0,32 C0,24.268013 8.9543047,18 20,18 z M19.875,0 C24.293278,2.3841858E-07 27.875,3.5817223 27.875,8.0000002 27.875,12.418278 24.293278,16 19.875,16 15.456722,16 11.875,12.418278 11.875,8.0000002 11.875,3.5817223 15.456722,2.3841858E-07 19.875,0 z"
+                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                          Stretch="Fill"
+                          Fill="White"
+                          Margin="4"
+                          Height="40" Width="40"
+                          ToolTip="ユーザー"/>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="36"/>
+                    </Grid.RowDefinitions>
+                    <DataGrid RowHeaderWidth="0"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              CanUserResizeRows="False"
+                              CanUserReorderColumns="False"
+                              SelectionMode="Single"
+                              AutoGenerateColumns="False"
+                              Controls:ControlsHelper.ContentCharacterCasing="Normal"
+                              ItemsSource="{Binding UserInstallList}"
+                              SelectedIndex="{Binding UserSelectIndex}"
+                              SelectedItem="{Binding UserSelectItem}"
+                              FontSize="11">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn CanUserResize="False"
+                                                    HeaderStyle="{StaticResource DataGridCheckBoxHeaderStyle}">
+                                <DataGridTemplateColumn.Header>
+                                    <CheckBox IsChecked="{Binding SelectAllCheck}"
+                                              DataContext="{Binding RelativeSource={RelativeSource
+                                                            AncestorType={x:Type DataGrid}}, Path=DataContext}"/>
+                                </DataGridTemplateColumn.Header>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  IsChecked="{Binding InstallEnable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTextColumn Header="No."
+                                                HeaderStyle="{StaticResource DataGridTextHederStyle}"
+                                                Width="52"
+                                                Binding="{Binding No}"/>
+                            <DataGridTextColumn Header="名前"
+                                                HeaderStyle="{StaticResource DataGridTextHederStyle}"
+                                                Width="120"
+                                                Binding="{Binding Name}"/>
+                            <DataGridTextColumn Header="URL"
+                                                HeaderStyle="{StaticResource DataGridTextHederStyle}"
+                                                Width="300*"
+                                                Binding="{Binding URL}"/>
+                            <DataGridTextColumn Header="ファイル名"
+                                                HeaderStyle="{StaticResource DataGridTextHederStyle}"
+                                                Width="120"
+                                                Binding="{Binding FileName}"/>
+                            <DataGridTextColumn Header="ファイルタイプ"
+                                                HeaderStyle="{StaticResource DataGridTextHederStyle}"
+                                                Width="88"
+                                                Binding="{Binding FileType}"/>
+                            <DataGridTextColumn Header="バージョン"
+                                                HeaderStyle="{StaticResource DataGridTextHederStyle}"
+                                                Width="88"
+                                                Binding="{Binding Version}"/>
+                            <DataGridTextColumn Header="スクリプトフォルダ名(任意)"
+                                                HeaderStyle="{StaticResource DataGridTextHederStyle}"
+                                                Width="148"
+                                                Binding="{Binding ScriptDirName}"/>
+                            <DataGridTextColumn Header="追加ファイル(dll, exeなど)"
+                                                HeaderStyle="{StaticResource DataGridTextHederStyle}"
+                                                Width="152"
+                                                Binding="{Binding InstallFiles}"/>
+                            <DataGridTextColumn Header="動画ID(ニコニコ動画のみ)"
+                                                HeaderStyle="{StaticResource DataGridTextHederStyle}"
+                                                Width="148"
+                                                Binding="{Binding VideoID}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Grid.Row="1"
+                                Orientation="Vertical">
+                        <Border BorderThickness="0,0,0,1"
+                                BorderBrush="AliceBlue"/>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                            <Button BorderThickness="0.8"
+                                    HorizontalAlignment="Right"
+                                    Style="{DynamicResource MahApps.Styles.Button.Square}"
+                                    Height="26" Width="64"
+                                    Margin="4"
+                                    Content="追加"
+                                    Command="{Binding AddItemCommand}"/>
+                            <Button BorderThickness="0.8"
+                                    HorizontalAlignment="Right"
+                                    Style="{DynamicResource MahApps.Styles.Button.Square}"
+                                    Height="26" Width="64"
+                                    Margin="4"
+                                    Content="編集"
+                                    Command="{Binding ModifyItemCommand}"/>
+                            <Button BorderThickness="0.8"
+                                    HorizontalAlignment="Right"
+                                    Style="{DynamicResource MahApps.Styles.Button.Square}"
+                                    Height="26" Width="64"
+                                    Margin="4"
+                                    Content="削除"
+                                    Command="{Binding DeleteItemCommand}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+
+
 </Controls:MetroWindow>
