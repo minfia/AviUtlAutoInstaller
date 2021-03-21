@@ -1,0 +1,24 @@
+﻿<Controls:MetroWindow x:Class="AviUtlAutoInstaller.Views.InstallItemEditView"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:vw="clr-namespace:AviUtlAutoInstaller.Views"
+                      xmlns:b="clr-namespace:AviUtlAutoInstaller.Views.Behaviors"
+                      mc:Ignorable="d"
+                      WindowTitleBrush="#FF333337"
+                      NonActiveWindowTitleBrush="#FF333337"
+                      Background="#FF333337"
+                      GlowBrush="MediumAquamarine"
+                      TitleCharacterCasing="Normal"
+                      Title="InstallItemEditView"
+                      ResizeMode="NoResize"
+                      Height="300" Width="512"
+                      WindowStartupLocation="CenterScreen"
+                      WindowTransitionsEnabled="False"
+                      b:WindowClosingBehavior.Callback="{Binding ClosingCallback}">
+    <Grid>
+        
+    </Grid>
+</Controls:MetroWindow>

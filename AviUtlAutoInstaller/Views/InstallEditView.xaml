@@ -5,6 +5,7 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:vw="clr-namespace:AviUtlAutoInstaller.Views"
+                      xmlns:b="clr-namespace:AviUtlAutoInstaller.Views.Behaviors"
                       mc:Ignorable="d"
                       WindowTitleBrush="#FF333337"
                       NonActiveWindowTitleBrush="#FF333337"
@@ -228,14 +229,22 @@
                                     Height="26" Width="64"
                                     Margin="4"
                                     Content="追加"
-                                    Command="{Binding AddItemCommand}"/>
+                                    Command="{Binding AddItemCommand}"
+                                    b:OpenDialogBehavior.Callback="{Binding InstallItemEditViewCallback}"
+                                    b:OpenDialogBehavior.WindowType="{x:Type vw:InstallItemEditView}"
+                                    b:OpenDialogBehavior.DataContext="{Binding InstallItemEditViewModel}"
+                                    b:OpenDialogBehavior.Modal="True"/>
                             <Button BorderThickness="0.8"
                                     HorizontalAlignment="Right"
                                     Style="{DynamicResource MahApps.Styles.Button.Square}"
                                     Height="26" Width="64"
                                     Margin="4"
                                     Content="編集"
-                                    Command="{Binding ModifyItemCommand}"/>
+                                    Command="{Binding ModifyItemCommand}"
+                                    b:OpenDialogBehavior.Callback="{Binding InstallItemEditViewCallback}"
+                                    b:OpenDialogBehavior.WindowType="{x:Type vw:InstallItemEditView}"
+                                    b:OpenDialogBehavior.DataContext="{Binding InstallItemEditViewModel}"
+                                    b:OpenDialogBehavior.Modal="True"/>
                             <Button BorderThickness="0.8"
                                     HorizontalAlignment="Right"
                                     Style="{DynamicResource MahApps.Styles.Button.Square}"
