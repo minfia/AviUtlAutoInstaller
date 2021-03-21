@@ -66,6 +66,7 @@
     <Compile Include="Models\SysConfig.cs" />
     <Compile Include="ViewModels\DelegateCommand.cs" />
     <Compile Include="ViewModels\InstallEditViewModel.cs" />
+    <Compile Include="ViewModels\InstallItemEditViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\NotificationObject.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
@@ -75,6 +76,9 @@
     <Compile Include="Views\Behaviors\WindowClosingBehavior.cs" />
     <Compile Include="Views\InstallEditView.xaml.cs">
       <DependentUpon>InstallEditView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\InstallItemEditView.xaml.cs">
+      <DependentUpon>InstallItemEditView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
@@ -114,6 +118,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\InstallEditView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\InstallItemEditView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
