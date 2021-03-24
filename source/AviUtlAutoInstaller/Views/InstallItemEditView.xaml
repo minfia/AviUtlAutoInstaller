@@ -12,7 +12,7 @@
                       Background="#FF333337"
                       GlowBrush="MediumAquamarine"
                       TitleCharacterCasing="Normal"
-                      Title="{Binding Title}"
+                      Title="{Binding Title, StringFormat=インストール項目の{0}}"
                       ResizeMode="NoResize"
                       SizeToContent="Height"
                       Height="Auto" Width="400"
@@ -28,7 +28,7 @@
                     Margin="20,12,20,8">
             <StackPanel Orientation="Vertical"
                         Margin="0,0,0,8">
-                <TextBlock Text="{Binding NameRrror, UpdateSourceTrigger=PropertyChanged}"
+                <TextBlock Text="{Binding NameError, UpdateSourceTrigger=PropertyChanged}"
                            Foreground="#FFFF375F"
                            FontSize="10"/>
                 <TextBlock Text="名前"/>
@@ -39,7 +39,7 @@
                 <TextBlock Text="{Binding URLError, UpdateSourceTrigger=PropertyChanged}"
                            Foreground="#FFFF375F"
                            FontSize="10"/>
-                <TextBlock Text="URL"/>
+                <TextBlock Text="URL (事前にファイルを用意している場合は省力可)"/>
                 <TextBox Text="{Binding URL, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
             <StackPanel Orientation="Vertical"
@@ -54,22 +54,25 @@
                         Margin="0,0,0,8">
                 <TextBlock/>
                 <TextBlock Text="ファイルタイプ"/>
-                <ComboBox SelectedIndex="{Binding FileTypeSelectIndex}"
+                <ComboBox SelectedItem="{Binding FileTypeSelectItem}"
                           SelectedValue="{Binding FileTypeSelectValue}"
                           ItemsSource="{Binding FileTypeDic, UpdateSourceTrigger=PropertyChanged}"
                           SelectedValuePath="Key"
-                          DisplayMemberPath="Value"/>
+                          DisplayMemberPath="Value">
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ComboBoxItem}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding }" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                </ComboBox>
             </StackPanel>
             <StackPanel Orientation="Vertical"
-                        Margin="0,0,0,8">
-                <TextBlock Text="{Binding VersionError, UpdateSourceTrigger=PropertyChanged}"
-                           Foreground="#FFFF375F"
-                           FontSize="10"/>
-                <TextBlock Text="バージョン (オプション 識別子として使える)"/>
-                <TextBox Text="{Binding Version, UpdateSourceTrigger=PropertyChanged}"/>
-            </StackPanel>
-            <StackPanel Orientation="Vertical"
-                        Margin="0,0,0,8">
+                        Margin="0,0,0,8"
+                        Visibility="{Binding IsScriptDirNameVisible, UpdateSourceTrigger=PropertyChanged}">
                 <TextBlock Text="{Binding ScriptDirNameError, UpdateSourceTrigger=PropertyChanged}"
                            Foreground="#FFFF375F"
                            FontSize="10"/>
@@ -78,19 +81,27 @@
             </StackPanel>
             <StackPanel Orientation="Vertical"
                         Margin="0,0,0,8">
+                <TextBlock Text="{Binding VersionError, UpdateSourceTrigger=PropertyChanged}"
+                           Foreground="#FFFF375F"
+                           FontSize="10"/>
+                <TextBlock Text="バージョン (公開日時でも可)"/>
+                <TextBox Text="{Binding Version, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical"
+                        Margin="0,0,0,8">
                 <TextBlock Text="{Binding AppendFileError, UpdateSourceTrigger=PropertyChanged}"
                            Foreground="#FFFF375F"
                            FontSize="10"/>
-                <TextBlock Text="AviUti指定以外のファイル名または拡張子 (複数選択時はカンマ区切り)"/>
+                <TextBlock Text="AviUtl指定以外のファイル名または拡張子 (複数選択時はカンマ区切り)"/>
                 <TextBox Text="{Binding AppendFile, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
             <StackPanel Orientation="Vertical"
                         Margin="0,0,0,8">
-                <TextBlock Text="{Binding VideoIDError, UpdateSourceTrigger=PropertyChanged}"
+                <TextBlock Text="{Binding NicoVideoIDError, UpdateSourceTrigger=PropertyChanged}"
                            Foreground="#FFFF375F"
                            FontSize="10"/>
                 <TextBlock Text="コンテンツツリーに登録するニコニコ動画のID (オプション)"/>
-                <TextBox Text="{Binding VideoID, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Text="{Binding NicoVideoID, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
         </StackPanel>
         <Button Grid.Row="1"
