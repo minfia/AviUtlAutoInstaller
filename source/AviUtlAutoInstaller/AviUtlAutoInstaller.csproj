@@ -63,6 +63,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\InstallItem.cs" />
+    <Compile Include="Models\InstallItemList.cs" />
     <Compile Include="Models\SysConfig.cs" />
     <Compile Include="ViewModels\DelegateCommand.cs" />
     <Compile Include="ViewModels\InstallEditViewModel.cs" />

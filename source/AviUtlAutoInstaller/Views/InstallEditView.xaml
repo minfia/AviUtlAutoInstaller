@@ -91,23 +91,20 @@
                           CanUserReorderColumns="False"
                           SelectionMode="Single"
                           AutoGenerateColumns="False"
-                          ItemsSource="{Binding RepoInstallList}"
-                          SelectedIndex="{Binding RepoSelectIndex}"
-                          SelectedItem="{Binding RepoSelectItem}"
+                          ItemsSource="{Binding PreInstallList}"
                           FontSize="11">
+                    
                     <DataGrid.Columns>
                         <DataGridTemplateColumn CanUserResize="False"
                                                 HeaderStyle="{StaticResource DataGridCheckBoxHeaderStyle}">
                             <DataGridTemplateColumn.Header>
-                                <CheckBox IsChecked="{Binding SelectAllCheck}"
-                                          DataContext="{Binding RelativeSource={RelativeSource
-                                                        AncestorType={x:Type DataGrid}}, Path=DataContext}"/>
+                                <CheckBox />
                             </DataGridTemplateColumn.Header>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <CheckBox HorizontalAlignment="Center"
                                               VerticalAlignment="Center"
-                                              IsChecked="{Binding InstallEnable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                              IsChecked="{Binding IsInstall, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -158,22 +155,19 @@
                               AutoGenerateColumns="False"
                               Controls:ControlsHelper.ContentCharacterCasing="Normal"
                               ItemsSource="{Binding UserInstallList}"
-                              SelectedIndex="{Binding UserSelectIndex}"
                               SelectedItem="{Binding UserSelectItem}"
                               FontSize="11">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn CanUserResize="False"
                                                     HeaderStyle="{StaticResource DataGridCheckBoxHeaderStyle}">
                                 <DataGridTemplateColumn.Header>
-                                    <CheckBox IsChecked="{Binding SelectAllCheck}"
-                                              DataContext="{Binding RelativeSource={RelativeSource
-                                                            AncestorType={x:Type DataGrid}}, Path=DataContext}"/>
+                                    <CheckBox />
                                 </DataGridTemplateColumn.Header>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox HorizontalAlignment="Center"
                                                   VerticalAlignment="Center"
-                                                  IsChecked="{Binding InstallEnable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                  IsChecked="{Binding IsInstall, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -209,11 +203,11 @@
                             <DataGridTextColumn Header="追加ファイル(dll, exeなど)"
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                 Width="152"
-                                                Binding="{Binding InstallFiles}"/>
+                                                Binding="{Binding AppendFile}"/>
                             <DataGridTextColumn Header="動画ID(ニコニコ動画のみ)"
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                 Width="148"
-                                                Binding="{Binding VideoID}"/>
+                                                Binding="{Binding NicoVideoID}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                     <StackPanel Grid.Row="1"
