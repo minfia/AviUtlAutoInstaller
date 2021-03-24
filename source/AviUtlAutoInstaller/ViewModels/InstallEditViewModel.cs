@@ -39,6 +39,22 @@ namespace AviUtlAutoInstaller.ViewModels
 
         #region プリインストールアイテム
         public ObservableCollection<InstallItem> PreInstallList { get; }
+        private bool _preSelectAllCheck;
+        /// <summary>
+        /// プリインストールアイテム全選択/解除
+        /// </summary>
+        public bool PreSelectAllCheck
+        {
+            get { return _preSelectAllCheck; }
+            set
+            {
+                SetProperty(ref _preSelectAllCheck, value);
+                foreach (InstallItem item in PreInstallList)
+                {
+                    item.IsInstall = value;
+                }
+            }
+        }
         #endregion
 
         #region ユーザーアイテム
@@ -48,6 +64,22 @@ namespace AviUtlAutoInstaller.ViewModels
         {
             get { return _userInstallItem; }
             set { SetProperty(ref _userInstallItem, value); }
+        }
+        private bool _userSelectAllCheck;
+        /// <summary>
+        /// ユーザーアイテム全選択/解除
+        /// </summary>
+        public bool UserSelectAllCheck
+        {
+            get { return _userSelectAllCheck; }
+            set
+            {
+                SetProperty(ref _userSelectAllCheck, value);
+                foreach (InstallItem item in UserInstallList)
+                {
+                    item.IsInstall = value;
+                }
+            }
         }
         #endregion
 
