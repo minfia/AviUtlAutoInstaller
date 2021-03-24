@@ -93,12 +93,13 @@
                           AutoGenerateColumns="False"
                           ItemsSource="{Binding PreInstallList}"
                           FontSize="11">
-                    
                     <DataGrid.Columns>
                         <DataGridTemplateColumn CanUserResize="False"
                                                 HeaderStyle="{StaticResource DataGridCheckBoxHeaderStyle}">
                             <DataGridTemplateColumn.Header>
-                                <CheckBox />
+                                <CheckBox IsChecked="{Binding PreSelectAllCheck}"
+                                          DataContext="{Binding RelativeSource={RelativeSource
+                                                        AncestorType={x:Type DataGrid}}, Path=DataContext}"/>
                             </DataGridTemplateColumn.Header>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -161,7 +162,9 @@
                             <DataGridTemplateColumn CanUserResize="False"
                                                     HeaderStyle="{StaticResource DataGridCheckBoxHeaderStyle}">
                                 <DataGridTemplateColumn.Header>
-                                    <CheckBox />
+                                    <CheckBox IsChecked="{Binding UserSelectAllCheck}"
+                                              DataContext="{Binding RelativeSource={RelativeSource
+                                                            AncestorType={x:Type DataGrid}}, Path=DataContext}"/>
                                 </DataGridTemplateColumn.Header>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
