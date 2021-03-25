@@ -16,7 +16,6 @@
                       Height="560" Width="1200"
                       WindowStartupLocation="CenterOwner"
                       WindowTransitionsEnabled="False">
-
     <Window.Resources>
         <Style x:Key="TabControlMenu" TargetType="TabItem">
             <Setter Property="Template">
@@ -56,8 +55,10 @@
         <Style x:Key="DataGridTextHederStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}">
             <Setter Property="Controls:ControlsHelper.ContentCharacterCasing" Value="Normal"/>
         </Style>
+        <FrameworkElement x:Key="proxyElement"/>
     </Window.Resources>
     <DockPanel>
+        <ContentControl Visibility="Collapsed" Content="{StaticResource proxyElement}"/>
         <StatusBar DockPanel.Dock="Bottom"
                    Background="DimGray"
                    Height="Auto">
@@ -97,9 +98,7 @@
                         <DataGridTemplateColumn CanUserResize="False"
                                                 HeaderStyle="{StaticResource DataGridCheckBoxHeaderStyle}">
                             <DataGridTemplateColumn.Header>
-                                <CheckBox IsChecked="{Binding PreSelectAllCheck}"
-                                          DataContext="{Binding RelativeSource={RelativeSource
-                                                        AncestorType={x:Type DataGrid}}, Path=DataContext}"/>
+                                <CheckBox IsChecked="{Binding Source={StaticResource proxyElement}, Path=DataContext.PreSelectAllCheck}"/>
                             </DataGridTemplateColumn.Header>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -162,9 +161,7 @@
                             <DataGridTemplateColumn CanUserResize="False"
                                                     HeaderStyle="{StaticResource DataGridCheckBoxHeaderStyle}">
                                 <DataGridTemplateColumn.Header>
-                                    <CheckBox IsChecked="{Binding UserSelectAllCheck}"
-                                              DataContext="{Binding RelativeSource={RelativeSource
-                                                            AncestorType={x:Type DataGrid}}, Path=DataContext}"/>
+                                    <CheckBox IsChecked="{Binding Source={StaticResource proxyElement}, Path=DataContext.UserSelectAllCheck}"/>
                                 </DataGridTemplateColumn.Header>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
