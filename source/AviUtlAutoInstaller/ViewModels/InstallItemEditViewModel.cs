@@ -531,6 +531,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 AppendFileError = "前後に空白は使用できません";
             }
             string[] array = AppendFile.Split(',');
+            HashSet<string> duplicate = new HashSet<string>();
             foreach (string str in array)
             {
                 if (CheckFileNameAndExtension(str))
@@ -538,9 +539,14 @@ namespace AviUtlAutoInstaller.ViewModels
                     AppendFileError = "無効なファイル名です";
                     break;
                 }
+                else if(!duplicate.Add(str.Trim()))
+                {
+                    AppendFileError = $"ファイル名が重複しています ({str.Trim()})";
+                    break;
+                }
                 else if (CheckInvalidChar(str.Trim()))
                 {
-                    if (Path.GetFileNameWithoutExtension(str).Equals("*"))
+                    if (Path.GetFileNameWithoutExtension(str.Trim()).Equals("*"))
                     {
                         continue;
                     }
