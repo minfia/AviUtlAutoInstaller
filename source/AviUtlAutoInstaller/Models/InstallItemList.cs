@@ -92,6 +92,39 @@ namespace AviUtlAutoInstaller.Models
         }
 
         /// <summary>
+        /// 項目名の重複チェック
+        /// </summary>
+        /// <param name="repoType">リポジトリの選択</param>
+        /// <param name="name">確認する項目名</param>
+        /// <returns></returns>
+        public static bool CheckDuplicateName(RepoType repoType, string name)
+        {
+            return _installItemList[(int)repoType].Any(x => x.Name == name);
+        }
+
+        /// <summary>
+        /// URLの重複チェック
+        /// </summary>
+        /// <param name="repoType">リポジトリの選択</param>
+        /// <param name="url">確認するURL</param>
+        /// <returns></returns>
+        public static bool CheckDuplicateURL(RepoType repoType, string url)
+        {
+            return _installItemList[(int)repoType].Any(x => x.URL == url);
+        }
+
+        /// <summary>
+        /// ファイル名の重複チェック
+        /// </summary>
+        /// <param name="repoType">リポジトリの選択</param>
+        /// <param name="fileName">確認するファイル名</param>
+        /// <returns></returns>
+        public static bool CheckDuplicateFileName(RepoType repoType, string fileName)
+        {
+            return _installItemList[(int)repoType].Any(x => x.FileName == fileName);
+        }
+
+        /// <summary>
         /// インストールアイテムの項目番号を採番
         /// </summary>
         /// <param name="repoType">リポジトリの選択</param>
