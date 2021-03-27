@@ -426,7 +426,11 @@ namespace AviUtlAutoInstaller.ViewModels
             {
                 NameError = "名前を入力してください";
             }
-            else if(CheckStartAndEndWhiteSpace(Name))
+            else if (CheckDuplicate(DuplicateType.Name, Name))
+            {
+                NameError = "同じ名前は登録できません";
+            }
+            else if (CheckStartAndEndWhiteSpace(Name))
             {
                 NameError = "前後に空白は使用できません";
             }
@@ -441,6 +445,10 @@ namespace AviUtlAutoInstaller.ViewModels
             if (string.IsNullOrEmpty(URL))
             {
                 return;
+            }
+            else if (CheckDuplicate(DuplicateType.URL, URL))
+            {
+                URLError = "同じURLは登録できません";
             }
             try
             {
@@ -461,6 +469,10 @@ namespace AviUtlAutoInstaller.ViewModels
             if (CheckStartAndEndWhiteSpace(FileName))
             {
                 FileNameError = "ファイル名を入力してください";
+            }
+            else if (CheckDuplicate(DuplicateType.FileName, FileName))
+            {
+                FileNameError = "同じファイル名は登録できません";
             }
             else if (CheckInvalidChar(FileName))
             {
@@ -574,6 +586,61 @@ namespace AviUtlAutoInstaller.ViewModels
             {
                 NicoVideoIDError = "有効なIDは、smから始まり、以降は数字です";
             }
+        }
+
+        /// <summary>
+        /// 重複チェックの項目選択
+        /// </summary>
+        private enum DuplicateType
+        {
+            /// <summary>
+            /// 項目名
+            /// </summary>
+            Name,
+            /// <summary>
+            /// URL
+            /// </summary>
+            URL,
+            /// <summary>
+            /// ファイル名
+            /// </summary>
+            FileName,
+        };
+
+        /// <summary>
+        /// 重複チェック
+        /// </summary>
+        /// <param name="type">重複チェック対象</param>
+        /// <param name="str">チェック対象</param>
+        /// <returns></returns>
+        private bool CheckDuplicate(DuplicateType type, string str)
+        {
+            switch(type)
+            {
+                case DuplicateType.Name:
+                    if (((EditShowType.Add == EditType) && InstallItemList.CheckDuplicateName(InstallItemList.RepoType.User, str)) ||
+                        ((EditShowType.Modify == EditType) && (_installItem.Name != str) && InstallItemList.CheckDuplicateName(InstallItemList.RepoType.User, str)))
+                    {
+                        return true;
+                    }
+                    break;
+                case DuplicateType.URL:
+                    if (((EditShowType.Add == EditType) && InstallItemList.CheckDuplicateURL(InstallItemList.RepoType.User, str)) ||
+                        ((EditShowType.Modify == EditType) && (_installItem.URL != str) && InstallItemList.CheckDuplicateURL(InstallItemList.RepoType.User, str)))
+                    {
+                        return true;
+                    }
+                    break;
+                case DuplicateType.FileName:
+                    if (((EditShowType.Add == EditType) && InstallItemList.CheckDuplicateFileName(InstallItemList.RepoType.User, str)) ||
+                        ((EditShowType.Modify == EditType) && (_installItem.FileName != str) && InstallItemList.CheckDuplicateFileName(InstallItemList.RepoType.User, str)))
+                    {
+                        return true;
+                    }
+                    break;
+            }
+
+            return false;
         }
 
         /// <summary>
