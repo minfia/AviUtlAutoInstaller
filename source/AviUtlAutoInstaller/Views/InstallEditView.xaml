@@ -92,6 +92,7 @@
                           CanUserReorderColumns="False"
                           SelectionMode="Single"
                           AutoGenerateColumns="False"
+                          IsReadOnly="True"
                           ItemsSource="{Binding PreInstallList}"
                           FontSize="11">
                     <DataGrid.Columns>
@@ -154,6 +155,7 @@
                               SelectionMode="Single"
                               AutoGenerateColumns="False"
                               Controls:ControlsHelper.ContentCharacterCasing="Normal"
+                              IsReadOnly="True"
                               ItemsSource="{Binding UserInstallList}"
                               SelectedItem="{Binding UserSelectItem}"
                               FontSize="11">
@@ -210,10 +212,37 @@
                                                 Binding="{Binding NicoVideoID}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <StackPanel Grid.Row="1"
-                                Orientation="Vertical">
+                    <Grid Grid.Row="1">
                         <Border BorderThickness="0,0,0,1"
+                                VerticalAlignment="Top"
                                 BorderBrush="AliceBlue"/>
+                        <StackPanel HorizontalAlignment="Left"
+                                    Orientation="Horizontal">
+                            <Button BorderThickness="0.8"
+                                    HorizontalAlignment="Left"
+                                    Style="{DynamicResource MahApps.Styles.Button.Square}"
+                                    Height="26" Width="64"
+                                    Margin="4"
+                                    Content="開く..."
+                                    Command="{Binding OpenUserRepoCommand}"
+                                    b:FileDialogBehavior.Callback="{Binding OpenUserRepoCallback}"
+                                    b:FileDialogBehavior.Title="ユーザーリポジトリを開く"
+                                    b:FileDialogBehavior.Filter="ユーザーリポジトリ (*.urepo)|*.urepo"
+                                    b:FileDialogBehavior.Multiselect="False"
+                                    b:FileDialogBehavior.OpenSave="Open"/>
+                            <Button BorderThickness="0.8"
+                                    HorizontalAlignment="Left"
+                                    Style="{DynamicResource MahApps.Styles.Button.Square}"
+                                    Height="26" Width="64"
+                                    Margin="4"
+                                    Content="保存..."
+                                    Command="{Binding SaveUserRepoCommand}"
+                                    b:FileDialogBehavior.Callback="{Binding SaveUserRepoCallback}"
+                                    b:FileDialogBehavior.Title="ユーザーリポジトリを保存"
+                                    b:FileDialogBehavior.Filter="ユーザーリポジトリ (*.urepo)|*.urepo"
+                                    b:FileDialogBehavior.Multiselect="False"
+                                    b:FileDialogBehavior.OpenSave="Save"/>
+                        </StackPanel>
                         <StackPanel Orientation="Horizontal"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center">
@@ -247,7 +276,7 @@
                                     Content="削除"
                                     Command="{Binding DeleteItemCommand}"/>
                         </StackPanel>
-                    </StackPanel>
+                    </Grid>
                 </Grid>
             </TabItem>
         </TabControl>
