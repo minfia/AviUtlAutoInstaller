@@ -11,13 +11,32 @@ namespace AviUtlAutoInstaller.ViewModels
     class InstallEditViewModel : NotificationObject
     {
         #region ユーザータブ
+        private DelegateCommand _openUserRepoCommand;
+        private DelegateCommand _saveUserRepoCommand;
         private DelegateCommand _addItemCommand;
         private DelegateCommand _modifyItemCommand;
         private DelegateCommand _deleteItemCommand;
 
+        public DelegateCommand OpenUserRepoCommand { get => _openUserRepoCommand; }
+        public DelegateCommand SaveUserRepoCommand { get => _saveUserRepoCommand; }
         public DelegateCommand AddItemCommand { get => _addItemCommand; }
         public DelegateCommand ModifyItemCommand { get => _modifyItemCommand; }
         public DelegateCommand DeleteItemCommand { get => _deleteItemCommand; }
+
+        private Action<bool, string> _openUserRepoCallback;
+        public Action<bool, string> OpenUserRepoCallback
+        {
+            get { return _openUserRepoCallback; }
+            set { SetProperty(ref _openUserRepoCallback, value); }
+        }
+
+        private Action<bool, string> _saveUserRepoCallback;
+        public Action<bool, string> SaveUserRepoCallback
+        {
+            get { return _saveUserRepoCallback; }
+            set { SetProperty(ref _saveUserRepoCallback, value); }
+        }
+
         #endregion
 
         #region InstallItemEditViewの設定
@@ -88,6 +107,17 @@ namespace AviUtlAutoInstaller.ViewModels
             _installItemList = new InstallItemList();
             PreInstallList = _installItemList.GetInstalItemList(InstallItemList.RepoType.Pre);
             UserInstallList = _installItemList.GetInstalItemList(InstallItemList.RepoType.User);
+
+            _openUserRepoCommand = new DelegateCommand(
+                _ =>
+                {
+                    OpenUserRepoCallback = OnOpenUserRepoCallback;
+                });
+            _saveUserRepoCommand = new DelegateCommand(
+                _ =>
+                {
+                    SaveUserRepoCallback = OnSaveUserRepoCallback;
+                });
             _addItemCommand = new DelegateCommand(
                 _ =>
                 {
@@ -95,7 +125,6 @@ namespace AviUtlAutoInstaller.ViewModels
                     _installItemEditViewModel.EditType = InstallItemEditViewModel.EditShowType.Add;
                     InstallItemEditViewCallback = OnInstallItemEditView;
                 });
-
             _modifyItemCommand = new DelegateCommand(
                 _ =>
                 {
@@ -118,6 +147,40 @@ namespace AviUtlAutoInstaller.ViewModels
                     // TODO: 警告表示
                     InstallItemList.DeleteInstallItem(InstallItemList.RepoType.User, UserSelectItem);
                 });
+        }
+
+        private void OnOpenUserRepoCallback(bool isOk, string filePath)
+        {
+            if (isOk)
+            {
+                try
+                {
+                    UserRepoFileRW userRepoFileRead = new UserRepoFileRW();
+
+                    userRepoFileRead.FileRead(filePath);
+                    UserSelectAllCheck = false;
+                }
+                catch (Exception e)
+                {
+                    // TODO: エラー表示
+                }
+                finally
+                {
+                    OpenUserRepoCallback = null;
+                }
+            }
+            OpenUserRepoCallback = null;
+        }
+
+        private void OnSaveUserRepoCallback(bool isOk, string filePath)
+        {
+            if (isOk)
+            {
+                UserRepoFileRW userRepoFileWrite = new UserRepoFileRW();
+
+                userRepoFileWrite.FileWrite(filePath);
+            }
+            SaveUserRepoCallback = null;
         }
    }
 }

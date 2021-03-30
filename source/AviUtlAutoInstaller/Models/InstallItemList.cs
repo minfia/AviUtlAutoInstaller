@@ -88,7 +88,6 @@ namespace AviUtlAutoInstaller.Models
         {
             _installItemList[(int)repoType].Remove(deleteItem);
             OrganizeNo(repoType);
-
         }
 
         /// <summary>
