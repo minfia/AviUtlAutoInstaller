@@ -22,14 +22,14 @@ namespace AviUtlAutoInstaller.Models
 
     class InstallItem : NotificationObject
     {
-        private bool _isInstall = false;
+        private bool _isSelect = false;
         /// <summary>
         /// インストールの有無
         /// </summary>
-        public bool IsInstall
+        public bool IsSelect
         {
-            get { return _isInstall; }
-            set { SetProperty(ref _isInstall, value); }
+            get { return _isSelect; }
+            set { SetProperty(ref _isSelect, value); }
         }
 
         private bool _isDownloadCompleted = false;

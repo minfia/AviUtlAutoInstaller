@@ -105,7 +105,7 @@
                                 <DataTemplate>
                                     <CheckBox HorizontalAlignment="Center"
                                               VerticalAlignment="Center"
-                                              IsChecked="{Binding IsInstall, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                              IsChecked="{Binding IsSelect, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -152,7 +152,7 @@
                               CanUserDeleteRows="False"
                               CanUserResizeRows="False"
                               CanUserReorderColumns="False"
-                              SelectionMode="Single"
+                              SelectionMode="Extended"
                               AutoGenerateColumns="False"
                               Controls:ControlsHelper.ContentCharacterCasing="Normal"
                               IsReadOnly="True"
@@ -169,7 +169,7 @@
                                     <DataTemplate>
                                         <CheckBox HorizontalAlignment="Center"
                                                   VerticalAlignment="Center"
-                                                  IsChecked="{Binding IsInstall, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                  IsChecked="{Binding IsSelect, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

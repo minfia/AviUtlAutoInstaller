@@ -84,9 +84,12 @@ namespace AviUtlAutoInstaller.Models
         /// </summary>
         /// <param name="repoType">リポジトリの選択</param>
         /// <param name="deleteItem">削除するInstallItem</param>
-        public static void DeleteInstallItem(RepoType repoType, InstallItem deleteItem)
+        public static void DeleteInstallItem(RepoType repoType, List<InstallItem> deleteItemList)
         {
-            _installItemList[(int)repoType].Remove(deleteItem);
+            foreach (InstallItem item in deleteItemList)
+            {
+                _installItemList[(int)repoType].Remove(item);
+            }
             OrganizeNo(repoType);
         }
 

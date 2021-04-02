@@ -70,7 +70,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 SetProperty(ref _preSelectAllCheck, value);
                 foreach (InstallItem item in PreInstallList)
                 {
-                    item.IsInstall = value;
+                    item.IsSelect = value;
                 }
             }
         }
@@ -96,7 +96,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 SetProperty(ref _userSelectAllCheck, value);
                 foreach (InstallItem item in UserInstallList)
                 {
-                    item.IsInstall = value;
+                    item.IsSelect = value;
                 }
             }
         }
@@ -140,12 +140,22 @@ namespace AviUtlAutoInstaller.ViewModels
             _deleteItemCommand = new DelegateCommand(
                 _ =>
                 {
-                    if (UserSelectItem == null)
+                    bool isAllfalse = true;
+                    List<InstallItem> deleteItemList = new List<InstallItem>();
+                    foreach (InstallItem item in UserInstallList)
+                    {
+                        if (item.IsSelect)
+                        {
+                            isAllfalse = false;
+                            deleteItemList.Add(item);
+                        }
+                    }
+                    if (isAllfalse)
                     {
                         return;
                     }
                     // TODO: 警告表示
-                    InstallItemList.DeleteInstallItem(InstallItemList.RepoType.User, UserSelectItem);
+                    InstallItemList.DeleteInstallItem(InstallItemList.RepoType.User, deleteItemList);
                 });
         }
 
