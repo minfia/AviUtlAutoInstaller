@@ -5,6 +5,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Data;
 
 namespace AviUtlAutoInstaller.ViewModels
 {
@@ -58,6 +60,7 @@ namespace AviUtlAutoInstaller.ViewModels
 
         #region プリインストールアイテム
         public ObservableCollection<InstallItem> PreInstallList { get; }
+        public CollectionViewSource PreInstallFilterList { get; private set; }
         private bool _preSelectAllCheck;
         /// <summary>
         /// プリインストールアイテム全選択/解除
@@ -78,6 +81,7 @@ namespace AviUtlAutoInstaller.ViewModels
 
         #region ユーザーアイテム
         public ObservableCollection<InstallItem> UserInstallList { get; }
+        public CollectionViewSource UserInstallFilterList { get; private set; }
         private InstallItem _userInstallItem;
         public InstallItem UserSelectItem
         {
@@ -102,11 +106,201 @@ namespace AviUtlAutoInstaller.ViewModels
         }
         #endregion
 
+        #region フィルタ
+        /// <summary>
+        /// フィルタを適応する種類
+        /// </summary>
+        private enum FilterType
+        {
+            Name,
+            ScriptDirName,
+            FileType,
+        }
+
+        private Dictionary<int, InstallItemList.RepoType> _selectTab = new Dictionary<int, InstallItemList.RepoType>()
+        {
+            { 0, InstallItemList.RepoType.Pre },
+            { 1, InstallItemList.RepoType.User },
+        };
+
+        private int _tabControlSelectIndex = 0;
+        /// <summary>
+        /// 選択されたタブのIndex
+        /// </summary>
+        public int TabControlSelectIndex
+        {
+            get { return _tabControlSelectIndex; }
+            set
+            {
+                SetProperty(ref _tabControlSelectIndex, value);
+                // 選択されたタブのIndexに合わせてフィルタ値を復元
+                NameFilter = _nameFilterList[value];
+                ScriptDirNameFilter = _scriptDirNameFilterList[value];
+                if (_selectTab[value] == InstallItemList.RepoType.Pre)
+                {
+                    IsFileTypeFilterVisible = Visibility.Collapsed;
+                }
+                else
+                {
+                    IsFileTypeFilterVisible = Visibility.Visible;
+                }
+                FileTypeFilterSelectIndex = _fileTypeFilterList[value];
+            }
+        }
+
+
+        #region 項目名のフィルタ
+        /// <summary>
+        /// 各Listの項目名フィルタ値保持用
+        /// </summary>
+        private readonly string[] _nameFilterList = new string[(int)InstallItemList.RepoType.MAX] { "", "" };
+        private string _nameFilter = "";
+        /// <summary>
+        /// 項目名のフィルタ値
+        /// </summary>
+        public string NameFilter
+        {
+            get { return _nameFilter; }
+            set
+            {
+                SetProperty(ref _nameFilter, value);
+                UpdateFilterData(_selectTab[TabControlSelectIndex], FilterType.Name, value);
+            }
+        }
+        #endregion
+
+        #region スクリプトフォルダ名のフィルタ
+        /// <summary>
+        /// 各Listのスクリプトフォルダ名フィルタ値保持用
+        /// </summary>
+        private readonly string[] _scriptDirNameFilterList = new string[(int)InstallItemList.RepoType.MAX] { "", "" };
+        private string _scriptDirNameFilter = "";
+        /// <summary>
+        /// スクリプトフォルダ名のフィルタ値w
+        /// </summary>
+        public string ScriptDirNameFilter
+        {
+            get { return _scriptDirNameFilter; }
+            set
+            {
+                SetProperty(ref _scriptDirNameFilter, value);
+                UpdateFilterData(_selectTab[TabControlSelectIndex], FilterType.ScriptDirName, value);
+            }
+        }
+        #endregion
+
+        #region ファイルタイプのフィルタ
+        /// <summary>
+        /// ファイルタイプのフィルタ用定数
+        /// </summary>
+        private const int FileTypeAll = int.MaxValue;
+        /// <summary>
+        /// コンボボックスに表示する内容
+        /// </summary>
+        public Dictionary<int, string> FileTypeFilter { get; } = new Dictionary<int, string>()
+        {
+            { FileTypeAll, "全て" },
+            { (int)InstallFileType.Script, InstallItem.GetFileTypeString(InstallFileType.Script) },
+            { (int)InstallFileType.Plugin, InstallItem.GetFileTypeString(InstallFileType.Plugin) },
+        };
+        private string _fileTypeSelectValue;
+        /// <summary>
+        /// 各Listのファイルタイプフィルタ値保持用
+        /// </summary>
+        private readonly int[] _fileTypeFilterList = new int[(int)InstallItemList.RepoType.MAX] { 0, 0 };
+        private int _fileTypeFilterSelectIndex;
+        /// <summary>
+        /// ファイルタイプのフィルタ値
+        /// </summary>
+        public int FileTypeFilterSelectIndex
+        {
+            get { return _fileTypeFilterSelectIndex; }
+            set
+            {
+                SetProperty(ref _fileTypeFilterSelectIndex, value);
+                string[] itemNameList = FileTypeFilter.Values.ToArray();
+                _fileTypeSelectValue = itemNameList[value];
+                UpdateFilterData(_selectTab[TabControlSelectIndex], FilterType.FileType, value);
+            }
+        }
+        private Visibility _IsFileTypeFilterVisible = Visibility.Collapsed;
+        /// <summary>
+        /// ファイルタイプのフィルタの表示設定
+        /// </summary>
+        public Visibility IsFileTypeFilterVisible
+        {
+            get { return _IsFileTypeFilterVisible; }
+            set { SetProperty(ref _IsFileTypeFilterVisible, value); }
+        }
+        #endregion
+
+        /// <summary>
+        /// 選択されたタブに合わせてフィルタ更新
+        /// </summary>
+        /// <param name="selectTab"></param>
+        /// <param name="filterType"></param>
+        /// <param name="data"></param>
+        private void UpdateFilterData(InstallItemList.RepoType selectTab, FilterType filterType, object data)
+        {
+            if (InstallItemList.RepoType.MAX < selectTab)
+            {
+                return;
+            }
+            switch (filterType)
+            {
+                case FilterType.Name:
+                    _nameFilterList[(int)selectTab] = (string)data;
+                    break;
+                case FilterType.ScriptDirName:
+                    _scriptDirNameFilterList[(int)selectTab] = (string)data;
+                    break;
+                case FilterType.FileType:
+                    _fileTypeFilterList[(int)selectTab] = (int)data;
+                    break;
+            }
+            if (InstallItemList.RepoType.Pre == selectTab)
+            {
+                PreInstallFilterList.View.Refresh();
+            }
+            else if (InstallItemList.RepoType.User == selectTab)
+            {
+                UserInstallFilterList.View.Refresh();
+            }
+        }
+
+        /// <summary>
+        /// フィルタ適用イベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FilterEvent(object sender, FilterEventArgs e)
+        {
+            InstallItem installItem = e.Item as InstallItem;
+            int fileType = FileTypeFilter.First(x => x.Value.Contains(_fileTypeSelectValue)).Key;
+            if (installItem.Name.Contains(NameFilter) && installItem.ScriptDirName.Contains(ScriptDirNameFilter) &&
+                ((int)installItem.FileType == fileType || FileTypeAll == fileType))
+            {
+                e.Accepted = true;
+            }
+            else
+            {
+                e.Accepted = false;
+            }
+        }
+        #endregion
+
         public InstallEditViewModel()
         {
             _installItemList = new InstallItemList();
             PreInstallList = _installItemList.GetInstalItemList(InstallItemList.RepoType.Pre);
             UserInstallList = _installItemList.GetInstalItemList(InstallItemList.RepoType.User);
+
+            PreInstallFilterList = new CollectionViewSource();
+            PreInstallFilterList.Source = PreInstallList;
+            PreInstallFilterList.Filter += FilterEvent;
+            UserInstallFilterList = new CollectionViewSource();
+            UserInstallFilterList.Source = UserInstallList;
+            UserInstallFilterList.Filter += FilterEvent;
 
             _openUserRepoCommand = new DelegateCommand(
                 _ =>
