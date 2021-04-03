@@ -348,7 +348,15 @@ namespace AviUtlAutoInstaller.ViewModels
                     {
                         return;
                     }
-                    // TODO: 警告表示
+                    string buildDisplyItemList = "";
+                    foreach (InstallItem deleteItem in deleteItemList)
+                    {
+                        buildDisplyItemList += $"{deleteItem.Name}\n";
+                    }
+                    if (MessageBox.Show($"{buildDisplyItemList}を削除しますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+                    {
+                        return;
+                    }
                     InstallItemList.DeleteInstallItem(InstallItemList.RepoType.User, deleteItemList);
                 });
         }
