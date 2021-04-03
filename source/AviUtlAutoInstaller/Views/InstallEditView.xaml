@@ -15,7 +15,8 @@
                       Title="インストール項目一覧"
                       Height="560" Width="1200"
                       WindowStartupLocation="CenterOwner"
-                      WindowTransitionsEnabled="False">
+                      WindowTransitionsEnabled="False"
+                      b:WindowClosingBehavior.Callback="{Binding ClosingCallback}">
     <Window.Resources>
         <Style x:Key="TabControlMenu" TargetType="TabItem">
             <Setter Property="Template">
@@ -137,6 +138,7 @@
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
                               ItemsSource="{Binding PreInstallFilterList.View}"
+                              SelectedItem="{Binding PreSelectItem}"
                               FontSize="11">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn CanUserResize="False"
