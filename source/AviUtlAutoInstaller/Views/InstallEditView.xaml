@@ -236,7 +236,7 @@
                                 <DataGridTextColumn Header="ファイルタイプ"
                                                     HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                     Width="88"
-                                                    Binding="{Binding FileType}"/>
+                                                    Binding="{Binding FileTypeString}"/>
                                 <DataGridTextColumn Header="バージョン"
                                                     HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                     Width="88"

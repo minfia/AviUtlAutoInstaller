@@ -99,7 +99,17 @@ namespace AviUtlAutoInstaller.Models
         public InstallFileType FileType
         {
             get { return _fileType; }
-            set { SetProperty(ref _fileType, value); }
+            set
+            {
+                SetProperty(ref _fileType, value);
+                FileTypeString = GetFileTypeString(value);
+            }
+        }
+        private string _fileTypeString = GetFileTypeString(InstallFileType.Script);
+        public string FileTypeString
+        {
+            get { return _fileTypeString; }
+            set { SetProperty(ref _fileTypeString, value); }
         }
 
         private string _version = string.Empty;
