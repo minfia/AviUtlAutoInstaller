@@ -61,6 +61,12 @@ namespace AviUtlAutoInstaller.ViewModels
         #region プリインストールアイテム
         public ObservableCollection<InstallItem> PreInstallList { get; }
         public CollectionViewSource PreInstallFilterList { get; private set; }
+        private InstallItem _preSelectItem;
+        public InstallItem PreSelectItem
+        {
+            get { return _preSelectItem; }
+            set { SetProperty(ref _preSelectItem, value); }
+        }
         private bool _preSelectAllCheck;
         /// <summary>
         /// プリインストールアイテム全選択/解除
@@ -361,6 +367,21 @@ namespace AviUtlAutoInstaller.ViewModels
                 });
         }
 
+        private void InitializeValue()
+        {
+            UserSelectItem = null;
+            _tabControlSelectIndex = 0;
+            _nameFilter = "";
+            _scriptDirNameFilter = "";
+            _fileTypeFilterSelectIndex = 0;
+            for (int i = 0; i < (int)InstallItemList.RepoType.MAX; i++)
+            {
+                _nameFilterList[i] = "";
+                _scriptDirNameFilterList[i] = "";
+                _fileTypeFilterList[i] = 0;
+            }
+        }
+
         private void OnOpenUserRepoCallback(bool isOk, string filePath)
         {
             if (isOk)
@@ -393,6 +414,18 @@ namespace AviUtlAutoInstaller.ViewModels
                 userRepoFileWrite.FileWrite(filePath);
             }
             SaveUserRepoCallback = null;
+        }
+
+        public Func<bool> ClosingCallback
+        {
+            get { return OnExit; }
+        }
+
+        private bool OnExit()
+        {
+            InitializeValue();
+
+            return true;
         }
    }
 }
