@@ -1,9 +1,11 @@
-﻿using AviUtlAutoInstaller.ViewModels;
+﻿using AviUtlAutoInstaller.Models;
+using AviUtlAutoInstaller.ViewModels;
 using AviUtlAutoInstaller.Views;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
@@ -20,10 +22,45 @@ namespace AviUtlAutoInstaller
         {
             base.OnStartup(e);
 
+            string message = "";
             if (IsAdministrator())
             {
-                MessageBox.Show("管理者権限では実行できません", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                message = "管理者権限では実行できません";
+            }
+            else if (!Directory.Exists(SysConfig.RepoDirPath))
+            {
+                message = "repoフォルダが存在しません\nアプリをダウンロードし直してください";
+            }
+            else if (!File.Exists(SysConfig.AaiRepoFilePath))
+            {
+                message = $"{SysConfig.RepoDirPath}にaai.repoが存在しません\nアプリをダウンロードし直すか、aai.repoをダウンロードしてください";
+            }
+            if (!string.IsNullOrEmpty(message))
+            {
+                MessageBox.Show(message, "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                Current.Shutdown();
                 return;
+            }
+
+            if (!Directory.Exists(SysConfig.UserRepoDirPath))
+            {
+                Directory.CreateDirectory(SysConfig.UserRepoDirPath);
+            }
+            if (!Directory.Exists(SysConfig.CacheDirPath))
+            {
+                Directory.CreateDirectory(SysConfig.CacheDirPath);
+            }
+
+            {
+                PreRepoFileR preRepoFileR = new PreRepoFileR($"{SysConfig.RepoDirPath}\\aai.repo");
+                preRepoFileR.Open();
+                if (!preRepoFileR.ReadInstallItemList())
+                {
+                    MessageBox.Show("aai.repoを読み込めませんでした\nアプリをダウンロードし直すか、aai.repoをダウンロードしてください", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Current.Shutdown();
+                    return;
+                }
+                preRepoFileR.Close();
             }
 
             var mv = new MainView();

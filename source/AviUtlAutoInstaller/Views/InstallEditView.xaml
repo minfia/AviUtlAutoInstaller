@@ -160,11 +160,11 @@
                                                 Binding="{Binding No}"/>
                             <DataGridTextColumn Header="名前"
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"
-                                                Width="132"
+                                                Width="160*"
                                                 Binding="{Binding Name}"/>
                             <DataGridTextColumn Header="ファイル名"
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"
-                                                Width="120"
+                                                Width="160*"
                                                 Binding="{Binding FileName}"/>
                             <DataGridTextColumn Header="バージョン"
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"

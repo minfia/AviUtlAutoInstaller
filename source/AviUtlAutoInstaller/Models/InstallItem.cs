@@ -20,6 +20,15 @@ namespace AviUtlAutoInstaller.Models
         Encoder,
     }
 
+    /// <summary>
+    /// ダウンロード/インストールの優先度
+    /// </summary>
+    public enum InstallPriority
+    {
+        High,
+        Low
+    }
+
     class InstallItem : NotificationObject
     {
         private bool _isSelect = false;
@@ -50,6 +59,16 @@ namespace AviUtlAutoInstaller.Models
         {
             get { return _no; }
             set { SetProperty(ref _no, value); }
+        }
+
+        private InstallPriority _priority = InstallPriority.Low;
+        /// <summary>
+        /// ダウンロード/インストール優先度
+        /// </summary>
+        public InstallPriority Priority
+        {
+            get { return _priority; }
+            set { SetProperty(ref _priority, value); }
         }
 
         private string _name = string.Empty;
