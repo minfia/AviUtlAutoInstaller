@@ -298,6 +298,8 @@ namespace AviUtlAutoInstaller.ViewModels
         public InstallEditViewModel()
         {
             _installItemList = new InstallItemList();
+            _fileTypeSelectValue = FileTypeFilter[FileTypeAll];
+
             PreInstallList = _installItemList.GetInstalItemList(InstallItemList.RepoType.Pre);
             UserInstallList = _installItemList.GetInstalItemList(InstallItemList.RepoType.User);
 
