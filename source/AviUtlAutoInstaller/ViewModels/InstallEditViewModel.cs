@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Threading;
 
 namespace AviUtlAutoInstaller.ViewModels
 {
@@ -57,6 +58,9 @@ namespace AviUtlAutoInstaller.ViewModels
         #endregion
 
         private InstallItemList _installItemList;
+
+        private Queue<InstallItem> downloadQueue = new Queue<InstallItem>();
+        private Dictionary<InstallItem, string> downloadFailedList = new Dictionary<InstallItem, string>();
 
         #region プリインストールアイテム
         public ObservableCollection<InstallItem> PreInstallList { get; }
@@ -295,6 +299,15 @@ namespace AviUtlAutoInstaller.ViewModels
         }
         #endregion
 
+        private DelegateCommand _downloadCommand;
+        public DelegateCommand DownloadCommand { get => _downloadCommand; }
+        private int _downloadValue = 0;
+        public int DownloadValue
+        {
+            get { return _downloadValue; }
+            private set { SetProperty(ref _downloadValue, value); }
+        }
+
         public InstallEditViewModel()
         {
             _installItemList = new InstallItemList();
@@ -367,6 +380,7 @@ namespace AviUtlAutoInstaller.ViewModels
                     }
                     InstallItemList.DeleteInstallItem(InstallItemList.RepoType.User, deleteItemList);
                 });
+            _downloadCommand = new DelegateCommand(async _ => await OnDownload());
         }
 
         private void InitializeValue()
@@ -416,6 +430,111 @@ namespace AviUtlAutoInstaller.ViewModels
                 userRepoFileWrite.FileWrite(filePath);
             }
             SaveUserRepoCallback = null;
+        }
+
+        private async Task OnDownload()
+        {
+            InstallItem selectItem = null;
+            if (InstallItemList.RepoType.Pre == _selectTab[TabControlSelectIndex])
+            {
+                selectItem = PreSelectItem;
+            }
+            else if (InstallItemList.RepoType.User == _selectTab[TabControlSelectIndex])
+            {
+                selectItem = UserSelectItem;
+            }
+
+            if ((selectItem == null) || string.IsNullOrEmpty(selectItem.URL))
+            {
+                return;
+            }
+
+            Downloader downloader = new Downloader($"{SysConfig.CacheDirPath}");
+            selectItem.DownloadExecute = false;
+            downloadQueue.Enqueue(selectItem);
+
+            if (1 < downloadQueue.Count)
+            {
+                return;
+            }
+
+            while (downloadQueue.Count != 0)
+            {
+                DownloadValue = 0;
+                InstallItem headItem = downloadQueue.Peek();
+
+                Func<string, string, DownloadResult> func = new Func<string, string, DownloadResult>(downloader.DownloadStart);
+                var task = Task.Run(() => func(headItem.URL, headItem.FileName));
+
+                Task updateTask = Task.Run(async () =>
+                {
+                    do
+                    {
+                        await Task.Delay(1);
+                        if (downloader.DownloadFileSize != 0)
+                        {
+                            DownloadValue = (int)((double)downloader.DownloadCompleteSize / downloader.DownloadFileSize * 100);
+                        }
+                    } while (task.Status != TaskStatus.RanToCompletion);
+                });
+
+                var res = await task;
+                Console.WriteLine($"download res: {res}");
+
+                string message = GetDownloadResultMessage(res);
+                headItem.DownloadExecute = true;
+                if (message != "")
+                {
+                    downloadFailedList.Add(headItem, message);
+                }
+                downloadQueue.Dequeue();
+            }
+
+            if (downloadFailedList.Count != 0)
+            {
+                string message = "";
+                foreach (var pair in downloadFailedList)
+                {
+                    message += $"{pair.Key.Name}\n\t{pair.Value}";
+                }
+
+                MessageBox.Show(message, "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                downloadFailedList.Clear();
+            }
+        }
+
+        /// <summary>
+        /// ダウンロード結果に応じてメッセージボックスに出力する文字列を返す
+        /// </summary>
+        /// <param name="result">ダウンロード結果のメッセージ</param>
+        /// <returns></returns>
+        private string GetDownloadResultMessage(DownloadResult result)
+        {
+            string message = "";
+            switch (result)
+            {
+                case DownloadResult.Connection404Error:
+                    message = "無効なダウンロード先です、URLを再設定してください。";
+                    break;
+                case DownloadResult.ConnectionTimeoutError:
+                    message = "タイムアウトしました、再度ダウンロードしてください。";
+                    break;
+                case DownloadResult.ConnectionError:
+                    message = "接続に失敗しました。\n再度ダウンロードしてください。";
+                    break;
+                case DownloadResult.DownloadSizeGetError:
+                case DownloadResult.DownloadFileNameGetError:
+                case DownloadResult.DownloadError:
+                    message = "ダウンロードに失敗しました。";
+                    break;
+                case DownloadResult.GDriveVirus:
+                    message = "ファイルがウィルスに感染している可能性があるため、ダウンロードが出来ませんでした。";
+                    break;
+                default:
+                    break;
+            }
+
+            return message;
         }
 
         public Func<bool> ClosingCallback

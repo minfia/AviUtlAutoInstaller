@@ -98,7 +98,14 @@ namespace AviUtlAutoInstaller.Models
         public string URL
         {
             get { return _url; }
-            set { SetProperty(ref _url, value); }
+            set
+            {
+                SetProperty(ref _url, value);
+                if (_url == "")
+                {
+                    DownloadExecute = false;
+                }
+            }
         }
 
         private string _fileName = string.Empty;
@@ -185,6 +192,17 @@ namespace AviUtlAutoInstaller.Models
             set { SetProperty(ref _nicoVideoID , value); }
         }
 
+        private bool _downloadExecute = true;
+        /// <summary>
+        /// 個別ダウンロードの実行可能状態<br/>
+        /// true:実行可能, false:実行不可
+        /// </summary>
+        public bool DownloadExecute
+        {
+            get { return _downloadExecute; }
+            set { SetProperty(ref _downloadExecute, value); }
+        }
+
         /// <summary>
         /// ファイルタイプに対応する文字列
         /// </summary>
@@ -231,5 +249,6 @@ namespace AviUtlAutoInstaller.Models
                 AppendFileList.Add(s.Trim());
             }
         }
+
     }
 }
