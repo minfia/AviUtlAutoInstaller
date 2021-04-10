@@ -71,7 +71,7 @@
                                            Width="200" Height="Auto"
                                            Minimum="0"
                                            Maximum="100"
-                                           Value="50"/>
+                                           Value="{Binding DownloadValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
             </StatusBarItem>
         </StatusBar>
 
@@ -160,11 +160,11 @@
                                                 Binding="{Binding No}"/>
                             <DataGridTextColumn Header="名前"
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"
-                                                Width="160*"
+                                                Width="140*"
                                                 Binding="{Binding Name}"/>
                             <DataGridTextColumn Header="ファイル名"
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"
-                                                Width="160*"
+                                                Width="140*"
                                                 Binding="{Binding FileName}"/>
                             <DataGridTextColumn Header="バージョン"
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"
@@ -174,6 +174,16 @@
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                 Width="140"
                                                 Binding="{Binding ScriptDirName}"/>
+                            <DataGridTemplateColumn CanUserResize="False" Width="44">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="DL"
+                                                Width="40"
+                                                IsEnabled="{Binding DownloadExecute}"
+                                                Command="{Binding Source={StaticResource proxyElement}, Path=DataContext.DownloadCommand}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                 </TabItem>
@@ -229,7 +239,7 @@
                                                     Binding="{Binding Name}"/>
                                 <DataGridTextColumn Header="URL"
                                                     HeaderStyle="{StaticResource DataGridTextHederStyle}"
-                                                    Width="300*"
+                                                    Width="260*"
                                                     Binding="{Binding URL}"/>
                                 <DataGridTextColumn Header="ファイル名"
                                                     HeaderStyle="{StaticResource DataGridTextHederStyle}"
@@ -255,6 +265,16 @@
                                                     HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                     Width="148"
                                                     Binding="{Binding NicoVideoID}"/>
+                                <DataGridTemplateColumn CanUserResize="False" Width="44">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="DL"
+                                                Width="40"
+                                                IsEnabled="{Binding DownloadExecute}"
+                                                Command="{Binding Source={StaticResource proxyElement}, Path=DataContext.DownloadCommand}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                         <Grid Grid.Row="1">
