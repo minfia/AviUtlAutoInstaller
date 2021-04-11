@@ -157,7 +157,8 @@
                                     <DataTemplate>
                                         <CheckBox HorizontalAlignment="Center"
                                                   VerticalAlignment="Center"
-                                                  IsChecked="{Binding IsSelect, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                  IsChecked="{Binding IsSelect, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  IsEnabled="{Binding IsItemSelectEnable}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

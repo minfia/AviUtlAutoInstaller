@@ -41,6 +41,11 @@ namespace AviUtlAutoInstaller.Models
             set { SetProperty(ref _isSelect, value); }
         }
 
+        /// <summary>
+        /// アイテムセレクトの許可/不許可
+        /// </summary>
+        public bool IsItemSelectEnable { get; set; }
+
         private bool _isDownloadCompleted = false;
         /// <summary>
         /// ダウンロード完了の有無

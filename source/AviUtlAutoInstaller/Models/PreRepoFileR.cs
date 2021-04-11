@@ -91,6 +91,8 @@ namespace AviUtlAutoInstaller.Models
                                 AppendFile = reader["append_file"].ToString(),
                                 NicoVideoID = reader["nico_video_id"].ToString()
                             };
+                            item.IsSelect = (InstallFileType.Main == item.FileType) ? true : false;
+                            item.IsItemSelectEnable = (InstallFileType.Main == item.FileType) ? false : true;
 
                             InstallItemList.AddInstallItem(InstallItemList.RepoType.Pre, item);
                         }
