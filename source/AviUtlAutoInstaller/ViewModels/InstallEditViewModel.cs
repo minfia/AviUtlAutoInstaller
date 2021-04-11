@@ -318,6 +318,13 @@ namespace AviUtlAutoInstaller.ViewModels
             private set { SetProperty(ref _downloadValue, value); }
         }
 
+        private string _statusBarText = "";
+        public string StatusBarText
+        {
+            get { return _statusBarText; }
+            set { SetProperty(ref _statusBarText, value); }
+        }
+
         public InstallEditViewModel()
         {
             _installItemList = new InstallItemList();
@@ -484,6 +491,7 @@ namespace AviUtlAutoInstaller.ViewModels
 
                 Func<string, string, DownloadResult> func = new Func<string, string, DownloadResult>(downloader.DownloadStart);
                 var task = Task.Run(() => func(headItem.URL, headItem.FileName));
+                StatusBarText = $"{headItem.Name}をダウンロード中...";
 
                 Task updateTask = Task.Run(async () =>
                 {
@@ -509,12 +517,14 @@ namespace AviUtlAutoInstaller.ViewModels
                 downloadQueue.Dequeue();
             }
 
+            StatusBarText = "";
+
             if (downloadFailedList.Count != 0)
             {
                 string message = "";
                 foreach (var pair in downloadFailedList)
                 {
-                    message += $"{pair.Key.Name}\n\t{pair.Value}";
+                    message += $"{pair.Key.Name}\n\t{pair.Value}\n";
                 }
 
                 MessageBox.Show(message, "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
