@@ -4,7 +4,9 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:Interactivity="http://schemas.microsoft.com/xaml/behaviors"
                       xmlns:vw="clr-namespace:AviUtlAutoInstaller.Views"
+                      xmlns:vm="clr-namespace:AviUtlAutoInstaller.ViewModels"
                       xmlns:b="clr-namespace:AviUtlAutoInstaller.Views.Behaviors"
                       mc:Ignorable="d"
                       WindowTitleBrush="#FF333337"
@@ -140,6 +142,11 @@
                               ItemsSource="{Binding PreInstallFilterList.View}"
                               SelectedItem="{Binding PreSelectItem}"
                               FontSize="11">
+                        <Interactivity:Interaction.Triggers>
+                            <Interactivity:EventTrigger EventName="PreviewMouseLeftButtonUp">
+                                <Interactivity:CallMethodAction TargetObject="{Binding .}" MethodName="UnForcus"/>
+                            </Interactivity:EventTrigger>
+                        </Interactivity:Interaction.Triggers>
                         <DataGrid.Columns>
                             <DataGridTemplateColumn CanUserResize="False"
                                                     HeaderStyle="{StaticResource DataGridCheckBoxHeaderStyle}">
@@ -207,13 +214,35 @@
                                   CanUserDeleteRows="False"
                                   CanUserResizeRows="False"
                                   CanUserReorderColumns="False"
-                                  SelectionMode="Extended"
+                                  SelectionMode="Single"
                                   AutoGenerateColumns="False"
                                   Controls:ControlsHelper.ContentCharacterCasing="Normal"
                                   IsReadOnly="True"
                                   ItemsSource="{Binding UserInstallFilterList.View}"
                                   SelectedItem="{Binding UserSelectItem}"
                                   FontSize="11">
+                            <Interactivity:Interaction.Triggers>
+                                <Interactivity:EventTrigger EventName="PreviewMouseLeftButtonUp">
+                                    <Interactivity:CallMethodAction TargetObject="{Binding .}" MethodName="UnForcus"/>
+                                </Interactivity:EventTrigger>
+                            </Interactivity:Interaction.Triggers>
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridCell" BasedOn="{StaticResource MahApps.Styles.DataGridCell}">
+                                    <Setter Property="ContextMenu">
+                                        <Setter.Value>
+                                            <ContextMenu>
+                                                <MenuItem Header="編集(_E)"
+                                                          Command="{Binding Source={StaticResource proxyElement},
+                                                                            Path=DataContext.ModifyItemCommand}"/>
+                                                <MenuItem Header="削除(_D)"
+                                                          Command="{Binding Source={StaticResource proxyElement},
+                                                                            Path=DataContext.DeleteItemCommand}"
+                                                          CommandParameter="{x:Static vm:SelectCommandType.DataGrid}"/>
+                                            </ContextMenu>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </DataGrid.Resources>
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn CanUserResize="False"
                                                         HeaderStyle="{StaticResource DataGridCheckBoxHeaderStyle}">
@@ -339,7 +368,8 @@
                                         Height="26" Width="64"
                                         Margin="4"
                                         Content="削除"
-                                        Command="{Binding DeleteItemCommand}"/>
+                                        Command="{Binding DeleteItemCommand}"
+                                        CommandParameter="{x:Static vm:SelectCommandType.Button}"/>
                             </StackPanel>
                         </Grid>
                     </Grid>
