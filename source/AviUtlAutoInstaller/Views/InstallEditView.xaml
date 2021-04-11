@@ -65,7 +65,7 @@
         <StatusBar DockPanel.Dock="Bottom"
                    Background="DimGray"
                    Height="Auto">
-            <TextBlock Text="ステータス"/>
+            <TextBlock Text="{Binding StatusBarText}"/>
             <StatusBarItem HorizontalAlignment="Right">
                 <Controls:MetroProgressBar Foreground="DeepSkyBlue"
                                            Background="#FF333337"
