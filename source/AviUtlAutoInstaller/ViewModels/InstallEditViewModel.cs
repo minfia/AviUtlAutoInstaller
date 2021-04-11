@@ -7,10 +7,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace AviUtlAutoInstaller.ViewModels
 {
+    /// <summary>
+    /// コマンドの選択タイプ
+    /// </summary>
+    public enum SelectCommandType
+    {
+        Button,
+        DataGrid,
+    }
+
     class InstallEditViewModel : NotificationObject
     {
         #region ユーザータブ
@@ -18,13 +28,13 @@ namespace AviUtlAutoInstaller.ViewModels
         private DelegateCommand _saveUserRepoCommand;
         private DelegateCommand _addItemCommand;
         private DelegateCommand _modifyItemCommand;
-        private DelegateCommand _deleteItemCommand;
+        private DelegateCommand<SelectCommandType> _deleteItemCommand;
 
         public DelegateCommand OpenUserRepoCommand { get => _openUserRepoCommand; }
         public DelegateCommand SaveUserRepoCommand { get => _saveUserRepoCommand; }
         public DelegateCommand AddItemCommand { get => _addItemCommand; }
         public DelegateCommand ModifyItemCommand { get => _modifyItemCommand; }
-        public DelegateCommand DeleteItemCommand { get => _deleteItemCommand; }
+        public DelegateCommand<SelectCommandType> DeleteItemCommand { get => _deleteItemCommand; }
 
         private Action<bool, string> _openUserRepoCallback;
         public Action<bool, string> OpenUserRepoCallback
@@ -352,23 +362,31 @@ namespace AviUtlAutoInstaller.ViewModels
                     _installItemEditViewModel.SetModifyItem(UserSelectItem);
                     InstallItemEditViewCallback = OnInstallItemEditView;
                 });
-            _deleteItemCommand = new DelegateCommand(
-                _ =>
+            _deleteItemCommand = new DelegateCommand<SelectCommandType>(
+                (type) =>
                 {
-                    bool isAllfalse = true;
                     List<InstallItem> deleteItemList = new List<InstallItem>();
-                    foreach (InstallItem item in UserInstallList)
+                    if (SelectCommandType.Button == type)
                     {
-                        if (item.IsSelect)
+                        bool isAllfalse = true;
+                        foreach (InstallItem item in UserInstallList)
                         {
-                            isAllfalse = false;
-                            deleteItemList.Add(item);
+                            if (item.IsSelect)
+                            {
+                                isAllfalse = false;
+                                deleteItemList.Add(item);
+                            }
+                        }
+                        if (isAllfalse)
+                        {
+                            return;
                         }
                     }
-                    if (isAllfalse)
+                    else if (SelectCommandType.DataGrid == type)
                     {
-                        return;
+                        deleteItemList.Add(UserSelectItem);
                     }
+                    
                     string buildDisplyItemList = "";
                     foreach (InstallItem deleteItem in deleteItemList)
                     {
@@ -385,6 +403,7 @@ namespace AviUtlAutoInstaller.ViewModels
 
         private void InitializeValue()
         {
+            PreSelectItem = null;
             UserSelectItem = null;
             _tabControlSelectIndex = 0;
             _nameFilter = "";
@@ -548,5 +567,20 @@ namespace AviUtlAutoInstaller.ViewModels
 
             return true;
         }
-   }
+
+        public void UnForcus(object sender, MouseButtonEventArgs e)
+        {
+            if (e.MouseDevice.Captured == null)
+            {
+                if (InstallItemList.RepoType.Pre == _selectTab[TabControlSelectIndex])
+                {
+                    PreSelectItem = null;
+                }
+                else if (InstallItemList.RepoType.User == _selectTab[TabControlSelectIndex])
+                {
+                    UserSelectItem = null;
+                }
+            }
+        }
+    }
 }
