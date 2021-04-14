@@ -412,7 +412,7 @@ namespace AviUtlAutoInstaller.ViewModels
         {
             PreSelectItem = null;
             UserSelectItem = null;
-            _tabControlSelectIndex = 0;
+            TabControlSelectIndex = 0;
             _nameFilter = "";
             _scriptDirNameFilter = "";
             _fileTypeFilterSelectIndex = 0;
