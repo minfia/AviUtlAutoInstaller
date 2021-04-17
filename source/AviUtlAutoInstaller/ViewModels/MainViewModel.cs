@@ -1,4 +1,5 @@
-﻿using AviUtlAutoInstaller.Views;
+﻿using AviUtlAutoInstaller.Models;
+using AviUtlAutoInstaller.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +48,23 @@ namespace AviUtlAutoInstaller.ViewModels
         }
         private void OnOpenDialogUserRepoFileCallback(bool isOk, string filePath)
         {
+            if (isOk)
+            {
+                try
+                {
+                    UserRepoFileRW userRepoFileRead = new UserRepoFileRW();
+
+                    userRepoFileRead.FileRead(filePath);
+                }
+                catch (Exception e)
+                {
+                    // TODO: エラー表示
+                }
+                finally
+                {
+                    OpenDialogUserRepoFileCallback = null;
+                }
+            }
             OpenDialogUserRepoFileCallback = null;
         }
         #endregion
