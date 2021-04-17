@@ -19,6 +19,9 @@
                       WindowStartupLocation="CenterOwner"
                       WindowTransitionsEnabled="False"
                       b:WindowClosingBehavior.Callback="{Binding ClosingCallback}">
+    <Controls:MetroWindow.DataContext>
+        <vm:InstallEditViewModel/>
+    </Controls:MetroWindow.DataContext>
     <Window.Resources>
         <Style x:Key="TabControlMenu" TargetType="TabItem">
             <Setter Property="Template">
