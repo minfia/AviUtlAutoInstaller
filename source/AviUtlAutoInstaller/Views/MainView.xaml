@@ -50,25 +50,13 @@
             </MenuItem>
             <MenuItem Header="インストール項目一覧の編集(_E)..."
                       Background="#FF333337"
-                      Command="{Binding InstallEditCommand}"
-                      b:OpenDialogBehavior.Callback="{Binding InstallEditViewCallback}"
-                      b:OpenDialogBehavior.WindowType="{x:Type vw:InstallEditView}"
-                      b:OpenDialogBehavior.DataContext="{Binding InstallEditViewModel}"
-                      b:OpenDialogBehavior.Modal="True"/>
+                      Command="{Binding InstallEditCommand}"/>
             <MenuItem Header="ヘルプ(_H)"
                       Background="#FF333337">
                 <MenuItem Header="更新を確認(_U)"
-                          Command="{Binding UpdateCheckCommand}"
-                          b:OpenDialogBehavior.Callback="{Binding UpdateCheckViewCallback}"
-                          b:OpenDialogBehavior.WindowType="{x:Type vw:UpdateCheckView}"
-                          b:OpenDialogBehavior.DataContext="{Binding UpdateCheckViewModel}"
-                          b:OpenDialogBehavior.Modal="True"/>
+                          Command="{Binding UpdateCheckCommand}"/>
                 <MenuItem Header="バージョン情報(_A)"
-                          Command="{Binding AboutCommand}"
-                          b:OpenDialogBehavior.Callback="{Binding AboutViewCallback}"
-                          b:OpenDialogBehavior.WindowType="{x:Type vw:AboutView}"
-                          b:OpenDialogBehavior.DataContext="{Binding AboutViewModel}"
-                          b:OpenDialogBehavior.Modal="True"/>
+                          Command="{Binding AboutCommand}"/>
             </MenuItem>
         </Menu>
         <!-- #endregion -->
