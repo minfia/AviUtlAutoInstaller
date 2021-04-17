@@ -35,6 +35,23 @@ namespace AviUtlAutoInstaller.ViewModels
         }
         private void OnOpenDialogInstallSettingFileCallback(bool isOk, string filePath)
         {
+            if (isOk)
+            {
+                try
+                {
+                    InstallProfileRW installProfileRW = new InstallProfileRW();
+
+                    installProfileRW.FileRead(filePath);
+                }
+                catch (Exception e)
+                {
+                    // TODO: エラー表示
+                }
+                finally
+                {
+                    OpenDialogInstallSettingFileCallback = null;
+                }
+            }
             OpenDialogInstallSettingFileCallback = null;
         }
         #endregion
@@ -84,8 +101,10 @@ namespace AviUtlAutoInstaller.ViewModels
         #endregion
 
         private readonly DelegateCommand selectInstallDir;
-        private readonly DelegateCommand installStartCommand;
+        private readonly DelegateCommand _installStartCommand;
         private readonly DelegateCommand installCancelCommand;
+
+        public DelegateCommand InstallStartCommand { get => _installStartCommand; }
 
         public MainViewModel()
         {
@@ -112,6 +131,13 @@ namespace AviUtlAutoInstaller.ViewModels
                     AboutView window = new AboutView();
                     window.Owner = Application.Current.MainWindow;
                     window.ShowDialog();
+                });
+
+            _installStartCommand = new DelegateCommand(
+                _ =>
+                {
+                    InstallProfileRW installProfileRW = new InstallProfileRW();
+                    installProfileRW.FileWrite($".\\InstallationList_{DateTime.Now:yyyyMMdd_HHmmss}.profile");
                 });
         }
     }

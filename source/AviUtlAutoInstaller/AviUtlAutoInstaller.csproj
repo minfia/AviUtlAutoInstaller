@@ -65,6 +65,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\Downloader.cs" />
+    <Compile Include="Models\InstallProfileRW.cs" />
     <Compile Include="Models\PreRepoFileR.cs" />
     <Compile Include="Models\InstallItem.cs" />
     <Compile Include="Models\InstallItemList.cs" />
