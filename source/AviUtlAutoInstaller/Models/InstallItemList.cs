@@ -127,6 +127,24 @@ namespace AviUtlAutoInstaller.Models
         }
 
         /// <summary>
+        /// インストールの有無をセットする
+        /// </summary>
+        /// <param name="repoType">リポジトリの選択</param>
+        /// <param name="name">セットする項目名</param>
+        /// <param name="b">true(有効) or false(無効)</param>
+        public static void SetIsSelect(RepoType repoType, string name, bool b)
+        {
+            foreach (InstallItem item in _installItemList[(int)repoType])
+            {
+                if (item.Name == name)
+                {
+                    item.IsSelect = b;
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
         /// インストールアイテムの項目番号を採番
         /// </summary>
         /// <param name="repoType">リポジトリの選択</param>

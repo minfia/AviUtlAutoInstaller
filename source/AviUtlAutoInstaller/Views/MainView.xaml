@@ -31,7 +31,7 @@
                               Command="{Binding OpenDialogInstallSettingFileCommand}"
                               b:FileDialogBehavior.Callback="{Binding OpenDialogInstallSettingFileCallback}"
                               b:FileDialogBehavior.Title="インストール設定ファイルを開く"
-                              b:FileDialogBehavior.Filter="設定ファイル (*.list)|*.list|すべてのファイル (*.*)|*.*"
+                              b:FileDialogBehavior.Filter="設定ファイル (*.profile)|*.profile|すべてのファイル (*.*)|*.*"
                               b:FileDialogBehavior.Multiselect="False"
                               b:FileDialogBehavior.OpenSave="Open"/>
                     <MenuItem Header="ユーザーリポジトリファイル(_U)..."
