@@ -89,7 +89,10 @@
                     BorderThickness="0.8"
                     Height="26" Width="48"
                     Content="..."
-                    Command="{Binding SelectInstallDir}"/>
+                    Command="{Binding SelectInstallDir}"
+                    b:FileDialogBehavior.Callback="{Binding FolderDialogSelectInstallDirCallback}"
+                    b:FileDialogBehavior.Title="インストール先を選択してください"
+                    b:FileDialogBehavior.OpenSave="Folder"/>
             <!-- #endregion -->
 
             <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">

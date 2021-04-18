@@ -2,6 +2,7 @@
 using AviUtlAutoInstaller.Views;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -100,14 +101,57 @@ namespace AviUtlAutoInstaller.ViewModels
 
         #endregion
 
-        private readonly DelegateCommand selectInstallDir;
+        #region ファイルダイアログ(インストール先の選択)の設定
+        private Action<bool, string> _folderDialogSelectInstallDirCallback;
+        public Action<bool, string> FolderDialogSelectInstallDirCallback
+        {
+            get { return _folderDialogSelectInstallDirCallback; }
+            private set { SetProperty(ref _folderDialogSelectInstallDirCallback, value); }
+        }
+        private void OnFolderDialogSelectInstallDirCallback(bool isOk, string installPath)
+        {
+            if (isOk)
+            {
+                if (!FileOperation.IsWritableOfDirectory(installPath))
+                {
+                    MessageBox.Show("書き込み権限がありません", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                    FolderDialogSelectInstallDirCallback = null;
+                    return;
+                }
+
+                SysConfig.InstallRootPath = File.Exists($"{installPath}\\aviutl.exe") ? $"{installPath}" : $"{installPath}\\AviUtl";
+                InstallDirPath = SysConfig.InstallRootPath;
+                Console.WriteLine($"{SysConfig.InstallExpansionDir}\n{SysConfig.InstallFileBackupDir}\n{SysConfig.AviUtlPluginDir}\n{SysConfig.AviUtlScriptDir}\n{SysConfig.AviUtlFigureDir}");
+            }
+            FolderDialogSelectInstallDirCallback = null;
+        }
+        #endregion
+
+        private readonly DelegateCommand _selectInstallDir;
         private readonly DelegateCommand _installStartCommand;
         private readonly DelegateCommand installCancelCommand;
 
+        public DelegateCommand SelectInstallDir { get => _selectInstallDir; }
         public DelegateCommand InstallStartCommand { get => _installStartCommand; }
+
+        private string _installDirPath;
+        public string InstallDirPath
+        {
+            get { return _installDirPath; }
+            private set { SetProperty(ref _installDirPath, value); }
+        }
+
+        private bool _isCopyBackupFiles = false;
+        public bool IsCopyBackupFiles
+        {
+            get { return _isCopyBackupFiles; }
+            set { SetProperty(ref _isCopyBackupFiles, value); }
+        }
 
         public MainViewModel()
         {
+            InstallDirPath = SysConfig.InstallRootPath;
+            SysConfig.InstallRootPath = InstallDirPath;
             _openDialogInstallSettingFileCommand = new DelegateCommand(_ => OpenDialogInstallSettingFileCallback = OnOpenDialogInstallSettingFileCallback);
             _openDialogUserRepoFileCommand = new DelegateCommand(_ => OpenDialogUserRepoFileCallback = OnOpenDialogUserRepoFileCallback);
             _exitCommand = new DelegateCommand(_ => OnExit());
@@ -133,12 +177,38 @@ namespace AviUtlAutoInstaller.ViewModels
                     window.ShowDialog();
                 });
 
+            _selectInstallDir = new DelegateCommand(_ => FolderDialogSelectInstallDirCallback = OnFolderDialogSelectInstallDirCallback);
             _installStartCommand = new DelegateCommand(
                 _ =>
                 {
-                    InstallProfileRW installProfileRW = new InstallProfileRW();
-                    installProfileRW.FileWrite($".\\InstallationList_{DateTime.Now:yyyyMMdd_HHmmss}.profile");
+                    Install();
                 });
+        }
+
+
+        public bool Install()
+        {
+            SetupDirectory();
+
+            InstallProfileRW installProfileRW = new InstallProfileRW();
+            installProfileRW.FileWrite($"{SysConfig.InstallRootPath}\\InstallationList_{DateTime.Now:yyyyMMdd_HHmmss}.profile");
+            return true;
+        }
+
+        public void SetupDirectory()
+        {
+            if (!File.Exists($"{InstallDirPath}\\aviutl.exe"))
+            {
+                Directory.CreateDirectory(SysConfig.InstallRootPath);
+                Directory.CreateDirectory(SysConfig.AviUtlPluginDir);
+                Directory.CreateDirectory(SysConfig.AviUtlFigureDir);
+                Directory.CreateDirectory(SysConfig.AviUtlScriptDir);
+            }
+            if (IsCopyBackupFiles)
+            {
+                Directory.CreateDirectory(SysConfig.InstallFileBackupDir);
+            }
+            Directory.CreateDirectory(SysConfig.InstallExpansionDir);
         }
     }
 }
