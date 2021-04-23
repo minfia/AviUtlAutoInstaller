@@ -165,7 +165,7 @@ namespace AviUtlAutoInstaller.Models
 
         private string _installFile = string.Empty;
         /// <summary>
-        /// 追加ファイル
+        /// インストールファイル
         /// </summary>
         public string InstallFile
         {
@@ -173,18 +173,66 @@ namespace AviUtlAutoInstaller.Models
             set
             {
                 SetProperty(ref _installFile, value);
-                ConvertAppendFileList(',');
+                ConvertFileList(InstallFile, ref _installFileList, ',');
             }
         }
 
         private List<string> _installFileList = new List<string>();
         /// <summary>
-        /// 追加ファイルのリスト
+        /// インストールファイルのリスト
         /// </summary>
         public List<string> InstallFileList
         {
             get { return _installFileList; }
             private set { SetProperty(ref _installFileList, value); }
+        }
+
+        private string _externalFile;
+        /// <summary>
+        /// VisualStdio再頒布パッケージ等の外部ファイル
+        /// </summary>
+        public string ExternalFile
+        {
+            get { return _externalFile; }
+            set
+            {
+                SetProperty(ref _externalFile, value);
+                ConvertFileList(ExternalFile, ref _externalFileList, ',');
+            }
+        }
+
+        private List<string> _externalFileList = new List<string>();
+        /// <summary>
+        /// VisualStdio再頒布パッケージ等の外部ファイルのリスト
+        /// </summary>
+        public List<string> ExternalFileList
+        {
+            get { return _externalFileList; }
+            private set { SetProperty(ref _externalFileList, value); }
+        }
+
+        private string _externalFileURL;
+        /// <summary>
+        /// VisualStdio再頒布パッケージ等の外部ファイルのURL
+        /// </summary>
+        public string ExternalFileURL
+        {
+            get { return _externalFileURL; }
+            set
+            {
+                SetProperty(ref _externalFileURL, value);
+                ConvertFileList(ExternalFileURL, ref _externalFileURLList, ',');
+            }
+        }
+
+        private List<string> _externalFileURLList = new List<string>();
+        /// <summary>
+        /// VisualStdio再頒布パッケージ等の外部ファイルのURLリスト
+        /// </summary>
+        public List<string> ExternalFileURLList
+        {
+            get { return _externalFileURLList; }
+            private set { SetProperty(ref _externalFileURLList, value); }
         }
 
         private string _nicoVideoID = string.Empty;
@@ -237,21 +285,21 @@ namespace AviUtlAutoInstaller.Models
         }
 
         /// <summary>
-        /// AppendFileからAppendFileListへ変換
+        /// FileからFileListへ変換
         /// </summary>
         /// <param name="splitChar">分割文字</param>
         /// <returns></returns>
-        private void ConvertAppendFileList(char splitChar)
+        private void ConvertFileList(string Item, ref List<string> itemList, char splitChar)
         {
             if (char.IsWhiteSpace(splitChar))
             {
                 return;
             }
-            _installFileList.Clear();
-            string[] array = InstallFile.Split(splitChar);
+            itemList.Clear();
+            string[] array = Item.Split(splitChar);
             foreach (string s in array)
             {
-                InstallFileList.Add(s.Trim());
+                itemList.Add(s.Trim());
             }
         }
 
