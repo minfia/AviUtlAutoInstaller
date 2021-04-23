@@ -163,28 +163,28 @@ namespace AviUtlAutoInstaller.Models
             set { SetProperty(ref _scriptDirName, value); }
         }
 
-        private string _appendFile = string.Empty;
+        private string _installFile = string.Empty;
         /// <summary>
         /// 追加ファイル
         /// </summary>
-        public string AppendFile
+        public string InstallFile
         {
-            get { return _appendFile; }
+            get { return _installFile; }
             set
             {
-                SetProperty(ref _appendFile, value);
+                SetProperty(ref _installFile, value);
                 ConvertAppendFileList(',');
             }
         }
 
-        private List<string> _appendFileList = new List<string>();
+        private List<string> _installFileList = new List<string>();
         /// <summary>
         /// 追加ファイルのリスト
         /// </summary>
-        public List<string> AppendFileList
+        public List<string> InstallFileList
         {
-            get { return _appendFileList; }
-            private set { SetProperty(ref _appendFileList, value); }
+            get { return _installFileList; }
+            private set { SetProperty(ref _installFileList, value); }
         }
 
         private string _nicoVideoID = string.Empty;
@@ -247,11 +247,11 @@ namespace AviUtlAutoInstaller.Models
             {
                 return;
             }
-            _appendFileList.Clear();
-            string[] array = AppendFile.Split(splitChar);
+            _installFileList.Clear();
+            string[] array = InstallFile.Split(splitChar);
             foreach (string s in array)
             {
-                AppendFileList.Add(s.Trim());
+                InstallFileList.Add(s.Trim());
             }
         }
 

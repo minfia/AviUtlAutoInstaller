@@ -52,7 +52,7 @@ namespace AviUtlAutoInstaller.Models
             { RWKeyType.FileType, "filetype" },
             { RWKeyType.Version, "version" },
             { RWKeyType.ScriptDirName, "scriptdirname" },
-            { RWKeyType.AppendFile, "appendfile" },
+            { RWKeyType.AppendFile, "installfile" },
             { RWKeyType.NicoVideoID, "nicovideoid" },
         };
 
@@ -135,7 +135,7 @@ namespace AviUtlAutoInstaller.Models
                 tomlItem.Add(_rwKeyTypeDic[RWKeyType.FileType], (int)item.FileType);
                 tomlItem.Add(_rwKeyTypeDic[RWKeyType.Version], item.Version);
                 tomlItem.Add(_rwKeyTypeDic[RWKeyType.ScriptDirName], item.ScriptDirName);
-                tomlItem.Add(_rwKeyTypeDic[RWKeyType.AppendFile], item.AppendFile);
+                tomlItem.Add(_rwKeyTypeDic[RWKeyType.AppendFile], item.InstallFile);
                 tomlItem.Add(_rwKeyTypeDic[RWKeyType.NicoVideoID], item.NicoVideoID);
 
                 table.Add(tomlItem);
@@ -162,7 +162,7 @@ namespace AviUtlAutoInstaller.Models
                     FileType = (InstallFileType)array[i].Get<int>(_rwKeyTypeDic[RWKeyType.FileType]),
                     Version = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.Version]),
                     ScriptDirName = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.ScriptDirName]),
-                    AppendFile = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.AppendFile]),
+                    InstallFile = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.AppendFile]),
                     NicoVideoID = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.NicoVideoID])
                 };
 

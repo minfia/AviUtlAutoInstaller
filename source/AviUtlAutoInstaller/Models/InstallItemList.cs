@@ -75,7 +75,7 @@ namespace AviUtlAutoInstaller.Models
             _installItemList[(int)repoType][index].FileType = modifyItem.FileType;
             _installItemList[(int)repoType][index].Version = modifyItem.Version;
             _installItemList[(int)repoType][index].ScriptDirName = modifyItem.ScriptDirName;
-            _installItemList[(int)repoType][index].AppendFile = modifyItem.AppendFile;
+            _installItemList[(int)repoType][index].InstallFile = modifyItem.InstallFile;
             _installItemList[(int)repoType][index].NicoVideoID = modifyItem.NicoVideoID;
         }
 
