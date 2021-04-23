@@ -338,7 +338,7 @@ namespace AviUtlAutoInstaller.ViewModels
             FileTypeSelectItem = FileTypeDic.First(x => x.Value == FileTypeDic[item.FileType]);
             Version = item.Version;
             ScriptDirName = item.ScriptDirName;
-            AppendFile = item.AppendFile;
+            AppendFile = item.InstallFile;
             NicoVideoID = item.NicoVideoID;
         }
 
@@ -356,7 +356,7 @@ namespace AviUtlAutoInstaller.ViewModels
                                                    new InstallItem { Name = _name, URL = _url,
                                                                      FileName = _fileName, FileType = type,
                                                                      Version = _version,
-                                                                     ScriptDirName = _scriptDirName, AppendFile = _appendFile,
+                                                                     ScriptDirName = _scriptDirName, InstallFile = _appendFile,
                                                                      NicoVideoID = _nicoVideoID });
                     break;
                 case EditShowType.Modify:
@@ -364,7 +364,7 @@ namespace AviUtlAutoInstaller.ViewModels
                                                       new InstallItem { Name = _name, URL = _url,
                                                                         FileName = _fileName, FileType = type,
                                                                         Version = _version,
-                                                                        ScriptDirName = _scriptDirName, AppendFile = _appendFile,
+                                                                        ScriptDirName = _scriptDirName, InstallFile = _appendFile,
                                                                         NicoVideoID = _nicoVideoID });
                     break;
             }

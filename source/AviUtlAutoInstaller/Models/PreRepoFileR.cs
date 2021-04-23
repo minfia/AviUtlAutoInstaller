@@ -88,7 +88,7 @@ namespace AviUtlAutoInstaller.Models
                                 FileType = (InstallFileType)uint.Parse(reader["file_type"].ToString()),
                                 Version = reader["version"].ToString(),
                                 ScriptDirName = reader["script_dir_name"].ToString(),
-                                AppendFile = reader["append_file"].ToString(),
+                                InstallFile = reader["install_file"].ToString(),
                                 NicoVideoID = reader["nico_video_id"].ToString()
                             };
                             item.IsSelect = (InstallFileType.Main == item.FileType) ? true : false;
