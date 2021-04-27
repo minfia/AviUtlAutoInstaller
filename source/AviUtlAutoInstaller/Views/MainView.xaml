@@ -14,7 +14,8 @@
                       TitleCharacterCasing="Normal"
                       Title="AviUtlAutoInstaller"
                       ResizeMode="NoResize"
-                      Height="300" Width="512"
+                      SizeToContent="Height"
+                      Height="Auto" Width="512"
                       WindowStartupLocation="CenterScreen"
                       WindowTransitionsEnabled="False"
                       b:WindowClosingBehavior.Callback="{Binding ClosingCallback}">
@@ -103,7 +104,7 @@
                                        IsOn="{Binding IsCopyBackupFiles, Mode=OneWay}"/>
 
                 <!-- #region Progress -->
-                <StackPanel Visibility="{Binding ProgressVisiblity, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Visibility="{Binding ProgressVisiblity, UpdateSourceTrigger=PropertyChanged}">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Controls:ProgressRing Foreground="DeepSkyBlue"
@@ -112,9 +113,9 @@
                             <TextBlock Padding="4,0,0,0">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0} ({1}/{2})">
-                                        <Binding Path="StateName"/>
-                                        <Binding Path="StateItemNow"/>
-                                        <Binding Path="StateItemMax"/>
+                                        <Binding Path="StateName" UpdateSourceTrigger="PropertyChanged"/>
+                                        <Binding Path="StateItemNow" UpdateSourceTrigger="PropertyChanged"/>
+                                        <Binding Path="StateItemMax" UpdateSourceTrigger="PropertyChanged"/>
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
@@ -124,17 +125,17 @@
                                                    Padding="0,4,0,0"
                                                    Height="12"
                                                    Minimum="0"
-                                                   Maximum="{Binding ItemProgressMax}"
-                                                   Value="{Binding ItemProgressValue}"/>
+                                                   Maximum="{Binding StateItemMax, Mode=OneWay}"
+                                                   Value="{Binding StateItemNow, Mode=OneWay}"/>
                     </StackPanel>
-                    <StackPanel>
+                    <StackPanel Visibility="{Binding DownloadVisiblity, UpdateSourceTrigger=PropertyChanged}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Padding="4,8,0,0">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0} ({1}/{2})">
-                                        <Binding Path="DownloadFileName"/>
-                                        <Binding Path="DownloadSizeNow"/>
-                                        <Binding Path="DownloadSizeMax"/>
+                                        <Binding Path="DownloadFileName" UpdateSourceTrigger="PropertyChanged"/>
+                                        <Binding Path="DownloadSizeNow" UpdateSourceTrigger="PropertyChanged"/>
+                                        <Binding Path="DownloadSizeMax" UpdateSourceTrigger="PropertyChanged"/>
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
@@ -144,8 +145,8 @@
                                                    Padding="0,4,0,0"
                                                    Height="12"
                                                    Minimum="0"
-                                                   Maximum="{Binding DownloadProgressMax}"
-                                                   Value="{Binding DownloadProgressValue}"/>
+                                                   Maximum="{Binding DownloadSizeMax, Mode=OneWay}"
+                                                   Value="{Binding DownloadSizeNow, Mode=OneWay}"/>
                     </StackPanel>
                 </StackPanel>
                 <!--#endregion -->
