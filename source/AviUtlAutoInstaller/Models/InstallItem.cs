@@ -297,6 +297,10 @@ namespace AviUtlAutoInstaller.Models
             }
             itemList.Clear();
             string[] array = Item.Split(splitChar);
+            if (string.IsNullOrWhiteSpace(array[0]))
+            {
+                return;
+            }
             foreach (string s in array)
             {
                 itemList.Add(s.Trim());
