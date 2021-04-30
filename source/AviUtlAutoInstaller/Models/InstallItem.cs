@@ -113,14 +113,14 @@ namespace AviUtlAutoInstaller.Models
             }
         }
 
-        private string _fileName = string.Empty;
+        private string _downloadFileName = string.Empty;
         /// <summary>
         /// ダウンロードのするファイル名
         /// </summary>
-        public string FileName
+        public string DownloadFileName
         {
-            get { return _fileName; }
-            set { SetProperty(ref _fileName, value); }
+            get { return _downloadFileName; }
+            set { SetProperty(ref _downloadFileName, value); }
         }
 
         private InstallFileType _fileType = InstallFileType.Script;

@@ -44,11 +44,11 @@
             </StackPanel>
             <StackPanel Orientation="Vertical"
                         Margin="0,0,0,8">
-                <TextBlock Text="{Binding FileNameError, UpdateSourceTrigger=PropertyChanged}"
+                <TextBlock Text="{Binding DownloadFileNameError, UpdateSourceTrigger=PropertyChanged}"
                            Foreground="#FFFF375F"
                            FontSize="10"/>
                 <TextBlock Text="ダウンロードするファイル名"/>
-                <TextBox Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Text="{Binding DownloadFileName, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
             <StackPanel Orientation="Vertical"
                         Margin="0,0,0,8">

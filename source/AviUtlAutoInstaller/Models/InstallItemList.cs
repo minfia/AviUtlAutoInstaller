@@ -71,7 +71,7 @@ namespace AviUtlAutoInstaller.Models
             int index = _installItemList[(int)repoType].IndexOf(targetItem);
             _installItemList[(int)repoType][index].Name = modifyItem.Name;
             _installItemList[(int)repoType][index].URL = modifyItem.URL;
-            _installItemList[(int)repoType][index].FileName = modifyItem.FileName;
+            _installItemList[(int)repoType][index].DownloadFileName = modifyItem.DownloadFileName;
             _installItemList[(int)repoType][index].FileType = modifyItem.FileType;
             _installItemList[(int)repoType][index].Version = modifyItem.Version;
             _installItemList[(int)repoType][index].ScriptDirName = modifyItem.ScriptDirName;
@@ -123,7 +123,7 @@ namespace AviUtlAutoInstaller.Models
         /// <returns></returns>
         public static bool CheckDuplicateFileName(RepoType repoType, string fileName)
         {
-            return _installItemList[(int)repoType].Any(x => x.FileName == fileName);
+            return _installItemList[(int)repoType].Any(x => x.DownloadFileName == fileName);
         }
 
         /// <summary>

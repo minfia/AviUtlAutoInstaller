@@ -76,16 +76,16 @@ namespace AviUtlAutoInstaller.ViewModels
             }
         }
 
-        private string _fileName;
+        private string _downloadFileName;
         /// <summary>
         /// ダウンロードするファイル名
         /// </summary>
-        public string FileName
+        public string DownloadFileName
         {
-            get { return _fileName; }
+            get { return _downloadFileName; }
             set
             {
-                if (SetProperty(ref _fileName, value))
+                if (SetProperty(ref _downloadFileName, value))
                 {
                     AcceptCommand.RaiseCanExetuteChanged();
                 }
@@ -201,14 +201,14 @@ namespace AviUtlAutoInstaller.ViewModels
             set { SetProperty(ref _urlError, value); }
         }
 
-        private string _fileNameError;
+        private string _downloadFileNameError;
         /// <summary>
         /// ダウンロードファイル名エラー表示
         /// </summary>
-        public string FileNameError
+        public string DownloadFileNameError
         {
-            get { return _fileNameError; }
-            set { SetProperty(ref _fileNameError, value); }
+            get { return _downloadFileNameError; }
+            set { SetProperty(ref _downloadFileNameError, value); }
         }
 
         private string _versionError;
@@ -315,7 +315,7 @@ namespace AviUtlAutoInstaller.ViewModels
         {
             Name = "";
             URL = "";
-            FileName = "";
+            DownloadFileName = "";
             FileTypeSelectItem = FileTypeDic.First();
             FileType = FileTypeDic.First(x => x.Value == FileTypeDic[FileTypeSelectItem.Key]).Key;
             Version = "";
@@ -334,7 +334,7 @@ namespace AviUtlAutoInstaller.ViewModels
             _installItem = item;
             Name = item.Name;
             URL = item.URL;
-            FileName = item.FileName;
+            DownloadFileName = item.DownloadFileName;
             FileTypeSelectItem = FileTypeDic.First(x => x.Value == FileTypeDic[item.FileType]);
             Version = item.Version;
             ScriptDirName = item.ScriptDirName;
@@ -354,7 +354,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 case EditShowType.Add:
                     InstallItemList.AddInstallItem(InstallItemList.RepoType.User,
                                                    new InstallItem { Name = _name, URL = _url,
-                                                                     FileName = _fileName, FileType = type,
+                                                                     DownloadFileName = _downloadFileName, FileType = type,
                                                                      Version = _version,
                                                                      ScriptDirName = _scriptDirName, InstallFile = _appendFile,
                                                                      NicoVideoID = _nicoVideoID });
@@ -362,7 +362,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 case EditShowType.Modify:
                     InstallItemList.ModifyInstallItem(InstallItemList.RepoType.User, _installItem,
                                                       new InstallItem { Name = _name, URL = _url,
-                                                                        FileName = _fileName, FileType = type,
+                                                                        DownloadFileName = _downloadFileName, FileType = type,
                                                                         Version = _version,
                                                                         ScriptDirName = _scriptDirName, InstallFile = _appendFile,
                                                                         NicoVideoID = _nicoVideoID });
@@ -407,7 +407,7 @@ namespace AviUtlAutoInstaller.ViewModels
             CheckNicoVideoIDData();
 
             if (!string.IsNullOrEmpty(NameError) || !string.IsNullOrEmpty(URLError) ||
-                !string.IsNullOrEmpty(FileNameError) || !string.IsNullOrEmpty(ScriptDirNameError) ||
+                !string.IsNullOrEmpty(DownloadFileNameError) || !string.IsNullOrEmpty(ScriptDirNameError) ||
                 !string.IsNullOrEmpty(VersionError) || !string.IsNullOrEmpty(AppendFileError) ||
                 !string.IsNullOrEmpty(NicoVideoIDError))
             {
@@ -465,26 +465,26 @@ namespace AviUtlAutoInstaller.ViewModels
         /// </summary>
         private void CheckFileNameData()
         {
-            FileNameError = "";
-            if (CheckStartAndEndWhiteSpace(FileName))
+            DownloadFileNameError = "";
+            if (CheckStartAndEndWhiteSpace(DownloadFileName))
             {
-                FileNameError = "ファイル名を入力してください";
+                DownloadFileNameError = "ファイル名を入力してください";
             }
-            else if (CheckDuplicate(DuplicateType.FileName, FileName))
+            else if (CheckDuplicate(DuplicateType.FileName, DownloadFileName))
             {
-                FileNameError = "同じファイル名は登録できません";
+                DownloadFileNameError = "同じファイル名は登録できません";
             }
-            else if (CheckInvalidChar(FileName))
+            else if (CheckInvalidChar(DownloadFileName))
             {
-                FileNameError = "\\ / : * ? \" < > | は使用できません";
+                DownloadFileNameError = "\\ / : * ? \" < > | は使用できません";
             }
-            else if (CheckFileNameAndExtension(FileName))
+            else if (CheckFileNameAndExtension(DownloadFileName))
             {
-                FileNameError = "無効なファイル名です";
+                DownloadFileNameError = "無効なファイル名です";
             }
-            else if (CheckStartAndEndWhiteSpace(FileName))
+            else if (CheckStartAndEndWhiteSpace(DownloadFileName))
             {
-                FileNameError = "前後に空白は使用できません";
+                DownloadFileNameError = "前後に空白は使用できません";
             }
         }
 
@@ -633,7 +633,7 @@ namespace AviUtlAutoInstaller.ViewModels
                     break;
                 case DuplicateType.FileName:
                     if (((EditShowType.Add == EditType) && InstallItemList.CheckDuplicateFileName(InstallItemList.RepoType.User, str)) ||
-                        ((EditShowType.Modify == EditType) && (_installItem.FileName != str) && InstallItemList.CheckDuplicateFileName(InstallItemList.RepoType.User, str)))
+                        ((EditShowType.Modify == EditType) && (_installItem.DownloadFileName != str) && InstallItemList.CheckDuplicateFileName(InstallItemList.RepoType.User, str)))
                     {
                         return true;
                     }

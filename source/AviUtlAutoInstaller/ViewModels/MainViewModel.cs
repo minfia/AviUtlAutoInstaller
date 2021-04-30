@@ -366,7 +366,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 List<string> itemFileNames= new List<string>();
                 itemUrls.Add(item.URL);
                 itemUrls.AddRange(item.ExternalFileURLList);
-                itemFileNames.Add(item.FileName);
+                itemFileNames.Add(item.DownloadFileName);
                 itemFileNames.AddRange(item.ExternalFileList);
 
                 Func<string, string, DownloadResult> func = new Func<string, string, DownloadResult>(downloader.DownloadStart);
@@ -418,9 +418,9 @@ namespace AviUtlAutoInstaller.ViewModels
 
             foreach (InstallItem item in installItems)
             {
-                if (item.IsSelect && !cacheFileList.Any(x => Path.GetFileName(x) == item.FileName))
+                if (item.IsSelect && !cacheFileList.Any(x => Path.GetFileName(x) == item.DownloadFileName))
                 {
-                    faileVerifyList.Add(item.FileName);
+                    faileVerifyList.Add(item.DownloadFileName);
                 }
             }
 

@@ -490,7 +490,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 InstallItem headItem = downloadQueue.Peek();
 
                 Func<string, string, DownloadResult> func = new Func<string, string, DownloadResult>(downloader.DownloadStart);
-                var task = Task.Run(() => func(headItem.URL, headItem.FileName));
+                var task = Task.Run(() => func(headItem.URL, headItem.DownloadFileName));
                 StatusBarText = $"{headItem.Name}をダウンロード中...";
 
                 Task updateTask = Task.Run(async () =>

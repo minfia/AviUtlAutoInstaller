@@ -129,7 +129,7 @@ namespace AviUtlAutoInstaller.Models
                     var tomlItem = Toml.Create();
 
                     tomlItem.Add(_rwKeyTypeDic[RWKeyType.Name], item.Name);
-                    tomlItem.Add(_rwKeyTypeDic[RWKeyType.FileName], item.FileName);
+                    tomlItem.Add(_rwKeyTypeDic[RWKeyType.FileName], item.DownloadFileName);
                     tomlItem.Add(_rwKeyTypeDic[RWKeyType.Version], item.Version);
                     tomlItem.Add(_rwKeyTypeDic[RWKeyType.RefType], (int)i);
 

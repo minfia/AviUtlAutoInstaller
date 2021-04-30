@@ -25,7 +25,7 @@ namespace AviUtlAutoInstaller.Models
         {
             Name,
             URL,
-            FileName,
+            DownloadFileName,
             FileType,
             Version,
             ScriptDirName,
@@ -48,7 +48,7 @@ namespace AviUtlAutoInstaller.Models
         {
             { RWKeyType.Name, "name" },
             { RWKeyType.URL, "url" },
-            { RWKeyType.FileName, "filename" },
+            { RWKeyType.DownloadFileName, "downloadfilename" },
             { RWKeyType.FileType, "filetype" },
             { RWKeyType.Version, "version" },
             { RWKeyType.ScriptDirName, "scriptdirname" },
@@ -131,7 +131,7 @@ namespace AviUtlAutoInstaller.Models
 
                 tomlItem.Add(_rwKeyTypeDic[RWKeyType.Name], item.Name);
                 tomlItem.Add(_rwKeyTypeDic[RWKeyType.URL], item.URL);
-                tomlItem.Add(_rwKeyTypeDic[RWKeyType.FileName], item.FileName);
+                tomlItem.Add(_rwKeyTypeDic[RWKeyType.DownloadFileName], item.DownloadFileName);
                 tomlItem.Add(_rwKeyTypeDic[RWKeyType.FileType], (int)item.FileType);
                 tomlItem.Add(_rwKeyTypeDic[RWKeyType.Version], item.Version);
                 tomlItem.Add(_rwKeyTypeDic[RWKeyType.ScriptDirName], item.ScriptDirName);
@@ -158,7 +158,7 @@ namespace AviUtlAutoInstaller.Models
                 {
                     Name = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.Name]),
                     URL = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.URL]),
-                    FileName = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.FileName]),
+                    DownloadFileName = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.DownloadFileName]),
                     FileType = (InstallFileType)array[i].Get<int>(_rwKeyTypeDic[RWKeyType.FileType]),
                     Version = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.Version]),
                     ScriptDirName = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.ScriptDirName]),
@@ -168,7 +168,7 @@ namespace AviUtlAutoInstaller.Models
 
                 if (!InstallItemList.CheckDuplicateName(InstallItemList.RepoType.User, item.Name) ||
                     !InstallItemList.CheckDuplicateURL(InstallItemList.RepoType.User, item.URL) ||
-                    !InstallItemList.CheckDuplicateFileName(InstallItemList.RepoType.User, item.FileName))
+                    !InstallItemList.CheckDuplicateFileName(InstallItemList.RepoType.User, item.DownloadFileName))
                 {
                     InstallItemList.AddInstallItem(InstallItemList.RepoType.User, item);
                 }
