@@ -176,7 +176,7 @@
                             <DataGridTextColumn Header="ファイル名"
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                 Width="140*"
-                                                Binding="{Binding FileName}"/>
+                                                Binding="{Binding DownloadFileName}"/>
                             <DataGridTextColumn Header="バージョン"
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                 Width="80"
@@ -277,7 +277,7 @@
                                 <DataGridTextColumn Header="ファイル名"
                                                     HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                     Width="120"
-                                                    Binding="{Binding FileName}"/>
+                                                    Binding="{Binding DownloadFileName}"/>
                                 <DataGridTextColumn Header="ファイルタイプ"
                                                     HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                     Width="88"

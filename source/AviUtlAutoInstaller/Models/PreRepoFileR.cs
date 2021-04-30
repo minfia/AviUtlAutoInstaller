@@ -84,7 +84,7 @@ namespace AviUtlAutoInstaller.Models
                                 Name = reader["name"].ToString(),
                                 CommandName = reader["command_name"].ToString(),
                                 URL = reader["url"].ToString(),
-                                FileName = reader["file_name"].ToString(),
+                                DownloadFileName = reader["download_file_name"].ToString(),
                                 FileType = (InstallFileType)uint.Parse(reader["file_type"].ToString()),
                                 Version = reader["version"].ToString(),
                                 ScriptDirName = reader["script_dir_name"].ToString(),
