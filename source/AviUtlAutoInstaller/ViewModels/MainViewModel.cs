@@ -252,10 +252,9 @@ namespace AviUtlAutoInstaller.ViewModels
         private async Task<bool> InstallAsync()
         {
             SetupDirectory();
-            var installList = MakeInstallList();
-            await FileDownloadAsync(installList);
-            var verifyResultList = VerifyInstallFile(installList);
-            if (verifyResultList.Count != 0)
+
+            List<string> failedList = await Downloads();
+            if (0 < failedList.Count)
             {
                 Console.WriteLine("missing download file.");
             }
@@ -263,28 +262,6 @@ namespace AviUtlAutoInstaller.ViewModels
             InstallProfileRW installProfileRW = new InstallProfileRW();
             installProfileRW.FileWrite($"{SysConfig.InstallRootPath}\\InstallationList_{DateTime.Now:yyyyMMdd_HHmmss}.profile");
             return true;
-        }
-
-        /// <summary>
-        /// インストール一覧を作成
-        /// </summary>
-        /// <returns>インストール一覧</returns>
-        private List<InstallItem> MakeInstallList()
-        {
-            List<InstallItem> installItems = new List<InstallItem>();
-            InstallItemList installItemList = new InstallItemList();
-            for (var i = InstallItemList.RepoType.Pre; i < InstallItemList.RepoType.MAX; i++)
-            {
-                foreach (InstallItem item in installItemList.GetInstalItemList(i))
-                {
-                    if (item.IsSelect)
-                    {
-                        installItems.Add(item);
-                    }
-                }
-            }
-
-            return installItems;
         }
 
         /// <summary>
@@ -347,6 +324,32 @@ namespace AviUtlAutoInstaller.ViewModels
         }
 
         /// <summary>
+        /// ダウンロード処理関係
+        /// </summary>
+        /// <returns></returns>
+        private async Task<List<string>> Downloads()
+        {
+            List<InstallItem> installItems = new List<InstallItem>();
+
+            {
+                InstallItemList installItemList = new InstallItemList();
+
+                for (var i = InstallItemList.RepoType.Pre; i < InstallItemList.RepoType.MAX; i++)
+                {
+                    foreach (InstallItem item in installItemList.GetInstalItemList(i))
+                    {
+                        if (item.IsSelect) { installItems.Add(item); }
+                    }
+                }
+            }
+
+            await FileDownloadAsync(installItems);
+
+            var verifyResultList = VerifyInstallFile(installItems);
+            return verifyResultList;
+        }
+
+        /// <summary>
         /// インストールするファイルをダウンロード
         /// </summary>
         /// <param name="installItems">インストール一覧</param>
@@ -359,9 +362,11 @@ namespace AviUtlAutoInstaller.ViewModels
             StateItemMax = installItems.Count;
             StateItemNow = 0;
             Downloader downloader = new Downloader($"{SysConfig.CacheDirPath}");
+            List<bool> downloadComp = new List<bool>();
 
             foreach (InstallItem item in installItems)
             {
+                item.IsDownloadCompleted = false;
                 List<string> itemUrls = new List<string>();
                 List<string> itemFileNames= new List<string>();
                 itemUrls.Add(item.URL);
@@ -394,7 +399,19 @@ namespace AviUtlAutoInstaller.ViewModels
 
                     var res = await task;
                     Console.WriteLine($"download result: {res}");
+                    downloadComp.Add((DownloadResult.Complete == res) ? true : false);
                 }
+
+                foreach (bool b in downloadComp)
+                {
+                    if (!b)
+                    {
+                        item.IsDownloadCompleted = false;
+                        break;
+                    }
+                    item.IsDownloadCompleted = true;
+                }
+                downloadComp.Clear();
                 StateItemNow++;
             }
             DownloadFileName = "";
@@ -418,7 +435,7 @@ namespace AviUtlAutoInstaller.ViewModels
 
             foreach (InstallItem item in installItems)
             {
-                if (item.IsSelect && !cacheFileList.Any(x => Path.GetFileName(x) == item.DownloadFileName))
+                if (item.IsSelect && (!item.IsDownloadCompleted || !cacheFileList.Any(x => Path.GetFileName(x) == item.DownloadFileName)))
                 {
                     faileVerifyList.Add(item.DownloadFileName);
                 }
