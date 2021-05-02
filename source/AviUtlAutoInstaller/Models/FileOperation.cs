@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SevenZipExtractor;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -55,5 +56,120 @@ namespace AviUtlAutoInstaller.Models
             }
             return writable;
         }
+
+        /// <summary>
+        /// 圧縮ファイルを解凍
+        /// </summary>
+        /// <param name="srcFilePath">解凍するファイルのパス</param>
+        /// <param name="destPath">解凍先のパス</param>
+        public void Extract(string srcFilePath, string destPath)
+        {
+            using (ArchiveFile file = new ArchiveFile(srcFilePath))
+            {
+                file.Extract(destPath, true);
+            }
+        }
+
+        /// <summary>
+        /// ファイルパス一覧を指定ディレクトリに移動
+        /// </summary>
+        /// <param name="filePathList">移動するファイルパス一覧</param>
+        /// <param name="destDirPath">移動先のパス</param>
+        /// <exception cref="PathTooLongException"></exception>
+        public void FileMove(string[] filePathList, string destDirPath)
+        {
+            foreach (string filePath in filePathList)
+            {
+                string fileName = Path.GetFileName(filePath);
+                if (string.IsNullOrEmpty(fileName))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    string destFile = $"{destDirPath}\\{fileName}";
+                    if (File.Exists(destFile))
+                    {
+                        File.Delete(destFile);
+                    }
+                    File.Move(filePath, destFile);
+                }
+                catch (PathTooLongException)
+                {
+                    throw;
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+        }
+
+        /// <summary>
+        /// ディレクトリを移動
+        /// </summary>
+        /// <param name="srcDirPath">移動元のディレクトパス</param>
+        /// <param name="destDirPath">移動先のディレクトリパス</param>
+        public void DirectoryMove(string srcDirPath, string destDirPath)
+        {
+            string[] srcDirHierarchy = Directory.GetDirectories(srcDirPath, "*", SearchOption.AllDirectories);
+            string srcDirLastName = srcDirPath.Split('\\').Last();
+
+            // 出力先のディレクトリ作成
+            foreach (string dir in srcDirHierarchy)
+            {
+                int startIndex = dir.IndexOf(srcDirLastName) + "\\".Length;
+                var d = dir.Substring(startIndex + srcDirLastName.Length);
+                Directory.CreateDirectory($"{destDirPath}\\{d}");
+            }
+
+            var fileList = GenerateFilePathList(srcDirPath, "*.*");
+
+            // 出力先のファイル一覧を生成と移動
+            foreach (string file in fileList)
+            {
+                int startIndex = file.IndexOf(srcDirLastName) + "\\".Length;
+                var f = file.Substring(startIndex + srcDirLastName.Length);
+
+                File.Move(file, $"{destDirPath}\\{f}");
+            }
+        }
+
+        /// <summary>
+        /// ファイル一覧の生成
+        /// </summary>
+        /// <param name="srcDirPath">取得元のディレクトリパス</param>
+        /// <param name="files">取得するファイルまたは拡張子</param>
+        /// <returns>ファイル一覧</returns>
+        public List<string> GenerateFilePathList(string srcDirPath, string[] files)
+        {
+            List<string> filePathList = new List<string>();
+
+            foreach (string file in files)
+            {
+                string[] pathList = Directory.GetFiles(srcDirPath, file, SearchOption.AllDirectories);
+                foreach (string path in pathList)
+                {
+                    filePathList.Add(path);
+                }
+            }
+
+            return filePathList;
+        }
+
+        /// <summary>
+        /// ファイル一覧の生成
+        /// </summary>
+        /// <param name="srcDirPath">取得元のディレクトリパス</param>
+        /// <param name="file">特定のファイル</param>
+        /// <returns>ファイル一覧</returns>
+        private List<string> GenerateFilePathList(string srcDirPath, string file)
+        {
+            string[] files = { file };
+
+            return GenerateFilePathList(srcDirPath, files);
+        }
+
     }
 }

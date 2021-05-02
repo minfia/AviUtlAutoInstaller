@@ -241,7 +241,7 @@ namespace AviUtlAutoInstaller.ViewModels
                     IsInstallButtonEnable = false;
                     await InstallAsync();
                     IsInstallButtonEnable = true;
-                    //ProgressVisiblity = Visibility.Collapsed;
+                    ProgressVisiblity = Visibility.Collapsed;
                 });
         }
 
@@ -258,6 +258,9 @@ namespace AviUtlAutoInstaller.ViewModels
             {
                 Console.WriteLine("missing download file.");
             }
+
+            await Installs();
+            Directory.Delete(SysConfig.InstallExpansionDir, true);
 
             InstallProfileRW installProfileRW = new InstallProfileRW();
             installProfileRW.FileWrite($"{SysConfig.InstallRootPath}\\InstallationList_{DateTime.Now:yyyyMMdd_HHmmss}.profile");
@@ -379,6 +382,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 {
                     if (File.Exists($"{SysConfig.CacheDirPath}\\{itemFileNames[i]}"))
                     {
+                        item.IsDownloadCompleted = true;
                         continue;
                     }
                     DownloadFileName = itemFileNames[i];
@@ -442,6 +446,110 @@ namespace AviUtlAutoInstaller.ViewModels
             }
 
             return faileVerifyList;
+        }
+
+        /// <summary>
+        /// インストール処理関係
+        /// </summary>
+        /// <returns></returns>
+        private async Task Installs()
+        {
+            List<InstallItem> installItems = new List<InstallItem>();
+
+            {
+                InstallItemList installItemList = new InstallItemList();
+
+                for (var i = InstallItemList.RepoType.Pre; i < InstallItemList.RepoType.MAX; i++)
+                {
+                    foreach (InstallItem item in installItemList.GetInstalItemList(i))
+                    {
+                        if (item.IsSelect) { installItems.Add(item); }
+                    }
+                }
+            }
+
+            await FileInstallAsync(installItems);
+        }
+
+        private async Task FileInstallAsync(List<InstallItem> installItems)
+        {
+            StateName = _processStateDic[ProcessState.Install];
+            StateItemMax = installItems.Count;
+            StateItemNow = 0;
+
+            InstallItemList installItemList = new InstallItemList();
+
+            for (var i = InstallItemList.RepoType.Pre; i < InstallItemList.RepoType.MAX; i++)
+            {
+                foreach (InstallItem item in installItemList.GetInstalItemList(i))
+                {
+                    if (!item.IsDownloadCompleted)
+                    {
+                        continue;
+                    }
+                    Func<string[], bool> func = new Func<string[], bool>(item.Install);
+                    var installFileList = GenerateInstalList(i, item);
+                    var task = Task.Run(() => func(installFileList.ToArray()));
+
+                    var res = await task;
+                    StateItemNow++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// インストールアイテムから、実際にインストールするファイル一覧を生成
+        /// </summary>
+        /// <param name="repoType">リポジトリの種類</param>
+        /// <param name="item">InstallItem</param>
+        /// <returns></returns>
+        private List<string> GenerateInstalList(InstallItemList.RepoType repoType, InstallItem item)
+        {
+            string[] _pluginFileExtension = { "*.auf", "*.aui", "*.auo", "*.auc", "*.aul" };
+            string[] _scriptFileExtension = { "*.anm", "*.obj", "*.scn", "*.cam" };
+            List<string> installFiles = new List<string>(); // インストールするファイルのパス一覧
+
+            string searchSrcDir;
+
+            string fileExtention = Path.GetExtension(item.DownloadFileName);
+            FileOperation fileOperation = new FileOperation();
+            if ((Array.IndexOf(_pluginFileExtension, fileExtention) == -1) &&
+                (Array.IndexOf(_scriptFileExtension, fileExtention) == -1))
+            {
+                // ダウンロードしたファイルが圧縮ファイル
+                string extractFile = $"{SysConfig.CacheDirPath}\\{item.DownloadFileName}";   // 解凍するファイルのパス: .\cache\FileName.圧縮形式
+                string extractDestDir = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(item.DownloadFileName)}";  //解凍先: root\EX_TEMP\FileNameDir\
+                fileOperation.Extract(extractFile, extractDestDir);
+                searchSrcDir = extractDestDir;
+            }
+            else
+            {
+                // ダウンロードしたファイルがスクリプトorプラグインファイル
+                searchSrcDir = $"{SysConfig.CacheDirPath}"; // cache\FileName
+            }
+
+            if (InstallItemList.RepoType.Pre == repoType)
+            {
+                installFiles = fileOperation.GenerateFilePathList(searchSrcDir, item.InstallFileList.ToArray());
+            }
+            else
+            {
+                if (InstallFileType.Plugin == item.FileType)
+                {
+                    installFiles = fileOperation.GenerateFilePathList(searchSrcDir, _pluginFileExtension);
+                }
+                else if (InstallFileType.Script == item.FileType)
+                {
+                    installFiles = fileOperation.GenerateFilePathList(searchSrcDir, _scriptFileExtension);
+                }
+
+                if (0 < item.InstallFileList.Count)
+                {
+                    installFiles.AddRange(item.InstallFileList.ToList());
+                }
+            }
+
+            return installFiles;
         }
     }
 }
