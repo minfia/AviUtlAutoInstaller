@@ -29,7 +29,7 @@ namespace AviUtlAutoInstaller.Models
         Low
     }
 
-    class InstallItem : NotificationObject
+    partial class InstallItem : NotificationObject
     {
         private bool _isSelect = false;
         /// <summary>
@@ -242,7 +242,7 @@ namespace AviUtlAutoInstaller.Models
         public string NicoVideoID
         {
             get { return _nicoVideoID; }
-            set { SetProperty(ref _nicoVideoID , value); }
+            set { SetProperty(ref _nicoVideoID, value); }
         }
 
         private bool _downloadExecute = true;
@@ -306,6 +306,5 @@ namespace AviUtlAutoInstaller.Models
                 itemList.Add(s.Trim());
             }
         }
-
     }
 }
