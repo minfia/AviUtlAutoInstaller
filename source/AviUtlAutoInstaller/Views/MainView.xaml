@@ -169,13 +169,6 @@
                         Content="インストール"
                         IsEnabled="{Binding IsInstallButtonEnable}"
                         Command="{Binding InstallStartCommand}"/>
-                <Button BorderThickness="0.8"
-                        HorizontalAlignment="Right"
-                        Style="{DynamicResource MahApps.Styles.Button.Square}"
-                        Height="26" Width="80"
-                        Margin="4"
-                        Content="キャンセル"
-                        Command="{Binding InstallCancelCommand}"/>
             </StackPanel>
             <!-- #endregion -->
         </Grid>

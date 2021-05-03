@@ -76,6 +76,10 @@ namespace AviUtlAutoInstaller.Models
                 result = GeneralDownload(url, fileName);
             }
 
+            if ((DownloadResult.Complete != result) && (File.Exists($"{_filePath}\\{fileName}")))
+            {
+                File.Delete($"{_filePath}\\{fileName}");
+            }
             return result;
         }
 
