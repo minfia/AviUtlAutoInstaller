@@ -26,7 +26,8 @@
               FontSize="12">
             <MenuItem Header="ファイル(_F)"
                       Background="#FF333337">
-                <MenuItem Header="開く(_O)">
+                <MenuItem Header="開く(_O)"
+                          IsEnabled="{Binding IsFileOpenMenuEnable}">
                     <MenuItem Header="インストール設定ファイル(_I)..."
                               InputGestureText="Ctrl+O"
                               Command="{Binding OpenDialogInstallSettingFileCommand}"
@@ -51,10 +52,12 @@
             </MenuItem>
             <MenuItem Header="インストール項目一覧の編集(_E)..."
                       Background="#FF333337"
+                      IsEnabled="{Binding IsInstallEditManuEnable}"
                       Command="{Binding InstallEditCommand}"/>
             <MenuItem Header="ヘルプ(_H)"
                       Background="#FF333337">
                 <MenuItem Header="更新を確認(_U)"
+                          IsEnabled="{Binding IsUpdateCheckManuEnable}"
                           Command="{Binding UpdateCheckCommand}"/>
                 <MenuItem Header="バージョン情報(_A)"
                           Command="{Binding AboutCommand}"/>
@@ -87,6 +90,7 @@
             </TextBox>
             <Button Grid.Column="1" Grid.Row="1"
                     Style="{DynamicResource MahApps.Styles.Button.Square}"
+                    IsEnabled="{Binding IsSelectInstallDirEnable}"
                     BorderThickness="0.8"
                     Height="26" Width="48"
                     Content="..."
@@ -99,6 +103,7 @@
             <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">
                 <Controls:ToggleSwitch Padding="0,8,0,0"
                                        Header="AviUtlやプラグインの圧縮ファイルをインストール先にバックアップ"
+                                       IsEnabled="{Binding IsCopyBackupEnable}"
                                        OnContent="する"
                                        OffContent="しない"
                                        IsOn="{Binding IsCopyBackupFiles, Mode=OneWayToSource}"/>
