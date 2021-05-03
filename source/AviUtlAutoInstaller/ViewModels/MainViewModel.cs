@@ -2,6 +2,7 @@
 using AviUtlAutoInstaller.Views;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -469,6 +470,20 @@ namespace AviUtlAutoInstaller.ViewModels
             }
 
             await FileInstallAsync(installItems);
+
+            {
+                string aviutl = $"{SysConfig.InstallRootPath}\\aviutl.exe";
+                if (File.Exists(aviutl))
+                {
+                    FileOperation fileOperation = new FileOperation();
+                    if (fileOperation.ExecApp(aviutl, FileOperation.ExecAppType.GUI, out Process process))
+                    {
+                        await Task.Delay(1000);
+
+                        fileOperation.KillApp(process);
+                    }
+                }
+            }
         }
 
         private async Task FileInstallAsync(List<InstallItem> installItems)

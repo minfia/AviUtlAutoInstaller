@@ -32,6 +32,7 @@ namespace AviUtlAutoInstaller.Models
                         break;
                     case InstallFileType.Main:
                         installDir = SysConfig.InstallRootPath;
+                        AviUtlIniFileBuild();
                         break;
                     case InstallFileType.Script:
                         installDir = $"{SysConfig.AviUtlScriptDir}\\{ScriptDirName}";
@@ -168,6 +169,48 @@ namespace AviUtlAutoInstaller.Models
                 if (Directory.Exists(extractDirPath))
                 {
                     Directory.Delete(extractDirPath, true);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// AviUtlの設定ファイルを生成
+        /// </summary>
+        private void AviUtlIniFileBuild()
+        {
+            string aviutl_ini = $"{SysConfig.InstallRootPath}\\aviutl.ini";
+            IniFileRW iniFileRW = new IniFileRW(aviutl_ini);
+
+            {
+                Dictionary<string, string> systemConfig = new Dictionary<string, string>()
+                {
+                    { "width", "2560" }, { "height", "1560" }, { "frame", "320000" }, { "sharecache", "512" },
+                    { "sse", "1" }, { "sse2", "1" }, { "vfplugin", "1" },
+                    { "moveA", "5" }, { "moveB", "30" }, { "moveC", "899" }, { "moveD", "8991" },
+                    { "saveunitsize", "4096" }, { "compprofile", "1" }, { "plugincache", "1" },
+                    { "startframe", "1" }, { "shiftselect", "1" }, { "yuy2mode", "0" }, { "movieplaymain", "1" }, { "yuy2limit", "0" }, { "editresume", "0" }, { "fpsnoconvert", "0" },
+                    { "tempconfig", "0" }, { "load30fps", "0" }, { "loadfpsadjust", "0" }, { "overwritecheck", "0" }, { "dragdropdialog", "0" }, { "openprojectaup", "1" }, { "closedialog", "1" },
+                    { "projectonfig", "0" }, { "windowsnap", "0" }, { "dragdropactive", "1" }, { "trackbarclic", "1" }, { "defaultsavefile", "%p" }, { "finishsound", "" },
+                    { "resizelist", "1920x1080,1280x720,640x480,352x240,320x240" },
+                    { "fpslist", "*,30000/1001,24000/1001,60000/1001,60,50,30,25,24,20,15,12,10,8,6,5,4,3,2,1" },
+                };
+
+                foreach (var pair in systemConfig)
+                {
+                    iniFileRW.SetValue("system", pair.Key, pair.Value);
+                }
+            }
+
+            {
+                Dictionary<string, string> exeditConfig = new Dictionary<string, string>()
+                {
+                    { "disp", "1" }, { "new_w", "1280" }, { "new_h", "720" },
+                };
+
+                foreach (var pair in exeditConfig)
+                {
+                    iniFileRW.SetValue("拡張編集", pair.Key, pair.Value);
                 }
             }
         }

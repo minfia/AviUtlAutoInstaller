@@ -67,6 +67,7 @@
     </Compile>
     <Compile Include="Models\Downloader.cs" />
     <Compile Include="Models\FileOperation.cs" />
+    <Compile Include="Models\IniFileRW.cs" />
     <Compile Include="Models\InstallProfileRW.cs" />
     <Compile Include="Models\ItemInstallProc.cs" />
     <Compile Include="Models\PreRepoFileR.cs" />
