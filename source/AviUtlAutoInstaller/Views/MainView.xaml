@@ -101,7 +101,7 @@
                                        Header="AviUtlやプラグインの圧縮ファイルをインストール先にバックアップ"
                                        OnContent="する"
                                        OffContent="しない"
-                                       IsOn="{Binding IsCopyBackupFiles, Mode=OneWay}"/>
+                                       IsOn="{Binding IsCopyBackupFiles, Mode=OneWayToSource}"/>
 
                 <!-- #region Progress -->
                 <StackPanel Visibility="{Binding ProgressVisiblity, UpdateSourceTrigger=PropertyChanged}">
