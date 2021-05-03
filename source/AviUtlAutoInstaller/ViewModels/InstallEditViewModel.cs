@@ -325,6 +325,8 @@ namespace AviUtlAutoInstaller.ViewModels
             set { SetProperty(ref _statusBarText, value); }
         }
 
+        private bool _downloading = false;
+
         public InstallEditViewModel()
         {
             _installItemList = new InstallItemList();
@@ -460,6 +462,7 @@ namespace AviUtlAutoInstaller.ViewModels
 
         private async Task OnDownload()
         {
+            _downloading = true;
             InstallItem selectItem = null;
             if (InstallItemList.RepoType.Pre == _selectTab[TabControlSelectIndex])
             {
@@ -527,9 +530,10 @@ namespace AviUtlAutoInstaller.ViewModels
                     message += $"{pair.Key.Name}\n\t{pair.Value}\n";
                 }
 
-                MessageBox.Show(message, "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(message, "ダウンロード失敗", MessageBoxButton.OK, MessageBoxImage.Error);
                 downloadFailedList.Clear();
             }
+            _downloading = false;
         }
 
         /// <summary>
@@ -573,6 +577,10 @@ namespace AviUtlAutoInstaller.ViewModels
 
         private bool OnExit()
         {
+            if (_downloading)
+            {
+                return false;
+            }
             InitializeValue();
 
             return true;

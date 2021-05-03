@@ -89,12 +89,20 @@ namespace AviUtlAutoInstaller.ViewModels
         #endregion
 
         #region アプリケーション終了の設定
+        private bool _installing = false;
         public Func<bool> ClosingCallback
         {
             get { return OnExit; }
         }
         private bool OnExit()
         {
+            if (_installing)
+            {
+                if (MessageBox.Show("インストールをキャンセルして終了しますか？", "終了確認", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.No)
+                {
+                    return false;
+                }
+            }
             App.Current.Shutdown();
             return true;
         }
@@ -130,7 +138,6 @@ namespace AviUtlAutoInstaller.ViewModels
 
         private readonly DelegateCommand _selectInstallDir;
         private readonly DelegateCommand _installStartCommand;
-        private readonly DelegateCommand installCancelCommand;
 
         public DelegateCommand SelectInstallDir { get => _selectInstallDir; }
         public DelegateCommand InstallStartCommand { get => _installStartCommand; }
@@ -276,9 +283,11 @@ namespace AviUtlAutoInstaller.ViewModels
                 async _ =>
                 {
                     ProgressVisiblity = Visibility.Visible;
+                    _installing = true;
                     IsInstallButtonEnable = IsFileOpenMenuEnable = IsInstallEditManuEnable = IsUpdateCheckManuEnable = IsCopyBackupEnable = IsSelectInstallDirEnable = false;
                     await InstallAsync();
                     IsInstallButtonEnable = IsFileOpenMenuEnable = IsInstallEditManuEnable = IsUpdateCheckManuEnable = IsCopyBackupEnable = IsSelectInstallDirEnable = true;
+                    _installing = false;
                     ProgressVisiblity = Visibility.Collapsed;
                 });
         }
