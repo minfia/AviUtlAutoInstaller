@@ -254,17 +254,36 @@ namespace AviUtlAutoInstaller.ViewModels
         {
             SetupDirectory();
 
-            List<string> failedList = await Downloads();
+            List<InstallItem> installItems = new List<InstallItem>();
+            {
+                InstallItemList installItemList = new InstallItemList();
+
+                for (var i = InstallItemList.RepoType.Pre; i < InstallItemList.RepoType.MAX; i++)
+                {
+                    foreach (InstallItem item in installItemList.GetInstalItemList(i))
+                    {
+                        if (item.IsSelect) { installItems.Add(item); }
+                    }
+                }
+            }
+
+            List<string> failedList = await Downloads(installItems);
             if (0 < failedList.Count)
             {
                 Console.WriteLine("missing download file.");
             }
 
-            await Installs();
+            await Installs(installItems);
             Directory.Delete(SysConfig.InstallExpansionDir, true);
 
             InstallProfileRW installProfileRW = new InstallProfileRW();
             installProfileRW.FileWrite($"{SysConfig.InstallRootPath}\\InstallationList_{DateTime.Now:yyyyMMdd_HHmmss}.profile");
+
+            if (IsCopyBackupFiles)
+            {
+                BackupInstallFile(installItems);
+            }
+
             return true;
         }
 
@@ -330,23 +349,10 @@ namespace AviUtlAutoInstaller.ViewModels
         /// <summary>
         /// ダウンロード処理関係
         /// </summary>
+        /// <param name="installItems">インストール一覧</param>
         /// <returns></returns>
-        private async Task<List<string>> Downloads()
+        private async Task<List<string>> Downloads(List<InstallItem> installItems)
         {
-            List<InstallItem> installItems = new List<InstallItem>();
-
-            {
-                InstallItemList installItemList = new InstallItemList();
-
-                for (var i = InstallItemList.RepoType.Pre; i < InstallItemList.RepoType.MAX; i++)
-                {
-                    foreach (InstallItem item in installItemList.GetInstalItemList(i))
-                    {
-                        if (item.IsSelect) { installItems.Add(item); }
-                    }
-                }
-            }
-
             await FileDownloadAsync(installItems);
 
             var verifyResultList = VerifyInstallFile(installItems);
@@ -452,23 +458,10 @@ namespace AviUtlAutoInstaller.ViewModels
         /// <summary>
         /// インストール処理関係
         /// </summary>
+        /// <param name="installItems">インストール一覧</param>
         /// <returns></returns>
-        private async Task Installs()
+        private async Task Installs(List<InstallItem> installItems)
         {
-            List<InstallItem> installItems = new List<InstallItem>();
-
-            {
-                InstallItemList installItemList = new InstallItemList();
-
-                for (var i = InstallItemList.RepoType.Pre; i < InstallItemList.RepoType.MAX; i++)
-                {
-                    foreach (InstallItem item in installItemList.GetInstalItemList(i))
-                    {
-                        if (item.IsSelect) { installItems.Add(item); }
-                    }
-                }
-            }
-
             await FileInstallAsync(installItems);
 
             {
@@ -565,6 +558,26 @@ namespace AviUtlAutoInstaller.ViewModels
             }
 
             return installFiles;
+        }
+
+        /// <summary>
+        /// インストールにしたダウンロードファイルをインストール先にバックアップ
+        /// </summary>
+        /// <param name="installItems">インストール一覧</param>
+        private void BackupInstallFile(List<InstallItem> installItems)
+        {
+            Directory.CreateDirectory(SysConfig.InstallFileBackupDir);
+            FileOperation fileOperation = new FileOperation();
+
+            foreach (var file in installItems)
+            {
+                string copyFile = $"{SysConfig.InstallFileBackupDir}\\{file.DownloadFileName}";
+                if (File.Exists(copyFile))
+                {
+                    File.Delete(copyFile);
+                }
+                File.Copy($"{SysConfig.CacheDirPath}\\{file.DownloadFileName}", copyFile);
+            }
         }
     }
 }
