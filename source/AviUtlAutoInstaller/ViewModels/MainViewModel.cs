@@ -149,12 +149,49 @@ namespace AviUtlAutoInstaller.ViewModels
             set { SetProperty(ref _isCopyBackupFiles, value); }
         }
 
+        #region インストール時のコントロールの有効/無効
         private bool _isInstallButtonEnable = true;
         public bool IsInstallButtonEnable
         {
             get { return _isInstallButtonEnable; }
             private set { SetProperty(ref _isInstallButtonEnable, value); }
         }
+
+        private bool _isFileOpenMenuEnable = true;
+        public bool IsFileOpenMenuEnable
+        {
+            get { return _isFileOpenMenuEnable; }
+            private set { SetProperty(ref _isFileOpenMenuEnable, value); }
+        }
+
+        private bool _isInstallEditManuEnable = true;
+        public bool IsInstallEditManuEnable
+        {
+            get { return _isInstallEditManuEnable; }
+            private set { SetProperty(ref _isInstallEditManuEnable, value); }
+        }
+
+        private bool _isUpdateCheckManuEnable = true;
+        public bool IsUpdateCheckManuEnable
+        {
+            get { return _isUpdateCheckManuEnable; }
+            private set { SetProperty(ref _isUpdateCheckManuEnable, value); }
+        }
+
+        private bool _isCopyBackupEnable = true;
+        public bool IsCopyBackupEnable
+        {
+            get { return _isCopyBackupEnable; }
+            private set { SetProperty(ref _isCopyBackupEnable, value); }
+        }
+
+        private bool _isSelectInstallDirEnable = true;
+        public bool IsSelectInstallDirEnable
+        {
+            get { return _isSelectInstallDirEnable; }
+            private set { SetProperty(ref _isSelectInstallDirEnable, value); }
+        }
+        #endregion
 
         private enum ProcessState
         {
@@ -239,9 +276,9 @@ namespace AviUtlAutoInstaller.ViewModels
                 async _ =>
                 {
                     ProgressVisiblity = Visibility.Visible;
-                    IsInstallButtonEnable = false;
+                    IsInstallButtonEnable = IsFileOpenMenuEnable = IsInstallEditManuEnable = IsUpdateCheckManuEnable = IsCopyBackupEnable = IsSelectInstallDirEnable = false;
                     await InstallAsync();
-                    IsInstallButtonEnable = true;
+                    IsInstallButtonEnable = IsFileOpenMenuEnable = IsInstallEditManuEnable = IsUpdateCheckManuEnable = IsCopyBackupEnable = IsSelectInstallDirEnable = true;
                     ProgressVisiblity = Visibility.Collapsed;
                 });
         }
