@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,8 @@ namespace AviUtlAutoInstaller.Models
         {
             if (InstallFileType.Encoder == FileType)
             {
-                // エンコーダ関係のインストール処理
+                InstallRigayaEncoder();
+
                 return true;
             }
             else
@@ -126,6 +128,48 @@ namespace AviUtlAutoInstaller.Models
 
             // 本体の移動
             fileOperation.DirectoryMove($"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(DownloadFileName)}", $"{SysConfig.AviUtlPluginDir}");
+        }
+
+
+        private void InstallRigayaEncoder()
+        {
+            FileOperation fileOperation = new FileOperation();
+            string tempDir = Path.GetTempPath();
+            var s = DownloadFileName.Split('_');
+            string searchDirName = $"{s[0]}_{s[1]}";
+
+            string extractDirPath = $"{tempDir}{searchDirName}";
+
+            // すでにエンコーダのディレクトリが存在していたら削除
+            {
+                if (Directory.Exists(extractDirPath))
+                {
+                    Directory.Delete(extractDirPath, true);
+                }
+            }
+
+            fileOperation.DirectoryMove($"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(DownloadFileName)}", tempDir);
+
+            string[] exe = { "auo_setup.exe" };
+            var exeList = fileOperation.GenerateFilePathList(extractDirPath, exe);
+
+            foreach (var exeFile in exeList)
+            {
+                if (!fileOperation.ExecApp(exeFile, $"-autorun -nogui -dir \"{SysConfig.InstallRootPath}\"", FileOperation.ExecAppType.CUI, out Process process))
+                {
+                    break;
+                }
+
+                process.WaitForExit();
+            }
+
+            // エンコーダのディレクトリを削除
+            {
+                if (Directory.Exists(extractDirPath))
+                {
+                    Directory.Delete(extractDirPath, true);
+                }
+            }
         }
     }
 }

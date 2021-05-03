@@ -1,6 +1,7 @@
 ﻿using SevenZipExtractor;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
@@ -171,5 +172,87 @@ namespace AviUtlAutoInstaller.Models
             return GenerateFilePathList(srcDirPath, files);
         }
 
+
+        /// <summary>
+        /// アプリの実行タイプ
+        /// </summary>
+        public enum ExecAppType
+        {
+            /// <summary>
+            /// CUIアプリ
+            /// </summary>
+            CUI,
+            /// <summary>
+            /// GUIアプリ
+            /// </summary>
+            GUI
+        };
+
+        /// <summary>
+        /// アプリを実行
+        /// </summary>
+        /// <param name="appPath">実行するアプリのパス</param>
+        /// <param name="argument">アプリの実行引数</param>
+        /// <param name="appType">アプリの実行タイプ</param>
+        /// <param name="proc">アプリ実行のProcess</param>
+        /// <returns>成否</returns>
+        public bool ExecApp(string appPath, string argument, ExecAppType appType, out Process proc)
+        {
+            proc = new Process();
+            proc.StartInfo.FileName = appPath;
+            proc.StartInfo.Arguments = argument;
+            proc.StartInfo.UseShellExecute = appType == ExecAppType.CUI ? true : false;
+            bool ret = proc.Start();
+
+            return ret;
+        }
+
+        /// <summary>
+        /// アプリを実行
+        /// </summary>
+        /// <param name="appPath">実行するアプリのパス</param>
+        /// <param name="appType">アプリの実行タイプ</param>
+        /// <param name="proc">アプリ実行のProcess</param>
+        /// <returns>成否</returns>
+        public bool ExecApp(string appPath, ExecAppType appType, out Process proc)
+        {
+            return ExecApp(appPath, "", appType, out proc);
+        }
+
+        /// <summary>
+        /// 実行したアプリを停止させる
+        /// </summary>
+        /// <param name="proc">停止させたいプロセス</param>
+        /// <returns>成否</returns>
+        public bool KillApp(Process proc)
+        {
+            if (proc.HasExited)
+            {
+                return true;
+            }
+            if (proc.StartInfo.UseShellExecute)
+            {
+                // CUI
+                proc.Kill();
+                return true;
+            }
+            else
+            {
+                // GUI
+                try
+                {
+                    if (!proc.CloseMainWindow())
+                    {
+                        return false;
+                    }
+                    proc.WaitForExit(10000);
+                    return proc.HasExited;
+                }
+                catch (InvalidOperationException)
+                {
+                    return true;
+                }
+            }
+        }
     }
 }
