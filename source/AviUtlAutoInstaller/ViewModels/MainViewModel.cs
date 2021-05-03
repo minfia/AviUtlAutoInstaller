@@ -498,7 +498,7 @@ namespace AviUtlAutoInstaller.ViewModels
             {
                 foreach (InstallItem item in installItemList.GetInstalItemList(i))
                 {
-                    if (!item.IsDownloadCompleted)
+                    if (!item.IsSelect || !item.IsDownloadCompleted)
                     {
                         continue;
                     }
