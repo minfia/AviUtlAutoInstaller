@@ -19,6 +19,10 @@
                       WindowStartupLocation="CenterScreen"
                       WindowTransitionsEnabled="False"
                       b:WindowClosingBehavior.Callback="{Binding ClosingCallback}">
+    <Window.InputBindings>
+        <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenDialogInstallSettingFileCommand}"/>
+        <KeyBinding Gesture="Ctrl+Shift+O" Command="{Binding OpenDialogUserRepoFileCommand}"/>
+    </Window.InputBindings>
     <DockPanel>
         <!-- #region Menu Bar -->
         <Menu DockPanel.Dock="Top"
