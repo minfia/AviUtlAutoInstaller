@@ -93,7 +93,7 @@ namespace AviUtlAutoInstaller.Models
                                 ExternalFileURL = reader["external_file_url"].ToString(),
                                 NicoVideoID = reader["nico_video_id"].ToString()
                             };
-                            item.IsSelect = (InstallFileType.Main == item.FileType) ? true : false;
+                            item.IsSelect = ((InstallFileType.Main == item.FileType) || (item.CommandName == "exedit")) ? true : false;
                             item.IsItemSelectEnable = (InstallFileType.Main == item.FileType) ? false : true;
 
                             InstallItemList.AddInstallItem(InstallItemList.RepoType.Pre, item);
