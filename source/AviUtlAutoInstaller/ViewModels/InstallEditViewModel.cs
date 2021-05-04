@@ -93,6 +93,10 @@ namespace AviUtlAutoInstaller.ViewModels
                 SetProperty(ref _preSelectAllCheck, value);
                 foreach (InstallItem item in PreInstallList)
                 {
+                    if (item.CommandName == "aviutl" || item.CommandName == "exedit")
+                    {
+                        continue;
+                    }
                     item.IsSelect = value;
                 }
             }
