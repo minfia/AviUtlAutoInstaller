@@ -293,7 +293,7 @@
                                 <DataGridTextColumn Header="追加ファイル(dll, exeなど)"
                                                     HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                     Width="152"
-                                                    Binding="{Binding AppendFile}"/>
+                                                    Binding="{Binding InstallFile}"/>
                                 <DataGridTextColumn Header="動画ID(ニコニコ動画のみ)"
                                                     HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                     Width="148"
