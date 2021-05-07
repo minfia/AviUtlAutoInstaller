@@ -426,11 +426,11 @@ namespace AviUtlAutoInstaller.ViewModels
             {
                 NameError = "名前を入力してください";
             }
-            else if (CheckDuplicate(DuplicateType.Name, Name))
+            else if (IsDuplicate(DuplicateType.Name, Name))
             {
                 NameError = "同じ名前は登録できません";
             }
-            else if (CheckStartAndEndWhiteSpace(Name))
+            else if (IsStartAndEndWhiteSpace(Name))
             {
                 NameError = "前後に空白は使用できません";
             }
@@ -446,7 +446,7 @@ namespace AviUtlAutoInstaller.ViewModels
             {
                 return;
             }
-            else if (CheckDuplicate(DuplicateType.URL, URL))
+            else if (IsDuplicate(DuplicateType.URL, URL))
             {
                 URLError = "同じURLは登録できません";
             }
@@ -466,23 +466,23 @@ namespace AviUtlAutoInstaller.ViewModels
         private void CheckFileNameData()
         {
             DownloadFileNameError = "";
-            if (CheckStartAndEndWhiteSpace(DownloadFileName))
+            if (IsStartAndEndWhiteSpace(DownloadFileName))
             {
                 DownloadFileNameError = "ファイル名を入力してください";
             }
-            else if (CheckDuplicate(DuplicateType.FileName, DownloadFileName))
+            else if (IsDuplicate(DuplicateType.FileName, DownloadFileName))
             {
                 DownloadFileNameError = "同じファイル名は登録できません";
             }
-            else if (CheckInvalidChar(DownloadFileName))
+            else if (IsInvalidChar(DownloadFileName))
             {
                 DownloadFileNameError = "\\ / : * ? \" < > | は使用できません";
             }
-            else if (CheckFileNameAndExtension(DownloadFileName))
+            else if (IsInvalidFileNameAndExtension(DownloadFileName))
             {
                 DownloadFileNameError = "無効なファイル名です";
             }
-            else if (CheckStartAndEndWhiteSpace(DownloadFileName))
+            else if (IsStartAndEndWhiteSpace(DownloadFileName))
             {
                 DownloadFileNameError = "前後に空白は使用できません";
             }
@@ -502,11 +502,11 @@ namespace AviUtlAutoInstaller.ViewModels
             {
                 ScriptDirNameError = "空白は使用できません";
             }
-            else if (CheckStartAndEndWhiteSpace(ScriptDirName))
+            else if (IsStartAndEndWhiteSpace(ScriptDirName))
             {
                 ScriptDirNameError = "前後に空白は使用できません";
             }
-            else if (CheckInvalidChar(ScriptDirName))
+            else if (IsInvalidChar(ScriptDirName))
             {
                 ScriptDirNameError = "\\ / : * ? \" < > | は使用できません";
             }
@@ -522,7 +522,7 @@ namespace AviUtlAutoInstaller.ViewModels
             {
                 VersionError = "バージョンを入力してください";
             }
-            else if(CheckStartAndEndWhiteSpace(Version))
+            else if(IsStartAndEndWhiteSpace(Version))
             {
                 VersionError = "前後に空白は使用できません";
             }
@@ -538,7 +538,7 @@ namespace AviUtlAutoInstaller.ViewModels
             {
                 return;
             }
-            if (CheckStartAndEndWhiteSpace(AppendFile))
+            if (IsStartAndEndWhiteSpace(AppendFile))
             {
                 AppendFileError = "前後に空白は使用できません";
             }
@@ -546,7 +546,12 @@ namespace AviUtlAutoInstaller.ViewModels
             HashSet<string> duplicate = new HashSet<string>();
             foreach (string str in array)
             {
-                if (CheckFileNameAndExtension(str))
+                if (IsInvalidChar(str.Trim()) && (str.IndexOf('*') < 0))
+                {
+                    AppendFileError = "\\ / : * ? \" < > | は使用できません";
+                    break;
+                }
+                else if (IsInvalidFileNameAndExtension(str))
                 {
                     AppendFileError = "無効なファイル名です";
                     break;
@@ -554,15 +559,6 @@ namespace AviUtlAutoInstaller.ViewModels
                 else if(!duplicate.Add(str.Trim()))
                 {
                     AppendFileError = $"ファイル名が重複しています ({str.Trim()})";
-                    break;
-                }
-                else if (CheckInvalidChar(str.Trim()))
-                {
-                    if (Path.GetFileNameWithoutExtension(str.Trim()).Equals("*"))
-                    {
-                        continue;
-                    }
-                    AppendFileError = "\\ / : * ? \" < > | は使用できません";
                     break;
                 }
             }
@@ -578,7 +574,7 @@ namespace AviUtlAutoInstaller.ViewModels
             {
                 return;
             }
-            if (CheckStartAndEndWhiteSpace(NicoVideoID))
+            if (IsStartAndEndWhiteSpace(NicoVideoID))
             {
                 NicoVideoIDError = "前後を空白は使用できません";
             }
@@ -612,8 +608,8 @@ namespace AviUtlAutoInstaller.ViewModels
         /// </summary>
         /// <param name="type">重複チェック対象</param>
         /// <param name="str">チェック対象</param>
-        /// <returns></returns>
-        private bool CheckDuplicate(DuplicateType type, string str)
+        /// <returns>true: 重複あり, false: 重複なし</returns>
+        private bool IsDuplicate(DuplicateType type, string str)
         {
             switch(type)
             {
@@ -647,8 +643,8 @@ namespace AviUtlAutoInstaller.ViewModels
         /// ファイル/ディレクトリ名に使用できない文字がないかチェック
         /// </summary>
         /// <param name="str">チェック対象</param>
-        /// <returns></returns>
-        private bool CheckInvalidChar(string str)
+        /// <returns>true: 使用不可能な文字あり, false:使用不可能な文字なし</returns>
+        private bool IsInvalidChar(string str)
         {
             char[] invalidChars = Path.GetInvalidFileNameChars();
             if (str.IndexOfAny(invalidChars) != -1)
@@ -663,10 +659,17 @@ namespace AviUtlAutoInstaller.ViewModels
         /// 有効なファイル名/拡張子かチェック
         /// </summary>
         /// <param name="str">チェック対象</param>
-        /// <returns></returns>
-        private bool CheckFileNameAndExtension(string str)
+        /// <returns>true: 無効なファイル名/拡張子, false:有効なファイル名/拡張子</returns>
+        private bool IsInvalidFileNameAndExtension(string str)
         {
-            if (Path.GetFileNameWithoutExtension(str).Equals("") || Path.GetExtension(str).Equals(""))
+            try
+            {
+                if (Path.GetFileNameWithoutExtension(str).Equals("") || Path.GetExtension(str).Equals(""))
+                {
+                    return true;
+                }
+            }
+            catch
             {
                 return true;
             }
@@ -678,8 +681,8 @@ namespace AviUtlAutoInstaller.ViewModels
         /// 前後のスペースチェック
         /// </summary>
         /// <param name="str">チェック対象</param>
-        /// <returns></returns>
-        private bool CheckStartAndEndWhiteSpace(string str)
+        /// <returns>true: スペースあり, false: スペースなし</returns>
+        private bool IsStartAndEndWhiteSpace(string str)
         {
             string trim_name = str.Trim();
             if (str.Length != trim_name.Length)
