@@ -443,7 +443,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 }
                 catch (Exception e)
                 {
-                    // TODO: エラー表示
+                    MessageBox.Show(e.Message, "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 finally
                 {
