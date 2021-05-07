@@ -94,7 +94,7 @@ namespace AviUtlAutoInstaller.Models
                                 NicoVideoID = reader["nico_video_id"].ToString()
                             };
                             item.IsSelect = ((InstallFileType.Main == item.FileType) || (item.CommandName == "exedit")) ? true : false;
-                            item.IsItemSelectEnable = (InstallFileType.Main == item.FileType) ? false : true;
+                            item.IsItemSelectEnable = (InstallFileType.Main == item.FileType || (item.CommandName == "exedit")) ? false : true;
 
                             InstallItemList.AddInstallItem(InstallItemList.RepoType.Pre, item);
                         }
