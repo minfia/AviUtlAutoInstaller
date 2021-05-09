@@ -4,6 +4,7 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:Interactivity="http://schemas.microsoft.com/xaml/behaviors"
                       xmlns:vw="clr-namespace:AviUtlAutoInstaller.Views"
                       xmlns:vm="clr-namespace:AviUtlAutoInstaller.ViewModels"
                       mc:Ignorable="d"
@@ -14,13 +15,63 @@
                       TitleCharacterCasing="Normal"
                       Title="バージョン情報"
                       ResizeMode="NoResize"
-                      Height="450" Width="800"
+                      SizeToContent="Height"
+                      Height="Auto" Width="400"
                       WindowStartupLocation="CenterOwner"
                       WindowTransitionsEnabled="False">
+    <Window.Resources>
+        <BitmapImage x:Key="AppIcon" UriSource="../Assets/app.ico"/>
+    </Window.Resources>
     <Controls:MetroWindow.DataContext>
         <vm:AboutViewModel/>
     </Controls:MetroWindow.DataContext>
-    <Grid>
-        
-    </Grid>
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal"
+                    Margin="12,12,0,12">
+            <Image Source="{StaticResource AppIcon}"/>
+            <StackPanel Orientation="Vertical"
+                        Margin="12,0,0,0">
+                <TextBlock Margin="0,4,0,0"
+                           Text="{Binding ApplicationName}"
+                           FontSize="24"
+                           Foreground="AliceBlue"/>
+                <TextBlock Margin="0,4,0,0"
+                           Text="{Binding ApplicationVersion, StringFormat=ApplicationVersion:  {0}}"/>
+                <TextBlock Margin="0,4,0,0"
+                           Text="{Binding PreRepoVersion, StringFormat=PreinstallRepoVersion:  {0}}"/>
+                <TextBlock Margin="0,4,0,0">
+                    <Hyperlink NavigateUri="https://github.com/minfia/AviUtlAutoInstaller">
+                        <Interactivity:Interaction.Triggers>
+                            <Interactivity:EventTrigger EventName="RequestNavigate">
+                                <Interactivity:CallMethodAction TargetObject="{Binding .}" MethodName="OpenLink"/>
+                            </Interactivity:EventTrigger>
+                        </Interactivity:Interaction.Triggers>
+                        <Hyperlink.Inlines>
+                            <Run Text="GitHub"/>
+                        </Hyperlink.Inlines>
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock Margin="0,4,0,0"
+                           Text="Dev: ">
+                    <Hyperlink NavigateUri="https://twitter.com/minfia">
+                        <Interactivity:Interaction.Triggers>
+                            <Interactivity:EventTrigger EventName="RequestNavigate">
+                                <Interactivity:CallMethodAction TargetObject="{Binding .}" MethodName="OpenLink"/>
+                            </Interactivity:EventTrigger>
+                        </Interactivity:Interaction.Triggers>
+                        <Hyperlink.Inlines>
+                            <Run Text="@minfia"/>
+                        </Hyperlink.Inlines>
+                    </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+        </StackPanel>
+        <Button BorderThickness="0.8"
+                Style="{DynamicResource MahApps.Styles.Button.Square}"
+                Controls:ControlsHelper.ContentCharacterCasing="Normal"
+                Width="108"
+                Margin="0,4,0,12"
+                IsCancel="True"
+                Content="OK"/>
+    </StackPanel>
 </Controls:MetroWindow>
