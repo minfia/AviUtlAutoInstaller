@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AviUtlAutoInstaller.Models
 {
-    static class ProductInfo
+    class ProductInfo
     {
         private static Assembly assembly = Assembly.GetExecutingAssembly();
 
@@ -63,6 +63,17 @@ namespace AviUtlAutoInstaller.Models
         public static string Copyright
         {
             get { return _copyright; }
+        }
+
+        private static string _repoVersion = "0.0";
+        public static string RepoVersion
+        {
+            get { return _repoVersion; }
+        }
+
+        public void SetRepoVersion(uint major, uint minor)
+        {
+            _repoVersion = $"{major}.{minor}";
         }
     }
 }

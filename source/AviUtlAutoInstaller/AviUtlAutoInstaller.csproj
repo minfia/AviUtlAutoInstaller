@@ -88,6 +88,8 @@
     <Compile Include="Models\IniFileRW.cs" />
     <Compile Include="Models\InstallProfileRW.cs" />
     <Compile Include="Models\ItemInstallProc.cs" />
+    <Compile Include="Models\Network\Parser\GitHub.cs" />
+    <Compile Include="Models\Network\Parser\PaserBase.cs" />
     <Compile Include="Models\PreRepoFileR.cs" />
     <Compile Include="Models\InstallItem.cs" />
     <Compile Include="Models\InstallItemList.cs" />

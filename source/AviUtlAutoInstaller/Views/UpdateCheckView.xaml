@@ -14,13 +14,98 @@
                       TitleCharacterCasing="Normal"
                       Title="アップデートチェック"
                       ResizeMode="NoResize"
-                      Height="240" Width="440"
+                      SizeToContent="Height"
+                      Height="Auto" Width="440"
                       WindowStartupLocation="CenterOwner"
                       WindowTransitionsEnabled="False">
     <Controls:MetroWindow.DataContext>
         <vm:UpdateCheckViewModel/>
     </Controls:MetroWindow.DataContext>
-    <Grid>
-        
-    </Grid>
+    <StackPanel Margin="12">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Column="0"
+                        Grid.Row="0"
+                        Grid.ColumnSpan="2"
+                        Orientation="Horizontal">
+                <TextBlock Text="リポジトリファイル"/>
+                <TextBlock Margin="8,0,0,0"
+                           Text="{Binding PreRepoUpdateExist}"
+                           Foreground="#FFFF375F"/>
+            </StackPanel>
+            <TextBlock Margin="12,4,0,0"
+                       Grid.Column="0"
+                       Grid.Row="1"
+                       Text="現在のバージョン:"/>
+            <TextBlock Margin="12,4,0,0"
+                       Grid.Column="0"
+                       Grid.Row="2"
+                       Text="取得したバージョン:"/>
+            <TextBlock Grid.Column="1"
+                       Grid.Row="1"
+                       Margin="4,4,0,0"
+                       Text="{Binding PreRepoVersion, StringFormat=v{0}}"/>
+            <TextBlock Grid.Column="1"
+                       Grid.Row="2"
+                       Margin="4,4,0,0"
+                       Text="{Binding PreRepoGetVersion}"/>
+        </Grid>
+        <Grid Margin="0,12,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Column="0"
+                        Grid.Row="0"
+                        Grid.ColumnSpan="2"
+                        Orientation="Horizontal">
+                <TextBlock Text="アプリケーション"/>
+                <TextBlock Margin="8,0,0,0"
+                           Text="{Binding ApplicationUpdateExist}"
+                           Foreground="#FFFF375F"/>
+            </StackPanel>
+            <TextBlock Grid.Column="0"
+                       Grid.Row="1"
+                       VerticalAlignment="Center"
+                       Margin="12,4,0,0"
+                       Text="現在のバージョン:"/>
+            <TextBlock Grid.Column="0"
+                       Grid.Row="2"
+                       VerticalAlignment="Center"
+                       Margin="12,4,0,0"
+                       Text="取得したバージョン:"/>
+            <TextBlock Grid.Column="1"
+                       Grid.Row="1"
+                       Margin="4,4,0,0"
+                       Text="{Binding ApplicationVersion, StringFormat=v{0}}"/>
+            <TextBlock Grid.Column="1"
+                       Grid.Row="2"
+                       Margin="4,4,0,0"
+                       Text="{Binding ApplicationGetVersion}"/>
+        </Grid>
+        <Controls:MetroProgressBar Margin="0,4,0,4"
+                                   Foreground="DeepSkyBlue"
+                                   IsIndeterminate="True"
+                                   Visibility="{Binding ProgressVisible}"/>
+        <Button BorderThickness="0.8"
+                Style="{DynamicResource MahApps.Styles.Button.Square}"
+                Controls:ControlsHelper.ContentCharacterCasing="Normal"
+                Width="80"
+                Content="更新チェック"
+                IsEnabled="{Binding UpdateCheckButtonEnable}"
+                Command="{Binding UpdateCheckCommand}"/>
+    </StackPanel>
 </Controls:MetroWindow>
