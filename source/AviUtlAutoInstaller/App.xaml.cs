@@ -8,6 +8,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -18,6 +19,31 @@ namespace AviUtlAutoInstaller
     /// </summary>
     public partial class App : Application
     {
+        [STAThread]
+        public static void Main()
+        {
+            Mutex mutex;
+            if (IsMultipleStart(out mutex))
+            {
+                try
+                {
+                    App app = new App();
+                    app.InitializeComponent();
+                    app.Run();
+                }
+                finally
+                {
+                    mutex.ReleaseMutex();
+                    mutex.Close();
+                }
+            }
+            else
+            {
+                MessageBox.Show("多重起動はできません", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                mutex.Close();
+            }
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -74,7 +100,24 @@ namespace AviUtlAutoInstaller
             mv.Show();
         }
 
-        private bool IsAdministrator()
+        /// <summary>
+        /// 多重起動チェック
+        /// </summary>
+        /// <param name="mutex"></param>
+        /// <returns></returns>
+        private static bool IsMultipleStart(out Mutex mutex)
+        {
+            string mutexName = "Global\\MAviUtlAutoInstaller";
+            mutex = new Mutex(true, mutexName, out bool createdNew);
+
+            return createdNew;
+        }
+
+        /// <summary>
+        /// 管理者権限チェック
+        /// </summary>
+        /// <returns></returns>
+        private static bool IsAdministrator()
         {
             var identity = WindowsIdentity.GetCurrent();
             var principal = new WindowsPrincipal(identity);
