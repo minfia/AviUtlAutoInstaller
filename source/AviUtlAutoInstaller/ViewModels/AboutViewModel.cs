@@ -10,6 +10,9 @@ namespace AviUtlAutoInstaller.ViewModels
 {
     class AboutViewModel : NotificationObject
     {
+        /// <summary>
+        /// アプリ名
+        /// </summary>
         public string ApplicationName
         {
             get { return ProductInfo.AppName; }
@@ -20,7 +23,7 @@ namespace AviUtlAutoInstaller.ViewModels
         /// </summary>
         public string ApplicationVersion
         {
-            get { return ProductInfo.AppVersion; }
+            get { return ProductInfo.ValidAppVersion; }
         }
 
         private string _preRepoVersion;
@@ -33,18 +36,13 @@ namespace AviUtlAutoInstaller.ViewModels
             private set { SetProperty(ref _preRepoVersion, value); }
         }
 
-        private uint MajorVersion { get; set; }
-        private uint MinorVersion { get; set; }
-
         public AboutViewModel()
         {
             PreRepoFileR preRepoFileR = new PreRepoFileR($"{SysConfig.RepoDirPath}\\aai.repo");
             preRepoFileR.Open();
-            preRepoFileR.GetDBVersion(out uint major, out uint minor);
+            preRepoFileR.GetDBVersion(out uint major, out uint minor, out uint maintenance);
             preRepoFileR.Close();
-            MajorVersion = major;
-            MinorVersion = minor;
-            PreRepoVersion = $"{MajorVersion}.{MinorVersion}";
+            PreRepoVersion = $"{major}.{minor}.{maintenance}";
         }
 
         public void OpenLink(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
