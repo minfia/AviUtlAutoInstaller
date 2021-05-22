@@ -541,11 +541,20 @@ namespace AviUtlAutoInstaller.ViewModels
                     {
                         continue;
                     }
-                    Func<string[], bool> func = new Func<string[], bool>(item.Install);
-                    var installFileList = GenerateInstalList(i, item);
-                    var task = Task.Run(() => func(installFileList.ToArray()));
+                    {
+                        Func<string[], bool> func = new Func<string[], bool>(item.Install);
+                        var installFileList = GenerateInstalList(i, item);
+                        var task = Task.Run(() => func(installFileList.ToArray()));
+                        var res = await task;
+                    }
 
-                    var res = await task;
+                    if (!string.IsNullOrWhiteSpace(item.ExternalFile))
+                    {
+                        var exFunc = new Func<string[], bool>(item.ExternalInstall);
+                        var exTask = Task.Run(() => exFunc(item.ExternalFileList.ToArray()));
+                        var res = await exTask;
+                    }
+
                     StateItemNow++;
                 }
             }

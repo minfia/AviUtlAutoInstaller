@@ -62,6 +62,110 @@ namespace AviUtlAutoInstaller.Models
             return true;
         }
 
+        private enum ExternalFileType
+        {
+            None,
+            VSRuntime,
+        }
+
+        private static readonly Dictionary<string, ExternalFileType> _externalFileDic = new Dictionary<string, ExternalFileType>()
+        {
+            { "vc2008redist_x86.exe", ExternalFileType.VSRuntime },
+            { "vc2008redist_x64.exe", ExternalFileType.VSRuntime },
+            { "vc2013redist_x86.exe", ExternalFileType.VSRuntime },
+            { "vc2013redist_x64.exe", ExternalFileType.VSRuntime },
+            { "vc201Xredist.x86.exe", ExternalFileType.VSRuntime },
+            { "vc201Xredist.x64.exe", ExternalFileType.VSRuntime },
+        };
+
+        /// <summary>
+        /// 外部ソフトウェアのインストール
+        /// </summary>
+        /// <param name="externalFiles"></param>
+        /// <returns></returns>
+        public bool ExternalInstall(string[] externalFiles)
+        {
+            foreach (string exFile in externalFiles)
+            {
+                if (_externalFileDic.ContainsKey(exFile))
+                {
+                    string exFilePath = $"{SysConfig.CacheDirPath}\\{exFile}";
+
+                    var type = _externalFileDic[exFile];
+                    string args;
+                    switch (type)
+                    {
+                        case ExternalFileType.VSRuntime:
+                            {
+                                if (exFile.Contains("vc2008") && !Properties.Settings.Default.vs2008runtime)
+                                {
+                                    args = "/q";
+                                }
+                                else if (exFile.Contains("vc2013") && !Properties.Settings.Default.vs2013runtime)
+                                {
+                                    args = "quiet";
+                                }
+                                else if (exFile.Contains("vc201X") && !Properties.Settings.Default.vs201Xruntime)
+                                {
+                                    args = "quiet";
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                                if (VSRuntimeInstall(exFilePath, args))
+                                {
+                                    if (exFile.Contains("vc2008"))
+                                    {
+                                        Properties.Settings.Default.vs2008runtime = true;
+                                    }
+                                    else if (exFile.Contains("vc2013"))
+                                    {
+                                        Properties.Settings.Default.vs2013runtime = true;
+                                    }
+                                    else if (exFile.Contains("vc201X"))
+                                    {
+                                        Properties.Settings.Default.vs201Xruntime = true;
+                                    }
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// VisualStudioのランタイムインストール
+        /// </summary>
+        /// <param name="filePath">インストーラのパス</param>
+        /// <param name="args">インストーラの引数</param>
+        /// <returns>成否</returns>
+        private bool VSRuntimeInstall(string filePath, string args)
+        {
+            FileOperation fileOperation = new FileOperation();
+
+            try
+            {
+                if (!fileOperation.ExecApp(filePath, args, FileOperation.ExecAppType.CUI, out Process process))
+                {
+                    return false;
+                }
+                process.WaitForExit();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         private enum SpecialPluginType
         {
             PSDToolkit,
