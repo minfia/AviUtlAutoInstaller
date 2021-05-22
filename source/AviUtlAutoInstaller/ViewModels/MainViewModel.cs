@@ -570,7 +570,7 @@ namespace AviUtlAutoInstaller.ViewModels
         {
             string[] _pluginFileExtension = { "*.auf", "*.aui", "*.auo", "*.auc", "*.aul" };
             string[] _scriptFileExtension = { "*.anm", "*.obj", "*.scn", "*.cam" };
-            List<string> installFiles = new List<string>(); // インストールするファイルのパス一覧
+            List<string> readyInstallFiles = new List<string>(); // インストールするファイルのパス一覧
 
             string searchSrcDir;
 
@@ -593,24 +593,27 @@ namespace AviUtlAutoInstaller.ViewModels
 
             if (InstallItemList.RepoType.Pre == repoType)
             {
-                installFiles = fileOperation.GenerateFilePathList(searchSrcDir, item.InstallFileList.ToArray());
+                readyInstallFiles = fileOperation.GenerateFilePathList(searchSrcDir, item.InstallFileList.ToArray());
             }
             else
             {
                 if (InstallFileType.Plugin == item.FileType)
                 {
-                    installFiles = fileOperation.GenerateFilePathList(searchSrcDir, _pluginFileExtension);
+                    readyInstallFiles = fileOperation.GenerateFilePathList(searchSrcDir, _pluginFileExtension);
                 }
                 else if (InstallFileType.Script == item.FileType)
                 {
-                    installFiles = fileOperation.GenerateFilePathList(searchSrcDir, _scriptFileExtension);
+                    readyInstallFiles = fileOperation.GenerateFilePathList(searchSrcDir, _scriptFileExtension);
                 }
 
                 if (0 < item.InstallFileList.Count)
                 {
-                    installFiles.AddRange(item.InstallFileList.ToList());
+                    var itemPaths = fileOperation.GenerateFilePathList(searchSrcDir, item.InstallFileList.ToArray());
+                    readyInstallFiles.AddRange(itemPaths);
                 }
             }
+
+            var installFiles = readyInstallFiles.Distinct(StringComparer.InvariantCultureIgnoreCase).ToList();
 
             return installFiles;
         }
