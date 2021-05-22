@@ -29,6 +29,12 @@ namespace AviUtlAutoInstaller.Models
             get { return _appVersion; }
         }
 
+        private static readonly string _validAppVersion = _appVersion.Substring(0, _appVersion.LastIndexOf('.'));
+        public static string ValidAppVersion
+        {
+            get { return _validAppVersion; }
+        }
+
         private static readonly string _description = ((AssemblyDescriptionAttribute)Attribute.GetCustomAttribute(assembly, typeof(AssemblyDescriptionAttribute))).Description;
         /// <summary>
         /// アプリの説明
@@ -71,9 +77,9 @@ namespace AviUtlAutoInstaller.Models
             get { return _repoVersion; }
         }
 
-        public void SetRepoVersion(uint major, uint minor)
+        public void SetRepoVersion(uint major, uint minor, uint maintenance)
         {
-            _repoVersion = $"{major}.{minor}";
+            _repoVersion = $"{major}.{minor}.{maintenance}";
         }
     }
 }

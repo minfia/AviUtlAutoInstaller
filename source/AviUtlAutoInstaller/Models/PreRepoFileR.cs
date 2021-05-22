@@ -37,10 +37,11 @@ namespace AviUtlAutoInstaller.Models
         /// </summary>
         /// <param name="major">メジャーバージョン</param>
         /// <param name="minor">マイナーバージョン</param>
+        /// <param name="maintenance">メンテナンスバージョン</param>
         /// <returns>成否</returns>
-        public bool GetDBVersion(out uint major, out uint minor)
+        public bool GetDBVersion(out uint major, out uint minor, out uint maintenance)
         {
-            major = minor = 0;
+            major = minor = maintenance = 0;
 
             try
             {
@@ -53,6 +54,7 @@ namespace AviUtlAutoInstaller.Models
 
                         major = uint.Parse(reader["major"].ToString());
                         minor = uint.Parse(reader["minor"].ToString());
+                        maintenance = uint.Parse(reader["maintenance"].ToString());
                         return true;
                     }
                 }

@@ -84,7 +84,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 {
                     await UpdateCheck();
                 });
-            ApplicationVersion = ProductInfo.AppVersion;
+            ApplicationVersion = ProductInfo.ValidAppVersion;
             PreRepoVersion = ProductInfo.RepoVersion;
         }
 
@@ -126,6 +126,7 @@ namespace AviUtlAutoInstaller.ViewModels
             }
             catch
             {
+                PreRepoUpdateExist = "アップデートチェックに失敗しました";
                 return false;
             }
             PreRepoGetVersion = gitHub.Versions[0];
@@ -156,6 +157,7 @@ namespace AviUtlAutoInstaller.ViewModels
             }
             catch
             {
+                ApplicationGetVersion = "アップデートチェックに失敗しました";
                 return false;
             }
             ApplicationGetVersion = gitHub.Versions[0];
