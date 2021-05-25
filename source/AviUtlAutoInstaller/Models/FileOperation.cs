@@ -254,5 +254,33 @@ namespace AviUtlAutoInstaller.Models
                 }
             }
         }
+
+        /// <summary>
+        /// ショートカット作成
+        /// </summary>
+        /// <param name="destPath">ショートカット作成元のファイルパス</param>
+        /// <param name="shortcutName">ショートカット名</param>
+        /// <returns></returns>
+        public bool MakeShortcut(string destPath, string shortcutName)
+        {
+            string shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), @$"{shortcutName}.lnk");
+            string targetPath = destPath;
+
+            string WScriptShellCLSID = "72C24DD5-D70A-438B-8A42-98424B88AFB8";
+            Type t = Type.GetTypeFromCLSID(new Guid(WScriptShellCLSID));
+            dynamic shell = Activator.CreateInstance(t);
+
+            var shortcut = shell.CreateShortcut(shortcutPath);
+
+            shortcut.TargetPath = targetPath;
+            shortcut.IconLocation = targetPath + ",0";
+
+            shortcut.Save();
+
+            System.Runtime.InteropServices.Marshal.FinalReleaseComObject(shortcut);
+            System.Runtime.InteropServices.Marshal.FinalReleaseComObject(shell);
+
+            return true;
+        }
     }
 }

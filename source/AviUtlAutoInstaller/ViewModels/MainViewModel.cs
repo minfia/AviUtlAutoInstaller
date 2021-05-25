@@ -156,6 +156,13 @@ namespace AviUtlAutoInstaller.ViewModels
             set { SetProperty(ref _isCopyBackupFiles, value); }
         }
 
+        private bool _isMakeShortcut = false;
+        public bool IsMakeShortcut
+        {
+            get { return _isMakeShortcut; }
+            set { SetProperty(ref _isMakeShortcut, value); }
+        }
+
         #region インストール時のコントロールの有効/無効
         private bool _isInstallButtonEnable = true;
         public bool IsInstallButtonEnable
@@ -190,6 +197,13 @@ namespace AviUtlAutoInstaller.ViewModels
         {
             get { return _isCopyBackupEnable; }
             private set { SetProperty(ref _isCopyBackupEnable, value); }
+        }
+
+        private bool _isMakeShortcutEnable = true;
+        public bool IsMakeShortcutEnable
+        {
+            get { return _isMakeShortcutEnable; }
+            private set { SetProperty(ref _isMakeShortcutEnable, value); }
         }
 
         private bool _isSelectInstallDirEnable = true;
@@ -284,9 +298,9 @@ namespace AviUtlAutoInstaller.ViewModels
                 {
                     ProgressVisiblity = Visibility.Visible;
                     _installing = true;
-                    IsInstallButtonEnable = IsFileOpenMenuEnable = IsInstallEditManuEnable = IsUpdateCheckManuEnable = IsCopyBackupEnable = IsSelectInstallDirEnable = false;
+                    IsInstallButtonEnable = IsFileOpenMenuEnable = IsInstallEditManuEnable = IsUpdateCheckManuEnable = IsCopyBackupEnable = IsMakeShortcutEnable = IsSelectInstallDirEnable = false;
                     await InstallAsync();
-                    IsInstallButtonEnable = IsFileOpenMenuEnable = IsInstallEditManuEnable = IsUpdateCheckManuEnable = IsCopyBackupEnable = IsSelectInstallDirEnable = true;
+                    IsInstallButtonEnable = IsFileOpenMenuEnable = IsInstallEditManuEnable = IsUpdateCheckManuEnable = IsCopyBackupEnable = IsMakeShortcutEnable = IsSelectInstallDirEnable = true;
                     _installing = false;
                     ProgressVisiblity = Visibility.Collapsed;
                 });
@@ -328,6 +342,12 @@ namespace AviUtlAutoInstaller.ViewModels
             if (IsCopyBackupFiles)
             {
                 BackupInstallFile(installItems);
+            }
+
+            if (IsMakeShortcut)
+            {
+                FileOperation fileOperation = new FileOperation();
+                fileOperation.MakeShortcut($"{InstallDirPath}\\AviUtl.exe", "AviUtl");
             }
 
             return true;

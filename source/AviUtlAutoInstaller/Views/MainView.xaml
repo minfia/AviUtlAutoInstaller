@@ -111,13 +111,20 @@
                                        OnContent="する"
                                        OffContent="しない"
                                        IsOn="{Binding IsCopyBackupFiles, Mode=OneWayToSource}"/>
+                <Controls:ToggleSwitch Padding="0,8,0,0"
+                                       Header="AviUtlへのショートカットを作成"
+                                       IsEnabled="{Binding IsMakeShortcutEnable}"
+                                       OnContent="する"
+                                       OffContent="しない"
+                                       IsOn="{Binding IsMakeShortcut, Mode=OneWayToSource}"/>
+
 
                 <!-- #region Progress -->
                 <StackPanel Visibility="{Binding ProgressVisiblity, UpdateSourceTrigger=PropertyChanged}">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Controls:ProgressRing Foreground="DeepSkyBlue"
-                                                   IsActive="{Binding ProgressRingActive}"
+                                                   IsActive="True"
                                                    Height="8" Width="8"/>
                             <TextBlock Padding="4,0,0,0">
                                 <TextBlock.Text>
