@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace AviUtlAutoInstaller.Models
+namespace AviUtlAutoInstaller.Models.Network
 {
     enum DownloadResult
     {

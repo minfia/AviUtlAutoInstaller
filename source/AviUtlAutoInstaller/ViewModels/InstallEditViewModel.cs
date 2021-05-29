@@ -1,4 +1,6 @@
 ﻿using AviUtlAutoInstaller.Models;
+using AviUtlAutoInstaller.Models.Files;
+using AviUtlAutoInstaller.Models.Network;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

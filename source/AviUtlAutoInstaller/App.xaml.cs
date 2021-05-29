@@ -1,4 +1,5 @@
 ﻿using AviUtlAutoInstaller.Models;
+using AviUtlAutoInstaller.Models.Files;
 using AviUtlAutoInstaller.ViewModels;
 using AviUtlAutoInstaller.Views;
 using System;
