@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace AviUtlAutoInstaller.ViewModels
+namespace AviUtlAutoInstaller.Models
 {
     class NotificationObject : INotifyPropertyChanged
     {

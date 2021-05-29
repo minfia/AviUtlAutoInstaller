@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AviUtlAutoInstaller.Models.Files;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;

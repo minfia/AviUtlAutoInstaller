@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AviUtlAutoInstaller.Models
+namespace AviUtlAutoInstaller.Models.Files
 {
     class InstallProfileRW : TomlFileRW
     {
