@@ -268,7 +268,7 @@ namespace AviUtlAutoInstaller.Models
         /// <returns></returns>
         public bool MakeShortcut(string destPath, string shortcutName)
         {
-            string shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), @$"{shortcutName}.lnk");
+            string shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), $"{shortcutName}.lnk");
             string targetPath = destPath;
 
             string WScriptShellCLSID = "72C24DD5-D70A-438B-8A42-98424B88AFB8";
