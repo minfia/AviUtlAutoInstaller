@@ -133,7 +133,12 @@ namespace AviUtlAutoInstaller.Models
                 int startIndex = file.IndexOf(srcDirLastName) + "\\".Length;
                 var f = file.Substring(startIndex + srcDirLastName.Length);
 
-                File.Move(file, $"{destDirPath}\\{f}");
+                string destFile = $"{destDirPath}\\{f}"; 
+                if (File.Exists(destFile))
+                {
+                    File.Delete(destFile);
+                }
+                File.Move(file, destFile);
             }
         }
 
