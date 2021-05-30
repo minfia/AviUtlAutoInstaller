@@ -341,6 +341,12 @@ namespace AviUtlAutoInstaller.ViewModels
             InstallProfileRW installProfileRW = new InstallProfileRW();
             installProfileRW.FileWrite($"{SysConfig.InstallRootPath}\\InstallationList_{DateTime.Now:yyyyMMdd_HHmmss}.profile");
 
+            ContentsTreeRW contentsTreeRW = new ContentsTreeRW();
+            if (contentsTreeRW.IsExistContents)
+            {
+                contentsTreeRW.Write($"{SysConfig.InstallRootPath}");
+            }
+
             if (IsCopyBackupFiles)
             {
                 BackupInstallFile(installItems);
@@ -568,6 +574,10 @@ namespace AviUtlAutoInstaller.ViewModels
                         var installFileList = GenerateInstalList(i, item);
                         var task = Task.Run(() => func(installFileList.ToArray()));
                         var res = await task;
+                        if (res && 2 < item.NicoVideoID.Length)
+                        {
+                            ContentsTreeRW.AddContents(item.NicoVideoID);
+                        }
                     }
 
                     if (!string.IsNullOrWhiteSpace(item.ExternalFile))
