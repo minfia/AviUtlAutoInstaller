@@ -493,36 +493,58 @@ namespace AviUtlAutoInstaller.ViewModels
                 return;
             }
 
+            List<string> url = new List<string>();
+            List<string> fileName = new List<string>();
             while (downloadQueue.Count != 0)
             {
                 DownloadValue = 0;
                 InstallItem headItem = downloadQueue.Peek();
 
-                Func<string, string, DownloadResult> func = new Func<string, string, DownloadResult>(downloader.DownloadStart);
-                var task = Task.Run(() => func(headItem.URL, headItem.DownloadFileName));
-                StatusBarText = $"{headItem.Name}をダウンロード中...";
+                url.Add(headItem.URL);
+                fileName.Add(headItem.DownloadFileName);
 
-                Task updateTask = Task.Run(async () =>
+                for (int i = 0; i < headItem.ExternalFileURLList.Count; i++)
                 {
-                    do
-                    {
-                        await Task.Delay(1);
-                        if (downloader.DownloadFileSize != 0)
-                        {
-                            DownloadValue = (int)((double)downloader.DownloadCompleteSize / downloader.DownloadFileSize * 100);
-                        }
-                    } while (task.Status != TaskStatus.RanToCompletion);
-                });
-
-                var res = await task;
-                Console.WriteLine($"download res: {res}");
-
-                string message = GetDownloadResultMessage(res);
-                headItem.DownloadExecute = true;
-                if (message != "")
-                {
-                    downloadFailedList.Add(headItem, message);
+                    url.Add(headItem.ExternalFileURLList[i]);
+                    fileName.Add(headItem.ExternalFileList[i]);
                 }
+
+                int count = url.Count;
+
+                Func<string, string, DownloadResult> func = new Func<string, string, DownloadResult>(downloader.DownloadStart);
+
+                for (int i = 0; i < count; i++)
+                {
+
+
+                    var task = Task.Run(() => func(url[i], fileName[i]));
+                    StatusBarText = $"{headItem.Name}をダウンロード中...";
+
+                    Task updateTask = Task.Run(async () =>
+                    {
+                        do
+                        {
+                            await Task.Delay(1);
+                            if (downloader.DownloadFileSize != 0)
+                            {
+                                DownloadValue = (int)((double)downloader.DownloadCompleteSize / downloader.DownloadFileSize * 100);
+                            }
+                        } while (task.Status != TaskStatus.RanToCompletion);
+                    });
+
+                    var res = await task;
+                    Console.WriteLine($"download res: {res}");
+
+                    string message = GetDownloadResultMessage(res);
+                    headItem.DownloadExecute = true;
+                    if (message != "" && i == 0)
+                    {
+                        downloadFailedList.Add(headItem, message);
+                    }
+                }
+
+                url.Clear();
+                fileName.Clear();
                 downloadQueue.Dequeue();
             }
 
