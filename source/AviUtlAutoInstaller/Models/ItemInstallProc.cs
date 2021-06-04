@@ -16,18 +16,18 @@ namespace AviUtlAutoInstaller.Models
         /// </summary>
         /// <param name="installFileList"></param>
         /// <returns></returns>
-        public bool Install(string[] installFileList)
+        public static bool Install(InstallItem item, string[] installFileList)
         {
-            if (InstallFileType.Encoder == FileType)
+            if (InstallFileType.Encoder == item.FileType)
             {
-                InstallRigayaEncoder();
+                InstallRigayaEncoder(item.DownloadFileName);
 
                 return true;
             }
             else
             {
                 string installDir = string.Empty;
-                switch (FileType)
+                switch (item.FileType)
                 {
                     case InstallFileType.Tool:
                         break;
@@ -36,16 +36,16 @@ namespace AviUtlAutoInstaller.Models
                         AviUtlIniFileBuild();
                         break;
                     case InstallFileType.Script:
-                        installDir = $"{SysConfig.AviUtlScriptDir}\\{ScriptDirName}";
+                        installDir = $"{SysConfig.AviUtlScriptDir}\\{item.ScriptDirName}";
                         if (!Directory.Exists(installDir))
                         {
                             Directory.CreateDirectory(installDir);
                         }
                         break;
                     case InstallFileType.Plugin:
-                        if (IsSpecialPlugin(Name))
+                        if (IsSpecialPlugin(item.Name))
                         {
-                            return InstallSpecialPlugin(Name);
+                            return InstallSpecialPlugin(item);
                         }
                         else
                         {
@@ -84,7 +84,7 @@ namespace AviUtlAutoInstaller.Models
         /// </summary>
         /// <param name="externalFiles"></param>
         /// <returns></returns>
-        public bool ExternalInstall(string[] externalFiles)
+        public static bool ExternalInstall(string[] externalFiles)
         {
             foreach (string exFile in externalFiles)
             {
@@ -147,7 +147,7 @@ namespace AviUtlAutoInstaller.Models
         /// <param name="filePath">インストーラのパス</param>
         /// <param name="args">インストーラの引数</param>
         /// <returns>成否</returns>
-        private bool VSRuntimeInstall(string filePath, string args)
+        private static bool VSRuntimeInstall(string filePath, string args)
         {
             FileOperation fileOperation = new FileOperation();
 
@@ -182,7 +182,7 @@ namespace AviUtlAutoInstaller.Models
         /// </summary>
         /// <param name="name">名称</param>
         /// <returns></returns>
-        private bool IsSpecialPlugin(string name)
+        private static bool IsSpecialPlugin(string name)
         {
             bool b = _specialPluginDic.Any(x => x.Value == name);
             return b;
@@ -193,14 +193,14 @@ namespace AviUtlAutoInstaller.Models
         /// </summary>
         /// <param name="name">名称</param>
         /// <returns></returns>
-        private bool InstallSpecialPlugin(string name)
+        private static bool InstallSpecialPlugin(InstallItem item)
         {
-            var type = _specialPluginDic.First(x => x.Value == name).Key;
+            var type = _specialPluginDic.First(x => x.Value == item.Name).Key;
 
             switch (type)
             {
                 case SpecialPluginType.PSDToolkit:
-                    InstallPSDToolKit();
+                    InstallPSDToolKit(item.DownloadFileName);
                     break;
                 default:
                     return false;
@@ -212,10 +212,10 @@ namespace AviUtlAutoInstaller.Models
         /// <summary>
         /// PSDToolKitのインストール
         /// </summary>
-        private void InstallPSDToolKit()
+        private static void InstallPSDToolKit(string downloadFileName)
         {
             FileOperation fileOperation = new FileOperation();
-            string psdSrcPath = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(DownloadFileName)}";
+            string psdSrcPath = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}";
 
             // 取説の移動
             string psdManualDestPath = $"{SysConfig.InstallRootPath}\\PSDToolKitの説明ファイル群";
@@ -233,15 +233,15 @@ namespace AviUtlAutoInstaller.Models
             fileOperation.FileMove(srcFileNamePath.ToArray(), psdManualDestPath);
 
             // 本体の移動
-            fileOperation.DirectoryMove($"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(DownloadFileName)}", $"{SysConfig.AviUtlPluginDir}");
+            fileOperation.DirectoryMove($"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}", $"{SysConfig.AviUtlPluginDir}");
         }
 
 
-        private void InstallRigayaEncoder()
+        private static void InstallRigayaEncoder(string downloadFileName)
         {
             FileOperation fileOperation = new FileOperation();
             string tempDir = Path.GetTempPath();
-            var s = DownloadFileName.Split('_');
+            var s = downloadFileName.Split('_');
             string searchDirName = $"{s[0]}_{s[1]}";
 
             string extractDirPath = $"{tempDir}{searchDirName}";
@@ -254,7 +254,7 @@ namespace AviUtlAutoInstaller.Models
                 }
             }
 
-            fileOperation.DirectoryMove($"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(DownloadFileName)}", tempDir);
+            fileOperation.DirectoryMove($"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}", tempDir);
 
             string[] exe = { "auo_setup.exe" };
             var exeList = fileOperation.GenerateFilePathList(extractDirPath, exe);
@@ -282,7 +282,7 @@ namespace AviUtlAutoInstaller.Models
         /// <summary>
         /// AviUtlの設定ファイルを生成
         /// </summary>
-        private void AviUtlIniFileBuild()
+        private static void AviUtlIniFileBuild()
         {
             string aviutl_ini = $"{SysConfig.InstallRootPath}\\aviutl.ini";
             IniFileRW iniFileRW = new IniFileRW(aviutl_ini);

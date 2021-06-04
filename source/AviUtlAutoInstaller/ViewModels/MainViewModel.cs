@@ -570,9 +570,9 @@ namespace AviUtlAutoInstaller.ViewModels
                         continue;
                     }
                     {
-                        Func<string[], bool> func = new Func<string[], bool>(item.Install);
-                        var installFileList = GenerateInstalList(i, item);
-                        var task = Task.Run(() => func(installFileList.ToArray()));
+                        var func = new Func<InstallItem, string[], bool>(InstallItem.Install);
+                        var installFileList = installItemList.GenerateInstalList(i, item);
+                        var task = Task.Run(() => func(item, installFileList.ToArray()));
                         var res = await task;
                         if (res && 2 < item.NicoVideoID.Length)
                         {
@@ -582,7 +582,7 @@ namespace AviUtlAutoInstaller.ViewModels
 
                     if (!string.IsNullOrWhiteSpace(item.ExternalFile))
                     {
-                        var exFunc = new Func<string[], bool>(item.ExternalInstall);
+                        var exFunc = new Func<string[], bool>(InstallItem.ExternalInstall);
                         var exTask = Task.Run(() => exFunc(item.ExternalFileList.ToArray()));
                         var res = await exTask;
                     }
@@ -590,64 +590,6 @@ namespace AviUtlAutoInstaller.ViewModels
                     StateItemNow++;
                 }
             }
-        }
-
-        /// <summary>
-        /// インストールアイテムから、実際にインストールするファイル一覧を生成
-        /// </summary>
-        /// <param name="repoType">リポジトリの種類</param>
-        /// <param name="item">InstallItem</param>
-        /// <returns></returns>
-        private List<string> GenerateInstalList(InstallItemList.RepoType repoType, InstallItem item)
-        {
-            string[] _pluginFileExtension = { "*.auf", "*.aui", "*.auo", "*.auc", "*.aul" };
-            string[] _scriptFileExtension = { "*.anm", "*.obj", "*.scn", "*.cam" };
-            List<string> readyInstallFiles = new List<string>(); // インストールするファイルのパス一覧
-
-            string searchSrcDir;
-
-            string fileExtention = Path.GetExtension(item.DownloadFileName);
-            FileOperation fileOperation = new FileOperation();
-            if ((Array.IndexOf(_pluginFileExtension, fileExtention) == -1) &&
-                (Array.IndexOf(_scriptFileExtension, fileExtention) == -1))
-            {
-                // ダウンロードしたファイルが圧縮ファイル
-                string extractFile = $"{SysConfig.CacheDirPath}\\{item.DownloadFileName}";   // 解凍するファイルのパス: .\cache\FileName.圧縮形式
-                string extractDestDir = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(item.DownloadFileName)}";  //解凍先: root\EX_TEMP\FileNameDir\
-                fileOperation.Extract(extractFile, extractDestDir);
-                searchSrcDir = extractDestDir;
-            }
-            else
-            {
-                // ダウンロードしたファイルがスクリプトorプラグインファイル
-                searchSrcDir = $"{SysConfig.CacheDirPath}"; // cache\FileName
-            }
-
-            if (InstallItemList.RepoType.Pre == repoType)
-            {
-                readyInstallFiles = fileOperation.GenerateFilePathList(searchSrcDir, item.InstallFileList.ToArray());
-            }
-            else
-            {
-                if (InstallFileType.Plugin == item.FileType)
-                {
-                    readyInstallFiles = fileOperation.GenerateFilePathList(searchSrcDir, _pluginFileExtension);
-                }
-                else if (InstallFileType.Script == item.FileType)
-                {
-                    readyInstallFiles = fileOperation.GenerateFilePathList(searchSrcDir, _scriptFileExtension);
-                }
-
-                if (0 < item.InstallFileList.Count)
-                {
-                    var itemPaths = fileOperation.GenerateFilePathList(searchSrcDir, item.InstallFileList.ToArray());
-                    readyInstallFiles.AddRange(itemPaths);
-                }
-            }
-
-            var installFiles = readyInstallFiles.Distinct(StringComparer.InvariantCultureIgnoreCase).ToList();
-
-            return installFiles;
         }
 
         /// <summary>
