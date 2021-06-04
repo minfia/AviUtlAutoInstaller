@@ -71,5 +71,16 @@ namespace AviUtlAutoInstaller.Models
         /// ファイルの展開先のディレクトリパス
         /// </summary>
         public static string InstallExpansionDir { get; private set; }
+
+        /// <summary>
+        /// プラグイン拡張子
+        /// </summary>
+        public static string[] PluginFileExtension = { "*.auf", "*.aui", "*.auo", "*.auc", "*.aul" };
+
+        /// <summary>
+        /// スクリプト拡張子
+        /// </summary>
+        public static string[] ScriptFileExtension = { "*.anm", "*.obj", "*.scn", "*.cam" };
+
     }
 }

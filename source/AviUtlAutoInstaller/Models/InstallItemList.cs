@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -159,5 +160,63 @@ namespace AviUtlAutoInstaller.Models
                 }
             }
         }
+
+        /// <summary>
+        /// インストールアイテムから、実際にインストールするファイル一覧を生成
+        /// </summary>
+        /// <param name="repoType">リポジトリの種類</param>
+        /// <param name="item">InstallItem</param>
+        /// <returns></returns>
+        public List<string> GenerateInstalList(RepoType repoType, InstallItem item)
+        {
+            List<string> readyInstallFiles = new List<string>(); // インストールするファイルのパス一覧
+
+            string searchSrcDir;
+
+            string fileExtention = Path.GetExtension(item.DownloadFileName);
+            FileOperation fileOperation = new FileOperation();
+            if ((Array.IndexOf(SysConfig.PluginFileExtension, fileExtention) == -1) &&
+                (Array.IndexOf(SysConfig.ScriptFileExtension, fileExtention) == -1))
+            {
+                // ダウンロードしたファイルが圧縮ファイル
+                string extractFile = $"{SysConfig.CacheDirPath}\\{item.DownloadFileName}";   // 解凍するファイルのパス: .\cache\FileName.圧縮形式
+                string extractDestDir = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(item.DownloadFileName)}";  //解凍先: root\EX_TEMP\FileNameDir\
+                fileOperation.Extract(extractFile, extractDestDir);
+                searchSrcDir = extractDestDir;
+            }
+            else
+            {
+                // ダウンロードしたファイルがスクリプトorプラグインファイル
+                searchSrcDir = $"{SysConfig.CacheDirPath}"; // cache\FileName
+            }
+
+            if (InstallItemList.RepoType.Pre == repoType)
+            {
+                readyInstallFiles = fileOperation.GenerateFilePathList(searchSrcDir, item.InstallFileList.ToArray());
+            }
+            else
+            {
+                if (InstallFileType.Plugin == item.FileType)
+                {
+                    readyInstallFiles = fileOperation.GenerateFilePathList(searchSrcDir, SysConfig.PluginFileExtension);
+                }
+                else if (InstallFileType.Script == item.FileType)
+                {
+                    readyInstallFiles = fileOperation.GenerateFilePathList(searchSrcDir, SysConfig.ScriptFileExtension);
+                }
+
+                if (0 < item.InstallFileList.Count)
+                {
+                    var itemPaths = fileOperation.GenerateFilePathList(searchSrcDir, item.InstallFileList.ToArray());
+                    readyInstallFiles.AddRange(itemPaths);
+                }
+            }
+
+            var installFiles = readyInstallFiles.Distinct(StringComparer.InvariantCultureIgnoreCase).ToList();
+
+            return installFiles;
+        }
+
+
     }
 }
