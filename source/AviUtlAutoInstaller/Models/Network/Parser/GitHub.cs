@@ -66,7 +66,7 @@ namespace AviUtlAutoInstaller.Models.Network.Parser
             try
             {
                 var web = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
-                web.GetResponse();
+                web.GetResponse().Close();
             }
             catch
             {
