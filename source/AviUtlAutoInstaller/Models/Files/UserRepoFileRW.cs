@@ -99,11 +99,7 @@ namespace AviUtlAutoInstaller.Models.Files
 
             TomlTableArray array = data.Get<TomlTableArray>("data");
 
-            {
-                InstallItemList installItemList = new InstallItemList();
-                var itemList = installItemList.GetInstalItemList(InstallItemList.RepoType.User);
-                itemList.Clear();
-            }
+            InstallItemList.ItemClear(InstallItemList.RepoType.User);
 
             switch (version)
             {

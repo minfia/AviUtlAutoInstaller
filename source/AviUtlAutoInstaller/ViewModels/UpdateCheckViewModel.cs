@@ -1,4 +1,6 @@
 ﻿using AviUtlAutoInstaller.Models;
+using AviUtlAutoInstaller.Models.Files;
+using AviUtlAutoInstaller.Models.Network;
 using AviUtlAutoInstaller.Models.Network.Parser;
 using System;
 using System.Collections.Generic;
@@ -35,6 +37,16 @@ namespace AviUtlAutoInstaller.ViewModels
             get { return _preRepoUpdateExist; }
             private set { SetProperty(ref _preRepoUpdateExist, value); }
         }
+
+        private string _preRepoURL = "";
+        private bool _preRepoUpdateEnable = false;
+        public bool PreRepoUpdateEnable
+        {
+            get { return _preRepoUpdateEnable; }
+            private set { SetProperty(ref _preRepoUpdateEnable, value); }
+        }
+        private DelegateCommand _preRepoUpdateCommand;
+        public DelegateCommand PreRepoUpdateCommand { get => _preRepoUpdateCommand; }
         #endregion
 
         #region アプリケーション
@@ -79,9 +91,18 @@ namespace AviUtlAutoInstaller.ViewModels
 
         public UpdateCheckViewModel()
         {
+            _preRepoUpdateCommand = new DelegateCommand(
+                async _ =>
+                {
+                    PreRepoUpdateEnable = UpdateCheckButtonEnable = false;
+                    await PreRepoUpdate();
+                    UpdateCheckButtonEnable = true;
+                });
             _updateCheckCommand = new DelegateCommand(
                 async _ =>
                 {
+                    PreRepoGetVersion = PreRepoUpdateExist = "";
+                    ApplicationGetVersion = ApplicationUpdateExist = "";
                     await UpdateCheck();
                 });
             ApplicationVersion = ProductInfo.ValidAppVersion;
@@ -130,10 +151,12 @@ namespace AviUtlAutoInstaller.ViewModels
                 return false;
             }
             PreRepoGetVersion = gitHub.Versions[0];
+            _preRepoURL = gitHub.VersionLink[PreRepoGetVersion];
 
             if (CompVersion(PreRepoVersion, PreRepoGetVersion))
             {
                 PreRepoUpdateExist = "アップデートがあります";
+                PreRepoUpdateEnable = true;
             }
 
             return true;
@@ -157,7 +180,7 @@ namespace AviUtlAutoInstaller.ViewModels
             }
             catch
             {
-                ApplicationGetVersion = "アップデートチェックに失敗しました";
+                ApplicationUpdateExist = "アップデートチェックに失敗しました";
                 return false;
             }
             ApplicationGetVersion = gitHub.Versions[0];
@@ -168,6 +191,36 @@ namespace AviUtlAutoInstaller.ViewModels
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// プリインストールリポジトリの更新
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> PreRepoUpdate()
+        {
+            Downloader downloader = new Downloader($"{SysConfig.RepoDirPath}");
+
+            Task<DownloadResult> task = Task.Run(() => downloader.DownloadStart(_preRepoURL, "aai.repo"));
+            await task;
+
+            if (task.Result == DownloadResult.Complete)
+            {
+                {
+                    PreRepoFileR preRepoFileR = new PreRepoFileR(SysConfig.AaiRepoFilePath);
+                    preRepoFileR.Open();
+                    preRepoFileR.GetDBVersion(out uint major, out uint minor, out uint maintenance);
+                    preRepoFileR.ReadInstallItemList();
+                    preRepoFileR.Close();
+                    ProductInfo productInfo = new ProductInfo();
+                    productInfo.SetRepoVersion(major, minor, maintenance);
+                }
+                PreRepoVersion = ProductInfo.RepoVersion;
+                PreRepoUpdateExist = "";
+                return true;
+            }
+
+            return false;
         }
 
         private bool CompVersion(string nowVersion, string getVersion)

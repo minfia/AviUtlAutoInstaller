@@ -95,6 +95,15 @@ namespace AviUtlAutoInstaller.Models
         }
 
         /// <summary>
+        /// インストールアイテムをクリア
+        /// </summary>
+        /// <param name="repoType">リポジトリの選択</param>
+        public static void ItemClear(RepoType repoType)
+        {
+            _installItemList[(int)repoType].Clear();
+        }
+
+        /// <summary>
         /// 項目名の重複チェック
         /// </summary>
         /// <param name="repoType">リポジトリの選択</param>

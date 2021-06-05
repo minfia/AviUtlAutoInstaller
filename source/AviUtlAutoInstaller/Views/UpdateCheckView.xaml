@@ -57,6 +57,17 @@
                        Grid.Row="2"
                        Margin="4,4,0,0"
                        Text="{Binding PreRepoGetVersion}"/>
+            <Button Margin="0,0,20,0"
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Grid.RowSpan="2"
+                    HorizontalAlignment="Right"
+                    Width="52" Height="28"
+                    BorderThickness="0.8"
+                    Controls:ControlsHelper.ContentCharacterCasing="Normal"
+                    Content="更新"
+                    IsEnabled="{Binding PreRepoUpdateEnable}"
+                    Command="{Binding PreRepoUpdateCommand}"/>
         </Grid>
         <Grid Margin="0,12,0,0">
             <Grid.ColumnDefinitions>
@@ -95,6 +106,19 @@
                        Grid.Row="2"
                        Margin="4,4,0,0"
                        Text="{Binding ApplicationGetVersion}"/>
+            <!--
+            <Button Margin="0,0,20,0"
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Grid.RowSpan="2"
+                    HorizontalAlignment="Right"
+                    Width="52" Height="28"
+                    BorderThickness="0.8"
+                    Controls:ControlsHelper.ContentCharacterCasing="Normal"
+                    Content="更新"
+                    IsEnabled="{Binding AppUpdateEnable}"
+                    Command="{Binding AppUpdateCommand}"/>
+            -->
         </Grid>
         <Controls:MetroProgressBar Margin="0,4,0,4"
                                    Foreground="DeepSkyBlue"

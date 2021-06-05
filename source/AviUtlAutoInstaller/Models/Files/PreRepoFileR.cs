@@ -71,6 +71,7 @@ namespace AviUtlAutoInstaller.Models.Files
         /// <returns>成否</returns>
         public bool ReadInstallItemList()
         {
+            InstallItemList.ItemClear(InstallItemList.RepoType.Pre);
             try
             {
                 using (SQLiteCommand cmd = new SQLiteCommand(connection))
