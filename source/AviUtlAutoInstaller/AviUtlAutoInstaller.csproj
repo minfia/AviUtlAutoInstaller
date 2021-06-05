@@ -143,6 +143,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Assets\aai.repo" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -206,4 +207,11 @@
     <Resource Include="Assets\app.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if "$(ConfigurationName)" == "Release" (
+    mkdir "$(TargetDir)\repo" &gt; NUL 2&gt;&amp;1
+    mkdir "$(TargetDir)\repo\user_repo" &gt; NUL 2&gt;&amp;1
+    xcopy /Y "$(ProjectDir)\Assets\aai.repo" "$(TargetDir)\repo"
+)</PostBuildEvent>
+  </PropertyGroup>
 </Project>
