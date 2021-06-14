@@ -38,10 +38,11 @@ namespace AviUtlAutoInstaller.Models.Files
         /// <param name="major">メジャーバージョン</param>
         /// <param name="minor">マイナーバージョン</param>
         /// <param name="maintenance">メンテナンスバージョン</param>
+        /// <param name="app_match">アプリ整合性バージョン</param>
         /// <returns>成否</returns>
-        public bool GetDBVersion(out uint major, out uint minor, out uint maintenance)
+        public bool GetDBVersion(out uint major, out uint minor, out uint maintenance, out uint app_match)
         {
-            major = minor = maintenance = 0;
+            major = minor = maintenance = app_match = 0;
 
             try
             {
@@ -55,6 +56,7 @@ namespace AviUtlAutoInstaller.Models.Files
                         major = uint.Parse(reader["major"].ToString());
                         minor = uint.Parse(reader["minor"].ToString());
                         maintenance = uint.Parse(reader["maintenance"].ToString());
+                        app_match = uint.Parse(reader["app_match"].ToString());
                         return true;
                     }
                 }

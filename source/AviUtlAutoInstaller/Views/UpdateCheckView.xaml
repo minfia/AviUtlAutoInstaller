@@ -51,8 +51,14 @@
                        Text="取得したバージョン:"/>
             <TextBlock Grid.Column="1"
                        Grid.Row="1"
-                       Margin="4,4,0,0"
-                       Text="{Binding PreRepoVersion, StringFormat=v{0}}"/>
+                       Margin="4,4,0,0">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="v{0}-{1}">
+                        <Binding Path="PreRepoVersion"/>
+                        <Binding Path="AppMatchVersion"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
             <TextBlock Grid.Column="1"
                        Grid.Row="2"
                        Margin="4,4,0,0"
@@ -101,7 +107,14 @@
             <TextBlock Grid.Column="1"
                        Grid.Row="1"
                        Margin="4,4,0,0"
-                       Text="{Binding ApplicationVersion, StringFormat=v{0}}"/>
+                       >
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="v{0}-{1}">
+                        <Binding Path="ApplicationVersion"/>
+                        <Binding Path="SupportRepoVersion"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
             <TextBlock Grid.Column="1"
                        Grid.Row="2"
                        Margin="4,4,0,0"

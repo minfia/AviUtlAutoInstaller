@@ -24,7 +24,7 @@ namespace AviUtlAutoInstaller.ViewModels
         /// </summary>
         public string ApplicationVersion
         {
-            get { return ProductInfo.ValidAppVersion; }
+            get { return $"{ProductInfo.ValidAppVersion}-{ProductInfo.SupportRepoVersion}"; }
         }
 
         private string _preRepoVersion;
@@ -41,9 +41,9 @@ namespace AviUtlAutoInstaller.ViewModels
         {
             PreRepoFileR preRepoFileR = new PreRepoFileR($"{SysConfig.RepoDirPath}\\aai.repo");
             preRepoFileR.Open();
-            preRepoFileR.GetDBVersion(out uint major, out uint minor, out uint maintenance);
+            preRepoFileR.GetDBVersion(out uint major, out uint minor, out uint maintenance, out uint app_match);
             preRepoFileR.Close();
-            PreRepoVersion = $"{major}.{minor}.{maintenance}";
+            PreRepoVersion = $"{major}.{minor}.{maintenance}-{app_match}";
         }
 
         public void OpenLink(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
