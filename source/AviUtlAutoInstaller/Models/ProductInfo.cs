@@ -77,9 +77,44 @@ namespace AviUtlAutoInstaller.Models
             get { return _repoVersion; }
         }
 
-        public void SetRepoVersion(uint major, uint minor, uint maintenance)
+        private static uint _appMatchVersion = 0;
+        /// <summary>
+        /// リポジトリが対応しているバージョン
+        /// </summary>
+        public static uint AppMatchVersion
+        { 
+            get { return _appMatchVersion; }
+        }
+
+        private const uint _supportRepoVersion = 0;
+        /// <summary>
+        /// アプリが対応するリポジトリバージョン
+        /// </summary>
+        public static uint SupportRepoVersion
+        {
+            get { return _supportRepoVersion; }
+        }
+
+        /// <summary>
+        /// リポジトリのバージョンをセットする
+        /// </summary>
+        /// <param name="major"></param>
+        /// <param name="minor"></param>
+        /// <param name="maintenance"></param>
+        public void SetRepoVersion(uint major, uint minor, uint maintenance, uint app_match)
         {
             _repoVersion = $"{major}.{minor}.{maintenance}";
+            _appMatchVersion = app_match;
+        }
+
+        /// <summary>
+        /// アプリとリポジトリの整合性チェック
+        /// </summary>
+        /// <param name="app_match"></param>
+        /// <returns></returns>
+        public bool IsSupportRepoVersion(uint app_match)
+        {
+            return _supportRepoVersion == app_match;
         }
     }
 }

@@ -4,6 +4,7 @@ using AviUtlAutoInstaller.Models.Network;
 using AviUtlAutoInstaller.Models.Network.Parser;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,6 +46,18 @@ namespace AviUtlAutoInstaller.ViewModels
             get { return _preRepoUpdateEnable; }
             private set { SetProperty(ref _preRepoUpdateEnable, value); }
         }
+
+        public string AppMatchVersion { get; private set; }
+        private string _appMatchGetVersion = "";
+        /// <summary>
+        /// リポジトリが対応するバージョン
+        /// </summary>
+        public string AppMatchGetVersion
+        {
+            get { return _appMatchGetVersion; }
+            private set { SetProperty(ref _appMatchGetVersion, value); }
+        }
+
         private DelegateCommand _preRepoUpdateCommand;
         public DelegateCommand PreRepoUpdateCommand { get => _preRepoUpdateCommand; }
         #endregion
@@ -70,6 +83,8 @@ namespace AviUtlAutoInstaller.ViewModels
             get { return _applicationUpdateExist; }
             private set { SetProperty(ref _applicationUpdateExist, value); }
         }
+
+        public string SupportRepoVersion { get; private set; }
         #endregion
 
         private bool _updateCheckButtonEnable = true;
@@ -107,6 +122,8 @@ namespace AviUtlAutoInstaller.ViewModels
                 });
             ApplicationVersion = ProductInfo.ValidAppVersion;
             PreRepoVersion = ProductInfo.RepoVersion;
+            AppMatchVersion = ProductInfo.AppMatchVersion.ToString();
+            SupportRepoVersion = ProductInfo.SupportRepoVersion.ToString();
         }
 
         private async Task<bool> UpdateCheck()
@@ -199,25 +216,37 @@ namespace AviUtlAutoInstaller.ViewModels
         /// <returns></returns>
         private async Task<bool> PreRepoUpdate()
         {
-            Downloader downloader = new Downloader($"{SysConfig.RepoDirPath}");
+            Downloader downloader = new Downloader($"{SysConfig.CacheDirPath}");
 
             Task<DownloadResult> task = Task.Run(() => downloader.DownloadStart(_preRepoURL, "aai.repo"));
             await task;
 
             if (task.Result == DownloadResult.Complete)
             {
+                if (File.Exists($"{SysConfig.CacheDirPath}\\aai.repo"))
                 {
-                    PreRepoFileR preRepoFileR = new PreRepoFileR(SysConfig.AaiRepoFilePath);
+                    PreRepoFileR preRepoFileR = new PreRepoFileR($"{SysConfig.CacheDirPath}\\aai.repo");
                     preRepoFileR.Open();
-                    preRepoFileR.GetDBVersion(out uint major, out uint minor, out uint maintenance);
+                    preRepoFileR.GetDBVersion(out uint major, out uint minor, out uint maintenance, out uint app_match);
+                    ProductInfo productInfo = new ProductInfo();
+
+                    if (!productInfo.IsSupportRepoVersion(app_match))
+                    {
+                        MessageBox.Show("新しいバージョンは、このアプリケーションのバージョンでは使用できません", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                        preRepoFileR.Close();
+                        File.Delete($"{SysConfig.CacheDirPath}\\aai.repo");
+                        return false;
+                    }
                     preRepoFileR.ReadInstallItemList();
                     preRepoFileR.Close();
-                    ProductInfo productInfo = new ProductInfo();
-                    productInfo.SetRepoVersion(major, minor, maintenance);
+                    File.Delete(SysConfig.AaiRepoFilePath);
+                    File.Move($"{SysConfig.CacheDirPath}\\aai.repo", SysConfig.AaiRepoFilePath);
+                    productInfo.SetRepoVersion(major, minor, maintenance, app_match);
+                    PreRepoVersion = ProductInfo.RepoVersion;
+                    AppMatchVersion = ProductInfo.AppMatchVersion.ToString();
+                    PreRepoUpdateExist = "";
+                    return true;
                 }
-                PreRepoVersion = ProductInfo.RepoVersion;
-                PreRepoUpdateExist = "";
-                return true;
             }
 
             return false;

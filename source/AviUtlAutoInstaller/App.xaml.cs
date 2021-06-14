@@ -82,16 +82,26 @@ namespace AviUtlAutoInstaller
                 PreRepoFileR preRepoFileR = new PreRepoFileR($"{SysConfig.RepoDirPath}\\aai.repo");
                 preRepoFileR.Open();
 
-                if (!preRepoFileR.GetDBVersion(out uint major, out uint minor, out uint maintenance) || !preRepoFileR.ReadInstallItemList())
+                if (!preRepoFileR.GetDBVersion(out uint major, out uint minor, out uint maintenance, out uint app_match))
                 {
-                    MessageBox.Show("aai.repoを読み込めませんでした\nアプリをダウンロードし直すか、aai.repoをダウンロードしてください", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("aai.repoのバージョンを読み込めませんでした\naai.repoをダウンロードし直してください", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                    preRepoFileR.Close();
                     Current.Shutdown();
                     return;
                 }
-                preRepoFileR.Close();
 
                 ProductInfo productInfo = new ProductInfo();
-                productInfo.SetRepoVersion(major, minor, maintenance);
+                if (!productInfo.IsSupportRepoVersion(app_match))
+                {
+                    MessageBox.Show($"アプリのバージョン({ProductInfo.SupportRepoVersion})とaai.repoのバージョン({app_match})とが一致しません\n" +
+                                    $"バージョンを合わせるためにアプリをダウンロードし直すか、aai.repoをダウンロードしてください", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                    preRepoFileR.Close();
+                    Current.Shutdown();
+                    return;
+                }
+                preRepoFileR.ReadInstallItemList();
+                preRepoFileR.Close();
+                productInfo.SetRepoVersion(major, minor, maintenance, app_match);
             }
 
             var mv = new MainView();
