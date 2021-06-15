@@ -9,7 +9,7 @@ using System.Windows;
 // これらの属性値を変更してください。
 [assembly: AssemblyTitle("AviUtl環境を構築したい")]
 [assembly: AssemblyDescription("AviUtl環境を構築したい")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("minfia Lab.")]
 [assembly: AssemblyProduct("AviUtlAutoInstaller")]
 [assembly: AssemblyCopyright("Copyright ©  2021 minfia")]
 
