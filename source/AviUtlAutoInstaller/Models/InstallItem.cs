@@ -20,6 +20,51 @@ namespace AviUtlAutoInstaller.Models
     }
 
     /// <summary>
+    /// セクションタイプ
+    /// </summary>
+    public enum InstallSectionType
+    {
+        /// <summary>
+        /// 本体
+        /// </summary>
+        Main,
+        /// <summary>
+        /// エンコーダ
+        /// </summary>
+        Encoder,
+        /// <summary>
+        /// ファイル入力
+        /// </summary>
+        FileInput,
+        /// <summary>
+        /// エフェクト
+        /// </summary>
+        Effect,
+        /// <summary>
+        /// エフェクト(音声)
+        /// </summary>
+        EffectAudio,
+        /// <summary>
+        /// フィルタ
+        /// </summary>
+        Filter,
+        /// <summary>
+        /// シーンチェンジ
+        /// </summary>
+        SceneChange,
+
+        /// <summary>
+        /// アプリ補助
+        /// </summary>
+        AppAssist = 250,
+
+        /// <summary>
+        /// その他
+        /// </summary>
+        Other = 255
+    }
+
+    /// <summary>
     /// ダウンロード/インストールの優先度
     /// </summary>
     public enum InstallPriority
@@ -244,6 +289,24 @@ namespace AviUtlAutoInstaller.Models
             set { SetProperty(ref _nicoVideoID, value); }
         }
 
+        private InstallSectionType _sectionType = InstallSectionType.Other;
+        public InstallSectionType SectionType
+        {
+            get { return _sectionType; }
+            set
+            {
+                SetProperty(ref _sectionType, value);
+                SectionTypeString = GetSectionTypeString(value);
+            }
+        }
+
+        private string _sectionTypeString = GetSectionTypeString(InstallSectionType.Other);
+        public string SectionTypeString
+        {
+            get { return _sectionTypeString; }
+            set { SetProperty(ref _sectionTypeString, value); }
+        }
+
         private bool _downloadExecute = true;
         /// <summary>
         /// 個別ダウンロードの実行可能状態<br/>
@@ -281,6 +344,41 @@ namespace AviUtlAutoInstaller.Models
             }
 
             return _fileTypeDic[fileType];
+        }
+
+        /// <summary>
+        /// セクションタイプに対応する文字列
+        /// </summary>
+        private static Dictionary<InstallSectionType, string> _sectionTypeDic = new Dictionary<InstallSectionType, string>()
+        {
+            { InstallSectionType.Main, "本体" },
+            { InstallSectionType.Encoder, "エンコーダ" },
+            { InstallSectionType.FileInput, "ファイル入力" },
+            { InstallSectionType.Effect, "エフェクト" },
+            { InstallSectionType.EffectAudio, "エフェクト(音声)" },
+            { InstallSectionType.Filter, "フィルタ" },
+            { InstallSectionType.SceneChange, "シーンチェンジ" },
+
+            { InstallSectionType.AppAssist, "アプリ補助" },
+
+            { InstallSectionType.Other, "その他" }
+        };
+
+        /// <summary>
+        /// セクションタイプから対応する文字列を取得
+        /// </summary>
+        /// <param name="sectionType"></param>
+        /// <returns></returns>
+        public static string GetSectionTypeString(InstallSectionType sectionType)
+        {
+            if (InstallSectionType.AppAssist != sectionType && 
+                InstallSectionType.Other != sectionType &&
+                Enum.GetValues(typeof(InstallSectionType)).Length < (int)sectionType)
+            {
+                return "";
+            }
+
+            return _sectionTypeDic[sectionType];
         }
 
         /// <summary>

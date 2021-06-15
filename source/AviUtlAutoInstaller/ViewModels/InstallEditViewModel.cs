@@ -141,6 +141,7 @@ namespace AviUtlAutoInstaller.ViewModels
             Name,
             ScriptDirName,
             FileType,
+            Section,
         }
 
         private Dictionary<int, InstallItemList.RepoType> _selectTab = new Dictionary<int, InstallItemList.RepoType>()
@@ -165,12 +166,15 @@ namespace AviUtlAutoInstaller.ViewModels
                 if (_selectTab[value] == InstallItemList.RepoType.Pre)
                 {
                     IsFileTypeFilterVisible = Visibility.Collapsed;
+                    IsSectionFilterVisible = Visibility.Visible;
                 }
                 else
                 {
                     IsFileTypeFilterVisible = Visibility.Visible;
+                    IsSectionFilterVisible = Visibility.Collapsed;
                 }
                 FileTypeFilterSelectIndex = _fileTypeFilterList[value];
+                SectionFilterSelectIndex = _sectionFilterList[value];
             }
         }
 
@@ -202,7 +206,7 @@ namespace AviUtlAutoInstaller.ViewModels
         private readonly string[] _scriptDirNameFilterList = new string[(int)InstallItemList.RepoType.MAX] { "", "" };
         private string _scriptDirNameFilter = "";
         /// <summary>
-        /// スクリプトフォルダ名のフィルタ値w
+        /// スクリプトフォルダ名のフィルタ値
         /// </summary>
         public string ScriptDirNameFilter
         {
@@ -260,6 +264,60 @@ namespace AviUtlAutoInstaller.ViewModels
         }
         #endregion
 
+        #region ファイルタイプのフィルタ
+        /// <summary>
+        /// ファイルタイプのフィルタ用定数
+        /// </summary>
+        private const int SectionAll = int.MaxValue;
+        /// <summary>
+        /// コンボボックスに表示する内容
+        /// </summary>
+        public Dictionary<int, string> SectionFilter { get; } = new Dictionary<int, string>()
+        {
+            { SectionAll, "全て" },
+            { (int)InstallSectionType.Main, InstallItem.GetSectionTypeString(InstallSectionType.Main) },
+            { (int)InstallSectionType.Encoder, InstallItem.GetSectionTypeString(InstallSectionType.Encoder) },
+            { (int)InstallSectionType.FileInput, InstallItem.GetSectionTypeString(InstallSectionType.FileInput) },
+            { (int)InstallSectionType.Effect, InstallItem.GetSectionTypeString(InstallSectionType.Effect) },
+            { (int)InstallSectionType.EffectAudio, InstallItem.GetSectionTypeString(InstallSectionType.EffectAudio) },
+            { (int)InstallSectionType.Filter, InstallItem.GetSectionTypeString(InstallSectionType.Filter) },
+            { (int)InstallSectionType.SceneChange, InstallItem.GetSectionTypeString(InstallSectionType.SceneChange) },
+
+            { (int)InstallSectionType.AppAssist, InstallItem.GetSectionTypeString(InstallSectionType.AppAssist) },
+
+            { (int)InstallSectionType.Other, InstallItem.GetSectionTypeString(InstallSectionType.Other) },
+        };
+        private string _sectionSelectValue;
+        /// <summary>
+        /// 各Listのファイルタイプフィルタ値保持用
+        /// </summary>
+        private readonly int[] _sectionFilterList = new int[(int)InstallItemList.RepoType.MAX] { 0, 0 };
+        private int _sectionFilterSelectIndex;
+        /// <summary>
+        /// ファイルタイプのフィルタ値
+        /// </summary>
+        public int SectionFilterSelectIndex
+        {
+            get { return _sectionFilterSelectIndex; }
+            set
+            {
+                SetProperty(ref _sectionFilterSelectIndex, value);
+                string[] itemNameList = SectionFilter.Values.ToArray();
+                _sectionSelectValue = itemNameList[value];
+                UpdateFilterData(_selectTab[TabControlSelectIndex], FilterType.Section, value);
+            }
+        }
+        private Visibility _IsSectionFilterVisible = Visibility.Visible;
+        /// <summary>
+        /// ファイルタイプのフィルタの表示設定
+        /// </summary>
+        public Visibility IsSectionFilterVisible
+        {
+            get { return _IsSectionFilterVisible; }
+            set { SetProperty(ref _IsSectionFilterVisible, value); }
+        }
+        #endregion
+
         /// <summary>
         /// 選択されたタブに合わせてフィルタ更新
         /// </summary>
@@ -283,6 +341,9 @@ namespace AviUtlAutoInstaller.ViewModels
                 case FilterType.FileType:
                     _fileTypeFilterList[(int)selectTab] = (int)data;
                     break;
+                case FilterType.Section:
+                    _sectionFilterList[(int)selectTab] = (int)data;
+                    break;
             }
             if (InstallItemList.RepoType.Pre == selectTab)
             {
@@ -303,8 +364,10 @@ namespace AviUtlAutoInstaller.ViewModels
         {
             InstallItem installItem = e.Item as InstallItem;
             int fileType = FileTypeFilter.First(x => x.Value.Contains(_fileTypeSelectValue)).Key;
+            int sectionType = SectionFilter.First(x => x.Value.Contains(_sectionSelectValue)).Key;
             if (installItem.Name.Contains(NameFilter) && installItem.ScriptDirName.Contains(ScriptDirNameFilter) &&
-                ((int)installItem.FileType == fileType || FileTypeAll == fileType))
+                ((int)installItem.FileType == fileType || FileTypeAll == fileType) &&
+                ((int)installItem.SectionType == sectionType || SectionAll == sectionType))
             {
                 e.Accepted = true;
             }
@@ -337,6 +400,7 @@ namespace AviUtlAutoInstaller.ViewModels
         {
             _installItemList = new InstallItemList();
             _fileTypeSelectValue = FileTypeFilter[FileTypeAll];
+            _sectionSelectValue = SectionFilter[SectionAll];
 
             PreInstallList = _installItemList.GetInstalItemList(InstallItemList.RepoType.Pre);
             UserInstallList = _installItemList.GetInstalItemList(InstallItemList.RepoType.User);

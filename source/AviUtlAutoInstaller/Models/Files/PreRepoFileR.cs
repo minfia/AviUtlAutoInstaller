@@ -13,6 +13,7 @@ namespace AviUtlAutoInstaller.Models.Files
         private static readonly string _priorityTableName = "Priority";
         private static readonly string _fileTypeTableName = "FileType";
         private static readonly string _versionTableName = "Version";
+        private static readonly string _sectionTableName = "Section";
         private static SQLiteConnection connection;
 
         public PreRepoFileR(string databaseFilePath)
@@ -78,7 +79,7 @@ namespace AviUtlAutoInstaller.Models.Files
             {
                 using (SQLiteCommand cmd = new SQLiteCommand(connection))
                 {
-                    cmd.CommandText = $"select * from {_installTableName} natural join {_priorityTableName} natural join {_fileTypeTableName}";
+                    cmd.CommandText = $"select * from {_installTableName} natural join {_priorityTableName} natural join {_fileTypeTableName} natural join {_sectionTableName}";
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -96,7 +97,8 @@ namespace AviUtlAutoInstaller.Models.Files
                                 InstallFile = reader["install_file"].ToString(),
                                 ExternalFile = reader["external_file"].ToString(),
                                 ExternalFileURL = reader["external_file_url"].ToString(),
-                                NicoVideoID = reader["nico_video_id"].ToString()
+                                NicoVideoID = reader["nico_video_id"].ToString(),
+                                SectionType = (InstallSectionType)uint.Parse(reader["section"].ToString())
                             };
                             item.IsSelect = ((InstallFileType.Main == item.FileType) || (item.CommandName == "exedit")) ? true : false;
                             item.IsItemSelectEnable = (InstallFileType.Main == item.FileType || (item.CommandName == "exedit")) ? false : true;
