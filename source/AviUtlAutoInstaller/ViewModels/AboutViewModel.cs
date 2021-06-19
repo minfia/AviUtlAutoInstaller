@@ -16,7 +16,7 @@ namespace AviUtlAutoInstaller.ViewModels
         /// </summary>
         public string ApplicationName
         {
-            get { return ProductInfo.AppName; }
+            get { return ProductInfo.Product; }
         }
 
         /// <summary>
