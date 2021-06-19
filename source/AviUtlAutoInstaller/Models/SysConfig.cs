@@ -44,8 +44,14 @@ namespace AviUtlAutoInstaller.Models
                 AviUtlPluginDir = $"{_installRootPath}\\plugins";
                 AviUtlScriptDir = $"{AviUtlPluginDir}\\script";
                 AviUtlFigureDir = $"{AviUtlPluginDir}\\figure";
+                DownloadFailedFile = $"{_installRootPath}\\download_failed_list.txt";
             }
         }
+
+        /// <summary>
+        /// ダウンロード失敗リストの出力ファイルパス
+        /// </summary>
+        public static string DownloadFailedFile { get; private set; }
 
         /// <summary>
         /// プラグインのディレクトリパス
