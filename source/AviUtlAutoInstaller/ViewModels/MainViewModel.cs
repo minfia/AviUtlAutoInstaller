@@ -15,6 +15,24 @@ namespace AviUtlAutoInstaller.ViewModels
 {
     class MainViewModel : NotificationObject
     {
+        /// <summary>
+        /// インストール結果
+        /// </summary>
+        enum InstallResult { 
+            /// <summary>
+            /// 正常
+            /// </summary>
+            OK,
+            /// <summary>
+            /// 失敗
+            /// </summary>
+            NG,
+            /// <summary>
+            /// ダウンロード失敗あり
+            /// </summary>
+            DownloadFailed,
+        };
+
         #region メニューバーCommand
         private DelegateCommand _openDialogInstallSettingFileCommand;
         private DelegateCommand _openDialogUserRepoFileCommand;
@@ -301,10 +319,30 @@ namespace AviUtlAutoInstaller.ViewModels
                     ProgressVisiblity = Visibility.Visible;
                     _installing = true;
                     IsInstallButtonEnable = IsFileOpenMenuEnable = IsInstallEditManuEnable = IsUpdateCheckManuEnable = IsCopyBackupEnable = IsMakeShortcutEnable = IsSelectInstallDirEnable = false;
-                    await InstallAsync();
+                    var result = await InstallAsync();
                     IsInstallButtonEnable = IsFileOpenMenuEnable = IsInstallEditManuEnable = IsUpdateCheckManuEnable = IsCopyBackupEnable = IsMakeShortcutEnable = IsSelectInstallDirEnable = true;
                     _installing = false;
                     ProgressVisiblity = Visibility.Collapsed;
+
+                    string message = "インストールが完了しました";
+                    string title = "情報";
+                    var image = MessageBoxImage.Information;
+                    switch (result)
+                    {
+                        case InstallResult.DownloadFailed:
+                            message = $"ダウンロードに失敗したファイルがあります\n詳細は{SysConfig.DownloadFailedFile}を確認してください";
+                            title = "エラー";
+                            image = MessageBoxImage.Error;
+                            break;
+                        case InstallResult.NG:
+                            message = "インストールに失敗しました";
+                            title = "エラー";
+                            image = MessageBoxImage.Error;
+                            break;
+                        default:
+                            break;
+                    }
+                    MessageBox.Show(message, title, MessageBoxButton.OK, image);
                 });
         }
 
@@ -312,8 +350,9 @@ namespace AviUtlAutoInstaller.ViewModels
         /// インストール処理
         /// </summary>
         /// <returns></returns>
-        private async Task<bool> InstallAsync()
+        private async Task<InstallResult> InstallAsync()
         {
+            InstallResult installResult = InstallResult.OK;
             SetupDirectory();
 
             List<InstallItem> installItems = new List<InstallItem>();
@@ -332,7 +371,31 @@ namespace AviUtlAutoInstaller.ViewModels
             List<string> failedList = await Downloads(installItems);
             if (0 < failedList.Count)
             {
-                Console.WriteLine("missing download file.");
+                bool pr = false;
+                using (StreamWriter sw = new StreamWriter($"{SysConfig.DownloadFailedFile}"))
+                {
+                    sw.WriteLine("ダウンロード失敗リスト");
+                    sw.WriteLine("項目名, ダウンロードURL, ダウンロードファイル名");
+                    foreach (string failedFile in failedList)
+                    {
+                        int index = installItems.FindIndex(x => x.DownloadFileName == failedFile);
+                        if (index < 0)
+                        {
+                            continue;
+                        }
+                        var item = installItems[index];
+                        sw.WriteLine($"{item.Name}, {item.URL}, {item.DownloadFileName}");
+                        if (!pr && item.Priority == InstallPriority.High)
+                        {
+                            pr = true;
+                        }
+                    }
+                }
+                if (pr)
+                {
+                    return InstallResult.DownloadFailed;
+                }
+                installResult = InstallResult.DownloadFailed;
             }
 
             await Installs(installItems);
@@ -358,7 +421,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 fileOperation.MakeShortcut($"{InstallDirPath}\\AviUtl.exe", "AviUtl");
             }
 
-            return true;
+            return installResult;
         }
 
         /// <summary>
