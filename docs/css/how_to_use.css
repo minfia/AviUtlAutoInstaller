@@ -1,0 +1,14 @@
+.icon_layout {
+  display: flex;
+  margin: 0 0 20px 20px;
+}
+
+.install_list_img {
+  width: 800px;
+  height: auto;
+}
+
+.install_item_img {
+  width: auto;
+  height: 500px;
+}
