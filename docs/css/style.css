@@ -1,0 +1,41 @@
+body {
+  background-color: #FFFFF7;
+}
+
+.main {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height:99vh;
+}
+
+.left_page {
+  flex-basis: 20%;
+  border:none;
+}
+
+.right_page {
+  flex-basis: 80%;
+  border:none;
+}
+
+h1 {
+  border-bottom: 4px solid #707070;
+}
+
+h2 {
+  border-bottom: 2px dashed #707070;
+}
+
+code {
+  padding: 6px;
+  background-color: #F0F0F0;
+}
+
+a {
+  color: #2E8B57;
+}
+
+img {
+  box-shadow: 0 0 8px gray;
+}

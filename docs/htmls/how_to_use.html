@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/how_to_use.css">
+
+  </head>
+  <body>
+    <h1>使い方</h1>
+    <p>AviUtlAutoInstallerの使い方を説明します。</p>
+    <p>AviUtlAutoInstallerの起動は、<code>aai.exe</code>をダブルクリックで行います。</p>
+
+    <h2 id="Basic_operation">基本操作</h2>
+    <p>主に以下の画面を操作します。</p>
+    <img src="../images/main.png">
+
+    <h3>手順</h3>
+    <ol>
+      <li>インストール先を選択する。<br>
+      (デフォルトでは、AviUtlAutoInstallerがある場所になります)</li>
+      <li>必要に応じて、<code>インストール項目一覧の編集</code>からプラグイン/スクリプトの追加と削除をする。</li>
+      <li>インストール時のオプションを選択する。<br>
+      (バックアップとショートカット)</li>
+      <li>インストールボタンをクリックしてインストールを開始する。</li>
+    </ol>
+
+    <p>インストール完了後は以下のようなファイル構成になります。<br>
+    <div style="background-color:#F0F0F0; width:800px; padding:8px;">
+      AviUtl/<br>
+      &nbsp;&nbsp;&nbsp;|- backup_files/ (インストールに使用した圧縮ファイル群が入ります(バックアップ有効時))<br>
+      &nbsp;&nbsp;&nbsp;|<br>
+      &nbsp;&nbsp;&nbsp;|- exe_files/ (x264guiEx, QSVEnc, NVEnc, VCEEncをインストールすると作成されます)<br>
+      &nbsp;&nbsp;&nbsp;|<br>
+      &nbsp;&nbsp;&nbsp;|- plugins/<br>
+      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- figure/<br>
+      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- script/ (インストールしたスクリプト群が入ります)<br>
+      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;`インストールしたプラグイン群が入ります<br>
+      &nbsp;&nbsp;&nbsp;|- aviutl.exe<br>
+      &nbsp;&nbsp;&nbsp;|- aviutl.ini<br>
+      &nbsp;&nbsp;&nbsp;|- aviutl.sav<br>
+      &nbsp;&nbsp;&nbsp;|- aviutl.txt<br>
+      &nbsp;&nbsp;&nbsp;|- contents_tree.txt<br>
+      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(コンテンツツリーに該当するプラグイン/スクリプトをインストールした時に作成されます)<br>
+      &nbsp;&nbsp;&nbsp;|- InstallationList_yyyyMMdd_hhmmss.profile<br>
+      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(インストールしたときのプラグインやスクリプトの情報が入っています。<br>
+      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; また、ファイル名のyyyyMMdd_hhmmssはインストール日時が入ります)<br>
+      &nbsp;&nbsp;&nbsp;` - デフォルト.cfg<br>
+    </div>
+    </p>
+
+    <h2 id="InstallItem_Edit">インストール項目の編集</h2>
+    <p>ウィンドウ表示時は以下のような画面になります。</p>
+    <a href="../images/installlist1.png"><img class="install_list_img" src="../images/installlist1.png"></a>
+    <p>左側にある2つのアイコンは次の意味になります。</p>
+    <div class="icon_layout">
+      <img src="../images/prerepo_icon.png">
+      <p style="margin-left:20px">プリインストールされているインストール項目です。(以降、プリインストールリポジトリと呼びます)</p>
+    </div>
+    <div class="icon_layout">
+      <img src="../images/userrepo_icon.png">
+      <p style="margin-left:20px">ユーザーが編集できるインストール項目です。(以降、ユーザーリポジトリと呼びます)</p>
+    </div>
+    <ol>
+
+      <h3 id="ExistingItem"><li>既存のものから選択</li></h3>
+      <ol>
+        <li>インストールしたい項目にチェックを入れる</li>
+        <li>入れ終わったら、インストール項目一覧のウィンドウを閉じる</li>
+      </ol>
+
+      <h3 id="AddItems"><li>自分で項目を追加</li></h3>
+      <p>以下の画面を操作します。</p>
+      <a href="../images/installlist2.png"><img class="install_list_img" src="../images/installlist2.png"></a>
+
+      <h4>項目を追加</h4>
+      <ol>
+        <li>ユーザーリポジトリを選択</li>
+        <li>右下の追加ボタンをクリックする</li>
+        <li>編集ウィンドウが出るので、必要に応じて記入する</li>
+        <div class="icon_layout">
+          <a href="../images/installitem1.png"><img class="install_item_img" src="../images/installitem1.png" style="margin-top:16px;"></a>
+          <div style="margin-left: 16px;">
+            <p>名前: 重複しない項目名を入力します。</p>
+            <p>URL: ファイルがない場合にダウンロードを行います。(指定がない場合は、ダウンロードは行わずローカルのファイルを使用します)</p>
+            <p>ダウンロードするファイル名: ファイルをダウンロードする時、インストールする時に使用します。</p>
+            <p>ファイルタイプ: プラグインかスクリプトを選択します。</p>
+            <p>スクリプトフォルダ名: スクリプトをまとめるためのフォルダ名を指定します。(プラグイン選択時は表示されません)</p>
+            <p>バージョン: 登録時のバージョンを指定します。(指定することで、公開されているもののバージョンが新しいか比較できます)</p>
+            <p>AviUtl指定以外のファイル名または拡張子: AviUtl標準で使う拡張子以外で必要なものがあれば記入してください。(ワイルドカード可)</p>
+            <p>コンテンツツリーに登録するニコニコ動画のID: プラグインやスクリプトを紹介しているsmから始まる動画IDを指定します。</p>
+          </div>
+        </div>
+        <li>記入が終わったらOKボタンを押す(有効な内容でなければ、ボタンは有効になりません)</li>
+      </ol>
+
+      <h4 id="EditItems">項目を編集</h4>
+      <ol>
+        <li>右下の編集をクリックする</li>
+        <li>追加のときと同様に変更する</li>
+      </ol>
+
+      <h4 id="DeleteItems">項目を削除</h4>
+
+      <h5>1つずつ削除</h5>
+      <ol>
+        <li>削除したい項目で右クリックする</li>
+        <li>削除をクリック</li>
+        <li>確認ダイアログでOKをクリックする</li>
+      </ol>
+
+      <h5>まとめて削除</h5>
+      <ol>
+        <li>削除したい項目の左端にあるチェックボックスにチェックを入れる</li>
+        <li>チェックを入れ終わったら、左下の削除ボタンをクリックする</li>
+      </ol>
+
+      <h4 id="SaveItemList">項目一覧を保存</h5>
+      <ol>
+        <li>項目の追加、編集をする</li>
+        <li>左下の保存をクリックする</li>
+        <li>保存先を選択して保存する</li>
+      </ol>
+      <p>保存先は、どこでも良いですが、以下の場所に保存すると管理しやすいです。<br>
+         <code>AviUtlAutoInstaller/repo/user_repo</code></p>
+
+      <h4 id="OpenItemList">項目一覧を読み出す</h5>
+      <ol>
+        <li>左下の開くをクリックする</li>
+        <li>開きたい.urepoファイルを選択する</li>
+      </ol>
+      <p>開く際は、すでに表示されている項目一覧が<font color="#FF0000">上書きされる</font>ので注意してください。</p>
+
+      <h3 id="PreDownload"><li>項目の事前ダウンロード</li></h3>
+      <p>事前にダウンロードをすることで、インストール時のダウンロード処理を飛ばすことができます。</p>
+      <img src="../images/dl1.png"/>
+      <p style="margin-top:0; margin-left:16px;">ダウンロードができる状態です。</p>
+      <img src="../images/dl2.png"/>
+      <p style="margin-top:0; margin-left:16px;">ダウンロードができない状態です。<br>
+      インストールする際は、事前にファイルを以下のフォルダに入れてください。<br>
+         <code>AviUtlAutoInstaller/cache</code></p>
+    </ol>
+
+    <h2 id="Rebuilding">環境の再構築</h2>
+    <p>過去にこのツールを使ってインストールした環境を再構築します。</p>
+    <ol>
+      <li>インストールにユーザーリポジトリを使用している場合は、ファイル -> 開く -> ユーザリポジトリファイルを選択して読み込む</li>
+      <li>ファイル -> 開く -> インストール設定ファイルを選択して、<code>InstallationList_yyyyMMdd_hhmmss.profile</code>を読み込む</li>
+      <img src="../images/main2.png" style="margin-top:16px;"/>
+      <li>インストールボタンをクリックする</li>
+    </ol>
+  </body>
+</html>

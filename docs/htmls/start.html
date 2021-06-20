@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="../css/style.css">
+  </head>
+  <body>
+    <div>
+      <h1>はじめに</h1>
+    </div>
+    <div>
+      <h2>これは？</h2>
+      <p>AviUtlの環境を構築するツールです。</p>
+      <p>ダウンロードは<a href="https://github.com/minfia/AviUtlAutoInstaller/releases" target="_top">こちら</a>からできます。</p>
+      <p><code>▶ Assets</code>をクリックすると項目が表示されるので、一番上の<code>AviUtlAutoInstaller_vX.Y.Z.zip</code>(X.Y.Zにはバージョン番号が入ります)をクリックしてダウンロードしてください。</p>
+
+      <h2>なにができるの？</h2>
+      <ul>
+        <li>AviUtlの環境構築</li>
+        <li>環境の再構築</li>
+        <li>インストールするプラグイン/スクリプトの取捨選択</li>
+        <li>ユーザー独自のインストール項目の作成</li>
+      </ul>
+
+      <h2>ファイル構成</h2>
+      <div style="background-color:#F0F0F0; width:800px; padding:8px;">
+        AviUtlAutoInstaller/<br>
+        &nbsp;&nbsp;&nbsp;|- de/<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;`- MahApps.Metro.resources.dll<br>
+        &nbsp;&nbsp;&nbsp;|- Licenses/<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- 7-zip.txt<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- AngleSharp.txt<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- ControlzEx.txt<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- MahApps.Metro.txt<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- Nett.txt<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- SevenZipExtractor.txt<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;`- XamlBehaviorsWpf.txt<br>
+        &nbsp;&nbsp;&nbsp;|- manual/<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- css/<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- contents.css<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- how_to_use.css<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;`- style.css<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- htmls/<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- app_update.html<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- contents.html<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- how_to_use.html<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;`- start.html<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- images/<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- dl1.png<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- dl2.png<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- installItem1.png<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- installlist1.png<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- installlist2.png<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- main.png<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- main2.png<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- main3.png<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- prerepo_icon.png<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- update1.png<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- update2.png<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- update3.png<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;`- userrepo_icon.png<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;`- index.html<br>
+        &nbsp;&nbsp;&nbsp;|- repo/<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- user_repo/<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;`- aai.repo<br>
+        &nbsp;&nbsp;&nbsp;|- x64/<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- 7z.dll<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;`- SQLite.Interop.dll<br>
+        &nbsp;&nbsp;&nbsp;|- x86/<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|- 7z.dll<br>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;`- SQLite.Interop.dll<br>
+        &nbsp;&nbsp;&nbsp;|- aai.exe<br>
+        &nbsp;&nbsp;&nbsp;|- aai.exe.config<br>
+        &nbsp;&nbsp;&nbsp;|- AngleSharp.dll<br>
+        &nbsp;&nbsp;&nbsp;|- ControlzEx.dll<br>
+        &nbsp;&nbsp;&nbsp;|- MahApps.Metro.dll<br>
+        &nbsp;&nbsp;&nbsp;|- Microsoft.Xaml.Behaviors.dll<br>
+        &nbsp;&nbsp;&nbsp;|- Nett.dll<br>
+        &nbsp;&nbsp;&nbsp;|- SevenZipExtractor.dll<br>
+        &nbsp;&nbsp;&nbsp;|- System.Data.SQLite.dll<br>
+        &nbsp;&nbsp;&nbsp;|- System.Runtime.CompilerServices.Unsafe.dll<br>
+        &nbsp;&nbsp;&nbsp;`- System.Text.Encofing.CodePages.dll<br>
+      </div>
+
+      <h2>注意事項</h2>
+      <p>このツールは無保証で提供されます。<br>
+      このツールの使用の有無に関わらず発生した全ての損害に関して保証しません。</p>
+      <p>また、<code>インストール設定ファイル(*.profile)</code>および、<code>ユーザーリポジトリファイル(*.urepo)</code>の譲渡や交換は可能ですが、販売行為は禁止です。</p>
+
+    </div>
+  </body>
+</html>
