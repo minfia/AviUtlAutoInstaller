@@ -19,6 +19,7 @@
                       WindowStartupLocation="CenterScreen"
                       WindowTransitionsEnabled="False"
                       b:WindowClosingBehavior.Callback="{Binding ClosingCallback}">
+    <!--
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Grid Margin="0,0,4,0"
@@ -45,6 +46,7 @@
             </Grid>
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
+    -->
     <Window.InputBindings>
         <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenDialogInstallSettingFileCommand}"/>
         <KeyBinding Gesture="Ctrl+Shift+O" Command="{Binding OpenDialogUserRepoFileCommand}"/>
