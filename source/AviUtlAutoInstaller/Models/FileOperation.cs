@@ -154,7 +154,19 @@ namespace AviUtlAutoInstaller.Models
 
             foreach (string file in files)
             {
-                string[] pathList = Directory.GetFiles(srcDirPath, file, SearchOption.AllDirectories);
+                string srcDir = srcDirPath;
+                string targetFile = file;
+
+                if (file.Contains("\\"))
+                {
+                    var f = file.Split('\\');
+                    targetFile = f[f.Length-1];
+                    for (int i = 0; i < f.Length - 1; i++)
+                    {
+                        srcDir += "\\" + f[i];
+                    }
+                }
+                string[] pathList = Directory.GetFiles(srcDir, targetFile, SearchOption.AllDirectories);
                 foreach (string path in pathList)
                 {
                     filePathList.Add(path);
