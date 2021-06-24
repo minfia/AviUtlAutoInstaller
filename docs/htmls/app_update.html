@@ -20,19 +20,35 @@
       <p>更新があれば、"<font color=#FF0000>アップデートがあります</font>"と表示される</p>
       <p>更新チェックに失敗した場合は、"<font color=#FF0000>アップデートチェックに失敗しました</font>"と表示される</p>
       <p>更新がなければ、以下のように、取得したバージョンのみ表示される</p>
+      <img src="../images/update3.png" style="margin-top:16px;">
     </ol>
+    <h4>バージョンの末尾にある"-0"について</h4>
+    <p>これは、プリインストールリポジトリとアプリとが対応しているバージョンです。</p>
+    <p>お互いのバージョンが一致していない場合は、使用できないのでバージョンを合わせてください。<br>
+    例)<br>
+    プリインストールリポジトリ: v0.3.0-<font color=#ff0000>0</font><br>
+    アプリ: v0.1.0-<font color=#ff0000>0</font><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;-> 対応</p>
+    プリインストールリポジトリ: v0.3.0-<font color=#ff0000>1</font><br>
+    アプリ: v0.1.0-<font color=#ff0000>0</font><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;-> 未対応(どちらかのバージョンに合わせる)</p>
+    プリインストールリポジトリ: v0.3.0-<font color=#ff0000>0</font><br>
+    アプリ: v0.1.0-<font color=#ff0000>1</font><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;-> 未対応(どちらかのバージョンに合わせる)</p>
+
 
     <h2>プリインストールリポジトリの更新</h2>
     <ol>
       <li><a href="#update_check_proc">アップデートのチェック</a>を行った後、更新ボタンをクリックする</li>
     </ol>
-    <p>更新完了後、プリインストールリポジトリを再読み込みするので、そのまま作業を続行することができます</p>
+    <p>更新完了後、プリインストールリポジトリを再読み込みするので、そのまま作業を続行することができます。</p>
+    <br>
 
     <h2>AviUtlAutoInstallerの更新</h2>
     <ol>
-      <li>最新のAviUtlAutoInstallerを<a href="https://github.com/minfia/AviUtlAutoInstaller/releases" target="_top">ダウンロード</a>する</a></li>
       <li>AviUtlAutoInstallerを終了する</li>
-      <li>アップデート手順に従ってAviUtlAutoInstallerを更新する</li>
+      <li>最新のAviUtlAutoInstallerを<a href="https://github.com/minfia/AviUtlAutoInstaller/releases" target="_top">ダウンロード</a>する</a></li>
+      <li>ダウンロードページにあるアップデート手順に従ってAviUtlAutoInstallerを更新する</li>
     </ol>
     <p>アップデート完了後、タイミングによってはプリインストールリポジトリが古い場合があるので、更新の確認を行うことをおすすめします。</p>
 
