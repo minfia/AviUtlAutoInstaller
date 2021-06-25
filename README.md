@@ -18,7 +18,7 @@ AviUtlの動画作成環境を自動で行うツールです。
 このツールを使用の有無に関わらず発生した全ての損害に関して保証しません。
 
 ## ダウンロード
-[注意](#注意)を了承された方は、以下のURLからダウンロードしてください。
+[注意](#注意)を了承された方は、以下のURLからダウンロードしてください。  
 [https://github.com/minfia/AviUtlAutoInstaller/releases](https://github.com/minfia/AviUtlAutoInstaller/releases)
 
 ## 使い方
