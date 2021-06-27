@@ -181,6 +181,10 @@
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                 Width="52"
                                                 Binding="{Binding No}"/>
+                            <DataGridTextColumn Header="製作者名"
+                                                HeaderStyle="{StaticResource DataGridTextHederStyle}"
+                                                Width="80"
+                                                Binding="{Binding MakerName}"/>
                             <DataGridTextColumn Header="名前"
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                 Width="140*"

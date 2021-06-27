@@ -140,6 +140,16 @@ namespace AviUtlAutoInstaller.Models
             set { SetProperty(ref _commandName, value); }
         }
 
+        private string _makerName;
+        /// <summary>
+        /// 製作者名
+        /// </summary>
+        public string MakerName
+        {
+            get { return _makerName; }
+            set { SetProperty(ref _makerName, value); }
+        }
+
         private string _url = string.Empty;
         /// <summary>
         /// URL
@@ -287,6 +297,16 @@ namespace AviUtlAutoInstaller.Models
         {
             get { return _nicoVideoID; }
             set { SetProperty(ref _nicoVideoID, value); }
+        }
+
+        private string _dependentName;
+        /// <summary>
+        /// プラグインやスクリプトの依存元の名前(CommandName)
+        /// </summary>
+        public string DependentName
+        {
+            get { return _dependentName; }
+            set { SetProperty(ref _dependentName, value); }
         }
 
         private InstallSectionType _sectionType = InstallSectionType.Other;

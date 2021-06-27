@@ -14,6 +14,8 @@ namespace AviUtlAutoInstaller.Models.Files
         private static readonly string _fileTypeTableName = "FileType";
         private static readonly string _versionTableName = "Version";
         private static readonly string _sectionTableName = "Section";
+        private static readonly string _makerTableName = "MakerName";
+        private static readonly string _dependentTableName = "Dependent";
         private static SQLiteConnection connection;
 
         public PreRepoFileR(string databaseFilePath)
@@ -79,7 +81,7 @@ namespace AviUtlAutoInstaller.Models.Files
             {
                 using (SQLiteCommand cmd = new SQLiteCommand(connection))
                 {
-                    cmd.CommandText = $"select * from {_installTableName} natural join {_priorityTableName} natural join {_fileTypeTableName} natural join {_sectionTableName}";
+                    cmd.CommandText = $"select * from {_installTableName} natural join {_priorityTableName} natural join {_fileTypeTableName} natural join {_sectionTableName} natural join {_makerTableName} natural join {_dependentTableName}";
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -89,6 +91,7 @@ namespace AviUtlAutoInstaller.Models.Files
                                 Priority = (InstallPriority)uint.Parse(reader["priority"].ToString()),
                                 Name = reader["name"].ToString(),
                                 CommandName = reader["command_name"].ToString(),
+                                MakerName = reader["maker_name"].ToString(),
                                 URL = reader["url"].ToString(),
                                 DownloadFileName = reader["download_file_name"].ToString(),
                                 FileType = (InstallFileType)uint.Parse(reader["file_type"].ToString()),
@@ -98,7 +101,8 @@ namespace AviUtlAutoInstaller.Models.Files
                                 ExternalFile = reader["external_file"].ToString(),
                                 ExternalFileURL = reader["external_file_url"].ToString(),
                                 NicoVideoID = reader["nico_video_id"].ToString(),
-                                SectionType = (InstallSectionType)uint.Parse(reader["section"].ToString())
+                                SectionType = (InstallSectionType)uint.Parse(reader["section"].ToString()),
+                                DependentName = reader["parent_name"].ToString()
                             };
                             item.IsSelect = ((InstallFileType.Main == item.FileType) || (item.CommandName == "exedit")) ? true : false;
                             item.IsItemSelectEnable = (InstallFileType.Main == item.FileType || (item.CommandName == "exedit")) ? false : true;
