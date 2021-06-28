@@ -47,6 +47,7 @@ xcopy /s %MANUAL_DIR% "%OUTPUT_DIR%\\manual"
 rmdir /s /q "%OUTPUT_DIR%\\manual\\images\\base"
 mkdir %OUTPUT_DIR%\\Licenses
 xcopy /s %LICENSE_DIR% "%OUTPUT_DIR%\\Licenses"
+copy ".\\LICENSE" "%OUTPUT_DIR%"
 %SV_EXE% a -tzip "%ARCHIVE_FILE%" "%OUTPUT_DIR%\\*"
 rmdir /s /q "%OUTPUT_DIR%"
 
