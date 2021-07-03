@@ -114,14 +114,12 @@ namespace AviUtlAutoInstaller.Models.Files
 
             List<TomlTable> table = new List<TomlTable>();
             InstallItemList installItemList = new InstallItemList();
-            var preList = installItemList.GetInstalItemList(InstallItemList.RepoType.Pre);
-            var userList = installItemList.GetInstalItemList(InstallItemList.RepoType.User);
 
             for (var i = InstallItemList.RepoType.Pre; i < InstallItemList.RepoType.MAX; i++)
             {
                 foreach (InstallItem item in installItemList.GetInstalItemList(i))
                 {
-                    if (!item.IsSelect)
+                    if (!item.IsSelect || !item.IsInstallCompleted)
                     {
                         continue;
                     }
