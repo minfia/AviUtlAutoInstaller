@@ -28,6 +28,10 @@ namespace AviUtlAutoInstaller.ViewModels
             /// </summary>
             NG,
             /// <summary>
+            /// キャンセル
+            /// </summary>
+            Cancel,
+            /// <summary>
             /// ダウンロード失敗あり
             /// </summary>
             DownloadFailed,
@@ -339,6 +343,9 @@ namespace AviUtlAutoInstaller.ViewModels
                             title = "エラー";
                             image = MessageBoxImage.Error;
                             break;
+                        case InstallResult.Cancel:
+                            message = "インストールがキャンセルされました";
+                            break;
                         default:
                             break;
                     }
@@ -356,6 +363,7 @@ namespace AviUtlAutoInstaller.ViewModels
             SetupDirectory();
 
             List<InstallItem> installItems = new List<InstallItem>();
+            List<string> discordItemList = new List<string>();
             {
                 InstallItemList installItemList = new InstallItemList();
 
@@ -363,8 +371,31 @@ namespace AviUtlAutoInstaller.ViewModels
                 {
                     foreach (InstallItem item in installItemList.GetInstalItemList(i))
                     {
-                        if (item.IsSelect) { installItems.Add(item); }
+                        if (item.IsSelect)
+                        {
+                            if (!item.DownloadExecute && !File.Exists($"{SysConfig.CacheDirPath}\\{item.DownloadFileName}"))
+                            {
+                                discordItemList.Add(item.Name);
+                            }
+                            installItems.Add(item);
+                        }
                     }
+                }
+            }
+
+            if (discordItemList.Count != 0)
+            {
+                string names = "";
+                foreach (string str in discordItemList)
+                {
+                    names += $"・{str}\n";
+                }
+
+                if (MessageBox.Show($"以下の項目のファイルが存在しません。継続しますか？\n" +
+                                    $"(継続の場合は以下のファイルはインストールされません)\n" +
+                                    $"{names}", "警告", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                {
+                    return InstallResult.Cancel;
                 }
             }
 
@@ -583,7 +614,9 @@ namespace AviUtlAutoInstaller.ViewModels
 
             foreach (InstallItem item in installItems)
             {
-                if (item.IsSelect && (!item.IsDownloadCompleted || !cacheFileList.Any(x => Path.GetFileName(x) == item.DownloadFileName)))
+                if (item.IsSelect &&
+                    (!item.IsDownloadCompleted || !cacheFileList.Any(x => Path.GetFileName(x) == item.DownloadFileName)) &&
+                    item.DownloadExecute)
                 {
                     faileVerifyList.Add(item.DownloadFileName);
                 }
