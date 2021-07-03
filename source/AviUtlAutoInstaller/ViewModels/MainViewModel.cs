@@ -670,10 +670,11 @@ namespace AviUtlAutoInstaller.ViewModels
                         var installFileList = installItemList.GenerateInstalList(i, item);
                         var task = Task.Run(() => func(item, installFileList.ToArray()));
                         var res = await task;
-                        if (res && 2 < item.NicoVideoID.Length)
+                        if (res && "sm".Length < item.NicoVideoID.Length)
                         {
                             ContentsTreeRW.AddContents(item.NicoVideoID);
                         }
+                        item.IsInstallCompleted = res;
                     }
 
                     if (!string.IsNullOrWhiteSpace(item.ExternalFile))

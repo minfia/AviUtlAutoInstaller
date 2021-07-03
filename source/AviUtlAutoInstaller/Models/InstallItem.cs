@@ -100,6 +100,16 @@ namespace AviUtlAutoInstaller.Models
             set { SetProperty(ref _isDownloadCompleted, value); }
         }
 
+        private bool _isInstallCompleted;
+        /// <summary>
+        /// インストール完了の有無
+        /// </summary>
+        public bool IsInstallCompleted
+        {
+            get { return _isInstallCompleted; }
+            set { SetProperty(ref _isInstallCompleted, value); }
+        }
+
         private int _no = 0;
         /// <summary>
         /// 項目番号
