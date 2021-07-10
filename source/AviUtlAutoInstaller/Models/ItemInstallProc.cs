@@ -63,6 +63,52 @@ namespace AviUtlAutoInstaller.Models
             return true;
         }
 
+        /// <summary>
+        /// アンインストール
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public static bool Uninstall(InstallItem item)
+        {
+            string baseDir = $"{SysConfig.InstallRootPath}";
+
+            switch (item.FileType)
+            {
+                case InstallFileType.Tool:
+                    baseDir = $"{SysConfig.InstallRootPath}";
+                    break;
+                case InstallFileType.Plugin:
+                    if (IsSpecialPlugin(item.Name))
+                    {
+                        return UninstallSpecialPlugin(item);
+                    }
+                    else
+                    {
+                        baseDir = $"{SysConfig.AviUtlPluginDir}";
+                    }
+                    break;
+                case InstallFileType.Script:
+                    baseDir = $"{SysConfig.AviUtlScriptDir}";
+                    break;
+            }
+
+            FileOperation fileOperation = new FileOperation();
+            List<string> uninstallFileList = fileOperation.GenerateFilePathList(baseDir, item.InstallFileList.ToArray());
+            foreach (var file in uninstallFileList)
+            {
+                try
+                {
+                    File.Delete(file);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private enum ExternalFileType
         {
             None,
@@ -191,7 +237,7 @@ namespace AviUtlAutoInstaller.Models
         /// <summary>
         /// 単純にインストール出来ないプラグインのインストール
         /// </summary>
-        /// <param name="name">名称</param>
+        /// <param name="item">インストールアイテム</param>
         /// <returns></returns>
         private static bool InstallSpecialPlugin(InstallItem item)
         {
@@ -236,6 +282,66 @@ namespace AviUtlAutoInstaller.Models
             fileOperation.DirectoryMove($"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}", $"{SysConfig.AviUtlPluginDir}");
         }
 
+        /// <summary>
+        /// 単純にインストール出来ないプラグインのアンインストール
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        private static bool UninstallSpecialPlugin(InstallItem item)
+        {
+            var type = _specialPluginDic.First(x => x.Value == item.Name).Key;
+
+            switch (type)
+            {
+                case SpecialPluginType.PSDToolkit:
+                    UninstallPSDToolKit();
+                    break;
+                default:
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// PSDToolKitのアンインストール
+        /// </summary>
+        private static void UninstallPSDToolKit()
+        {
+            string psdManualDirPath = $"{SysConfig.InstallRootPath}\\PSDToolKitの説明ファイル群";
+            Directory.Delete(psdManualDirPath, true);
+            string[] psdFileDirPath = new string[] {
+                $"{SysConfig.AviUtlPluginDir}\\GCMZDrops",
+                $"{SysConfig.AviUtlPluginDir}\\PSDToolKit",
+                $"{SysConfig.AviUtlPluginDir}\\かんしくん",
+                $"{SysConfig.AviUtlScriptDir}\\PSDToolKit",
+            };
+
+            foreach (string path in psdFileDirPath)
+            {
+                Directory.Delete(path, true);
+            }
+
+            string[] psdFilePath = new string[] {
+                $"{SysConfig.AviUtlPluginDir}\\AudioMixer.auf",
+                $"{SysConfig.AviUtlPluginDir}\\GCMZDrops.auf",
+                $"{SysConfig.AviUtlPluginDir}\\PSDToolKit.auf",
+                $"{SysConfig.AviUtlPluginDir}\\ZRamPreview.auf",
+                $"{SysConfig.AviUtlPluginDir}\\ZRamPreview.auo",
+                $"{SysConfig.AviUtlPluginDir}\\ZRamPreview.exe",
+                $"{SysConfig.AviUtlPluginDir}\\キャッシュテキスト.exa",
+                $"{SysConfig.AviUtlScriptDir}\\CacheText.anm",
+                $"{SysConfig.AviUtlScriptDir}\\CacheText.lua",
+                $"{SysConfig.AviUtlScriptDir}\\Extram.dll",
+                $"{SysConfig.AviUtlScriptDir}\\PSDToolKit.lua"
+            };
+
+            foreach (string path in psdFilePath)
+            {
+                File.Delete(path);
+            }
+
+        }
 
         private static void InstallRigayaEncoder(string downloadFileName)
         {

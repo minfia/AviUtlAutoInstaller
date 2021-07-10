@@ -112,6 +112,43 @@ namespace AviUtlAutoInstaller.Models.Files
             }
         }
 
+        /// <summary>
+        /// インストール情報を削除
+        /// </summary>
+        /// <param name="item"></param>
+        public static void DeleteContents(InstallItem item)
+        {
+            var tomlItem = Toml.Create();
+
+            tomlItem.Add(_rwKeyTypeDic[RWKeyType.Name], item.Name);
+            tomlItem.Add(_rwKeyTypeDic[RWKeyType.FileName], item.DownloadFileName);
+            tomlItem.Add(_rwKeyTypeDic[RWKeyType.Version], item.Version);
+            tomlItem.Add(_rwKeyTypeDic[RWKeyType.RefType], (int)InstallItemList.RepoType.Pre);
+            int index = itemList.FindIndex(x => x[_rwKeyTypeDic[RWKeyType.Name]].ToString() == item.Name);
+            if (0 <= index)
+            {
+                itemList.RemoveAt(index);
+            }
+        }
+
+        /// <summary>
+        /// コンテンツがインストールされているかチェック
+        /// </summary>
+        /// <param name="contents"></param>
+        /// <returns></returns>
+        public static bool IsExistContents(InstallItem item)
+        {
+            int index = itemList.FindIndex(x => x[_rwKeyTypeDic[RWKeyType.Name]].ToString() == item.Name);
+            if (0 <= index)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         protected override void ConvertToData(TomlTable data)
         {
             string tomlFileVersion = data.Get<string>("version");
