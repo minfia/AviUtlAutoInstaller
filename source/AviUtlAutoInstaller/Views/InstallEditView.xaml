@@ -162,6 +162,24 @@
                                 <Interactivity:CallMethodAction TargetObject="{Binding .}" MethodName="UnForcus"/>
                             </Interactivity:EventTrigger>
                         </Interactivity:Interaction.Triggers>
+                        <DataGrid.Resources>
+                                <Style TargetType="DataGridCell" BasedOn="{StaticResource MahApps.Styles.DataGridCell}">
+                                    <Setter Property="ContextMenu">
+                                        <Setter.Value>
+                                            <ContextMenu>
+                                                <MenuItem Header="インストール"
+                                                          Command="{Binding Source={StaticResource proxyElement},
+                                                                            Path=DataContext.SingleInstallCommand}"/>
+                                                <MenuItem Header="アンインストール"
+                                                          Command="{Binding Source={StaticResource proxyElement},
+                                                                            Path=DataContext.SingleUninstallCommand}"
+                                                          CommandParameter="{x:Static vm:SelectCommandType.DataGrid}"/>
+                                            </ContextMenu>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                        </DataGrid.Resources>
+
                         <DataGrid.Columns>
                             <DataGridTemplateColumn CanUserResize="False"
                                                     HeaderStyle="{StaticResource DataGridCheckBoxHeaderStyle}">

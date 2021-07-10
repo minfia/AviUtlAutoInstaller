@@ -49,6 +49,11 @@ namespace AviUtlAutoInstaller.Models
         }
 
         /// <summary>
+        /// AviUtlインストール済み
+        /// </summary>
+        public static bool IsInstalled = false;
+
+        /// <summary>
         /// ダウンロード失敗リストの出力ファイルパス
         /// </summary>
         public static string DownloadFailedFile { get; private set; }
