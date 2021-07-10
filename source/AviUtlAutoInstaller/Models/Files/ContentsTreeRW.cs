@@ -30,6 +30,18 @@ namespace AviUtlAutoInstaller.Models.Files
         }
 
         /// <summary>
+        /// コンテンツの削除
+        /// </summary>
+        /// <param name="contents">コンテンツ</param>
+        public static void DeleteContents(string contents)
+        {
+            if (0 <= _contentsList.IndexOf(contents))
+            {
+                _contentsList.Remove(contents);
+            }
+        }
+
+        /// <summary>
         /// コンテンツツリーをファイルから読み出す
         /// </summary>
         /// <param name="dirPath"></param>
