@@ -35,6 +35,11 @@ namespace AviUtlAutoInstaller.Models.Files
         /// <param name="dirPath"></param>
         public void Read(string dirPath)
         {
+
+            if (!File.Exists($"{dirPath}\\{_saveFileName}"))
+            {
+                return;
+            }
             _contentsList.Clear();
 
             using (StreamReader sr = new StreamReader($"{dirPath}\\{_saveFileName}", Encoding.UTF8))
@@ -60,8 +65,7 @@ namespace AviUtlAutoInstaller.Models.Files
         public void Write(string dirPath)
         {
             const int DivCount = 10;
-            bool append = File.Exists($"{dirPath}\\{_saveFileName}");
-            using (StreamWriter sw = new StreamWriter($"{dirPath}\\{_saveFileName}", append, Encoding.UTF8))
+            using (StreamWriter sw = new StreamWriter($"{dirPath}\\{_saveFileName}", false, Encoding.UTF8))
             {
                 sw.NewLine = "\n";
                 var contentsTreeList = _contentsList.Distinct().ToArray();
@@ -83,7 +87,6 @@ namespace AviUtlAutoInstaller.Models.Files
                     loopCnt++;
                 }
             }
-            _contentsList.Clear();
         }
     }
 }
