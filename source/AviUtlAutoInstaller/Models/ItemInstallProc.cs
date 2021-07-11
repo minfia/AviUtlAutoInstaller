@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -394,9 +395,11 @@ namespace AviUtlAutoInstaller.Models
             IniFileRW iniFileRW = new IniFileRW(aviutl_ini);
 
             {
+                uint memSize = GetPhysicalMemSize();
+                uint cacheSize = GetCacheSize(memSize);
                 Dictionary<string, string> systemConfig = new Dictionary<string, string>()
                 {
-                    { "width", "2560" }, { "height", "1560" }, { "frame", "320000" }, { "sharecache", "512" },
+                    { "width", "2560" }, { "height", "1560" }, { "frame", "320000" }, { "sharecache", $"{cacheSize}" },
                     { "sse", "1" }, { "sse2", "1" }, { "vfplugin", "1" },
                     { "moveA", "5" }, { "moveB", "30" }, { "moveC", "899" }, { "moveD", "8991" },
                     { "saveunitsize", "4096" }, { "compprofile", "1" }, { "plugincache", "1" },
@@ -425,5 +428,50 @@ namespace AviUtlAutoInstaller.Models
                 }
             }
         }
+
+        /// <summary>
+        /// 搭載されている物理メモリサイズを取得
+        /// </summary>
+        /// <returns>物理メモリサイズ[MB]</returns>
+        private static uint GetPhysicalMemSize()
+        {
+            double getMemSize = 0;
+            using (ManagementObjectCollection moc = new ManagementClass("Win32_OperatingSystem").GetInstances())
+            {
+                foreach (var mo in moc)
+                {
+                    double.TryParse(mo["TotalVisibleMemorySize"].ToString(), out getMemSize);
+                    mo.Dispose();
+                    break;
+                }
+            }
+
+            const uint gb = 1048576;
+            uint memSize = (uint)((getMemSize / gb) + 0.5);
+
+            return memSize;
+        }
+
+        /// <summary>
+        /// 設定するキャッシュサイズを取得
+        /// </summary>
+        /// <param name="memSize">物理メモリサイズ[GB]</param>
+        /// <returns>キャッシュサイズ[MB]</returns>
+        private static uint GetCacheSize(uint memSize)
+        {
+            uint cacheSize = 256;
+
+            if (8 < memSize)
+            {
+                cacheSize = (memSize / 4) * 1024;
+            }
+            else if (4 < memSize)
+            {
+                cacheSize = 512;
+            }
+
+            return cacheSize;
+        }
+
     }
 }
