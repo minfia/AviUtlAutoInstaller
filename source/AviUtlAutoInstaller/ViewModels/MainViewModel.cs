@@ -152,7 +152,21 @@ namespace AviUtlAutoInstaller.ViewModels
                     return;
                 }
 
-                SysConfig.InstallRootPath = File.Exists($"{installPath}\\aviutl.exe") ? $"{installPath}" : $"{installPath}\\AviUtl";
+                SysConfig.IsInstalled = File.Exists($"{installPath}\\aviutl.exe");
+                SysConfig.InstallRootPath = SysConfig.IsInstalled ? $"{installPath}" : $"{installPath}\\AviUtl";
+                if (SysConfig.IsInstalled)
+                {
+                    ContentsTreeRW contentsTreeRW = new ContentsTreeRW();
+                    contentsTreeRW.Read(SysConfig.InstallRootPath);
+
+                    {
+                        FileOperation fileOperation = new FileOperation();
+                        string[] array = { "InstallationList_*_*.profile" };
+                        var list = fileOperation.GenerateFilePathList(SysConfig.InstallRootPath, array);
+                        InstallProfileRW installProfileRW = new InstallProfileRW();
+                        installProfileRW.FileRead(list[list.Count - 1]);
+                    }
+                }
                 InstallDirPath = SysConfig.InstallRootPath;
                 Console.WriteLine($"{SysConfig.InstallExpansionDir}\n{SysConfig.InstallFileBackupDir}\n{SysConfig.AviUtlPluginDir}\n{SysConfig.AviUtlScriptDir}\n{SysConfig.AviUtlFigureDir}");
             }
@@ -349,6 +363,10 @@ namespace AviUtlAutoInstaller.ViewModels
                         default:
                             break;
                     }
+                    if (result == InstallResult.OK)
+                    {
+                        SysConfig.IsInstalled = true;
+                    }
                     MessageBox.Show(message, title, MessageBoxButton.OK, image);
                 });
         }
@@ -433,7 +451,7 @@ namespace AviUtlAutoInstaller.ViewModels
             Directory.Delete(SysConfig.InstallExpansionDir, true);
 
             InstallProfileRW installProfileRW = new InstallProfileRW();
-            installProfileRW.FileWrite($"{SysConfig.InstallRootPath}\\InstallationList_{DateTime.Now:yyyyMMdd_HHmmss}.profile");
+            installProfileRW.FileWrite($"{SysConfig.InstallRootPath}");
 
             ContentsTreeRW contentsTreeRW = new ContentsTreeRW();
             if (contentsTreeRW.IsExistContents)

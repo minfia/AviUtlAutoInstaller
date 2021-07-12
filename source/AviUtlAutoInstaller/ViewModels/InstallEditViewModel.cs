@@ -4,6 +4,7 @@ using AviUtlAutoInstaller.Models.Network;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,18 +26,38 @@ namespace AviUtlAutoInstaller.ViewModels
 
     class InstallEditViewModel : NotificationObject
     {
+        private enum InstallResult
+        {
+            OK,
+            NG,
+            NotDownload,
+            DownloadFailed,
+        }
+
+        private enum UninstallResult
+        {
+            OK,
+            NG,
+            IsMain,
+            NotInstalled,
+        }
+
         #region ユーザータブ
         private DelegateCommand _openUserRepoCommand;
         private DelegateCommand _saveUserRepoCommand;
         private DelegateCommand _addItemCommand;
         private DelegateCommand _modifyItemCommand;
         private DelegateCommand<SelectCommandType> _deleteItemCommand;
+        private DelegateCommand _singleInstallCommand;
+        private DelegateCommand _singleUninstallCommand;
 
         public DelegateCommand OpenUserRepoCommand { get => _openUserRepoCommand; }
         public DelegateCommand SaveUserRepoCommand { get => _saveUserRepoCommand; }
         public DelegateCommand AddItemCommand { get => _addItemCommand; }
         public DelegateCommand ModifyItemCommand { get => _modifyItemCommand; }
         public DelegateCommand<SelectCommandType> DeleteItemCommand { get => _deleteItemCommand; }
+        public DelegateCommand SingleInstallCommand { get => _singleInstallCommand; }
+        public DelegateCommand SingleUninstallCommand { get => _singleUninstallCommand; }
 
         private Action<bool, string> _openUserRepoCallback;
         public Action<bool, string> OpenUserRepoCallback
@@ -478,6 +499,64 @@ namespace AviUtlAutoInstaller.ViewModels
                     InstallItemList.DeleteInstallItem(InstallItemList.RepoType.User, deleteItemList);
                 });
             _downloadCommand = new DelegateCommand(async _ => await OnDownload());
+            _singleInstallCommand = new DelegateCommand(
+                async _ =>
+                {
+                    if (SysConfig.IsInstalled && MessageBox.Show("インストールしますか？", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    {
+                        var res = await OnInstall();
+                        string message = "インストールが完了しました。";
+                        string title = "情報";
+                        var image = MessageBoxImage.Information;
+                        switch (res)
+                        {
+                            case InstallResult.NG:
+                                message = "インストールに失敗しました。";
+                                image = MessageBoxImage.Error;
+                                break;
+                            case InstallResult.DownloadFailed:
+                                message = "ファイルのダウンロードに失敗しました。";
+                                image = MessageBoxImage.Error;
+                                break;
+                            case InstallResult.NotDownload:
+                                message = "事前にファイルのダウンロードが必要です";
+                                image = MessageBoxImage.Error;
+                                break;
+                            default:
+                                break;
+                        }
+
+                        MessageBox.Show(message, title, MessageBoxButton.OK, image);
+                    }
+                });
+            _singleUninstallCommand = new DelegateCommand(
+                async _ =>
+                {
+                    if (SysConfig.IsInstalled && MessageBox.Show("アンインストールしますか？", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    {
+                        var res = await OnUninstall();
+                        string message = "アンインストールが完了しました。";
+                        string title = "情報";
+                        var image = MessageBoxImage.Information;
+                        switch (res)
+                        {
+                            case UninstallResult.NG:
+                                message = "アンインストールに失敗しました。";
+                                image = MessageBoxImage.Error;
+                                break;
+                            case UninstallResult.IsMain:
+                                message = "基本構成のためアンインストールできません。";
+                                image = MessageBoxImage.Error;
+                                break;
+                            case UninstallResult.NotInstalled:
+                                message = "インストールされていません。";
+                                image = MessageBoxImage.Error;
+                                break;
+                        }
+
+                        MessageBox.Show(message, title, MessageBoxButton.OK, image);
+                    }
+                });
         }
 
         private void InitializeValue()
@@ -660,6 +739,141 @@ namespace AviUtlAutoInstaller.ViewModels
             }
 
             return message;
+        }
+
+        /// <summary>
+        /// 単体インストール処理
+        /// </summary>
+        /// <returns></returns>
+        private async Task<InstallResult> OnInstall()
+        {
+            InstallItem selectItem = null;
+            if (InstallItemList.RepoType.Pre == _selectTab[TabControlSelectIndex])
+            {
+                selectItem = PreSelectItem;
+            }
+            else if (InstallItemList.RepoType.User == _selectTab[TabControlSelectIndex])
+            {
+                selectItem = UserSelectItem;
+            }
+
+            // ダウンロード
+            if (selectItem == null)
+            {
+                return InstallResult.NG;
+            }
+            if (!File.Exists($"{SysConfig.CacheDirPath}\\{selectItem.DownloadFileName}") && string.IsNullOrEmpty(selectItem.URL))
+            {
+                return InstallResult.NotDownload;
+            }
+            else if (!File.Exists($"{SysConfig.CacheDirPath}\\{selectItem.DownloadFileName}"))
+            {
+                await OnDownload();
+            }
+            if (File.Exists($"{SysConfig.CacheDirPath}\\{selectItem.DownloadFileName}"))
+            {
+                selectItem.IsDownloadCompleted = true;
+            }
+            if (!selectItem.IsDownloadCompleted)
+            {
+                return InstallResult.DownloadFailed;
+            }
+
+            // インストール
+            Directory.CreateDirectory(SysConfig.InstallExpansionDir);
+            {
+                InstallItemList installItemList = new InstallItemList();
+                var func = new Func<InstallItem, string[], bool>(InstallItem.Install);
+                var installFileList = installItemList.GenerateInstalList(_selectTab[TabControlSelectIndex], selectItem);
+                var task = Task.Run(() => func(selectItem, installFileList.ToArray()));
+                var res = await task;
+                selectItem.IsInstallCompleted = res;
+            }
+            if (!selectItem.IsInstallCompleted)
+            {
+                return InstallResult.NG;
+            }
+            if (selectItem.IsInstallCompleted)
+            {
+                if ("sm".Length < selectItem.NicoVideoID.Length)
+                {
+                    ContentsTreeRW.AddContents(selectItem.NicoVideoID);
+                    ContentsTreeRW contentsTreeRW = new ContentsTreeRW();
+                    contentsTreeRW.Write($"{SysConfig.InstallRootPath}");
+                }
+
+                selectItem.IsInstallCompleted = false;
+                InstallProfileRW.AddContents(selectItem);
+                InstallProfileRW installProfileRW = new InstallProfileRW();
+                installProfileRW.FileWrite($"{SysConfig.InstallRootPath}");
+                installProfileRW.FileRead($"{SysConfig.InstallRootPath}\\{InstallProfileRW.ReloadFileName}");
+            }
+
+            if (!string.IsNullOrWhiteSpace(selectItem.ExternalFile))
+            {
+                var exFunc = new Func<string[], bool>(InstallItem.ExternalInstall);
+                var exTask = Task.Run(() => exFunc(selectItem.ExternalFileList.ToArray()));
+                var res = await exTask;
+            }
+            Directory.Delete(SysConfig.InstallExpansionDir, true);
+
+            return InstallResult.OK;
+        }
+
+        private async Task<UninstallResult> OnUninstall()
+        {
+            InstallItem selectItem = null;
+            if (InstallItemList.RepoType.Pre == _selectTab[TabControlSelectIndex])
+            {
+                selectItem = PreSelectItem;
+            }
+            else if (InstallItemList.RepoType.User == _selectTab[TabControlSelectIndex])
+            {
+                selectItem = UserSelectItem;
+            }
+
+            if (selectItem == null)
+            {
+                return UninstallResult.NG;
+            }
+
+            if (selectItem.FileType == InstallFileType.Main || selectItem.CommandName.Equals("exedit"))
+            {
+                return UninstallResult.IsMain;
+            }
+
+            if (!InstallProfileRW.IsExistContents(selectItem))
+            {
+                return UninstallResult.NotInstalled;
+            }
+
+            {
+                var func = new Func<InstallItem, bool>(InstallItem.Uninstall);
+                var task = Task.Run(() => func(selectItem));
+                var res = await task;
+                selectItem.IsSelect = false;
+
+                if (res)
+                {
+                    if ("sm".Length < selectItem.NicoVideoID.Length)
+                    {
+                        ContentsTreeRW.DeleteContents(selectItem.NicoVideoID);
+                        ContentsTreeRW contentsTreeRW = new ContentsTreeRW();
+                        contentsTreeRW.Write($"{SysConfig.InstallRootPath}");
+                    }
+
+                    InstallProfileRW.DeleteContents(selectItem);
+                    InstallProfileRW installProfileRW = new InstallProfileRW();
+                    installProfileRW.FileWrite($"{SysConfig.InstallRootPath}");
+                    installProfileRW.FileRead($"{SysConfig.InstallRootPath}\\{InstallProfileRW.ReloadFileName}");
+                }
+                else
+                {
+                    return UninstallResult.NG;
+                }
+            }
+
+            return UninstallResult.OK;
         }
 
         public Func<bool> ClosingCallback
