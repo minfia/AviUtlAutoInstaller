@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,12 @@ namespace AviUtlAutoInstaller.Models.Files
 {
     class InstallProfileRW : TomlFileRW
     {
-        private const string MainKeyName = "select";
+        private const string mainKeyName = "select";
+        private const string fileName = "InstallationList";
+        private const string fileExtension = "profile";
+        private static List<TomlTable> itemList = new List<TomlTable>();
+
+        public static string ReloadFileName { get; private set; }
 
         private class InstallationItem
         {
@@ -61,6 +67,10 @@ namespace AviUtlAutoInstaller.Models.Files
         {
             try
             {
+                if (!File.Exists(filePath))
+                {
+                    return;
+                }
                 TomlTable toml = Read(filePath);
                 ConvertToData(toml);
             }
@@ -77,7 +87,66 @@ namespace AviUtlAutoInstaller.Models.Files
         public void FileWrite(string filePath)
         {
             TomlTable table = ConvertToTomlTable();
-            Write(table, filePath);
+            ReloadFileName = $"{fileName}_{DateTime.Now:yyyyMMdd_HHmmss}.{fileExtension}";
+            Write(table, $"{filePath}\\{ReloadFileName}");
+        }
+
+        /// <summary>
+        /// インストール情報を追加
+        /// </summary>
+        /// <param name="data"></param>
+        public static void AddContents(InstallItem item)
+        {
+            var tomlItem = Toml.Create();
+
+            tomlItem.Add(_rwKeyTypeDic[RWKeyType.Name], item.Name);
+            tomlItem.Add(_rwKeyTypeDic[RWKeyType.FileName], item.DownloadFileName);
+            tomlItem.Add(_rwKeyTypeDic[RWKeyType.Version], item.Version);
+            tomlItem.Add(_rwKeyTypeDic[RWKeyType.RefType], (int)InstallItemList.RepoType.Pre);
+            try
+            {
+                itemList.Add(tomlItem);
+            }
+            catch
+            {
+            }
+        }
+
+        /// <summary>
+        /// インストール情報を削除
+        /// </summary>
+        /// <param name="item"></param>
+        public static void DeleteContents(InstallItem item)
+        {
+            var tomlItem = Toml.Create();
+
+            tomlItem.Add(_rwKeyTypeDic[RWKeyType.Name], item.Name);
+            tomlItem.Add(_rwKeyTypeDic[RWKeyType.FileName], item.DownloadFileName);
+            tomlItem.Add(_rwKeyTypeDic[RWKeyType.Version], item.Version);
+            tomlItem.Add(_rwKeyTypeDic[RWKeyType.RefType], (int)InstallItemList.RepoType.Pre);
+            int index = itemList.FindIndex(x => x[_rwKeyTypeDic[RWKeyType.Name]].ToString() == item.Name);
+            if (0 <= index)
+            {
+                itemList.RemoveAt(index);
+            }
+        }
+
+        /// <summary>
+        /// コンテンツがインストールされているかチェック
+        /// </summary>
+        /// <param name="contents"></param>
+        /// <returns></returns>
+        public static bool IsExistContents(InstallItem item)
+        {
+            int index = itemList.FindIndex(x => x[_rwKeyTypeDic[RWKeyType.Name]].ToString() == item.Name);
+            if (0 <= index)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         protected override void ConvertToData(TomlTable data)
@@ -94,12 +163,12 @@ namespace AviUtlAutoInstaller.Models.Files
                 throw new KeyNotFoundException($"読み込んだファイルのバージョンが不正です({tomlFileVersion})");
             }
 
-            TomlTableArray array = data.Get<TomlTableArray>(MainKeyName);
+            itemList = data.Get<TomlTableArray>(mainKeyName).Items;
 
             switch (version)
             {
                 case FileVersion.V100:
-                    SetEnableListV100(array);
+                    SetEnableListV100();
                     break;
                 default:
                     return;
@@ -112,7 +181,6 @@ namespace AviUtlAutoInstaller.Models.Files
 
             toml.Add("version", _fileVersionDic.Last().Value);
 
-            List<TomlTable> table = new List<TomlTable>();
             InstallItemList installItemList = new InstallItemList();
 
             for (var i = InstallItemList.RepoType.Pre; i < InstallItemList.RepoType.MAX; i++)
@@ -131,12 +199,13 @@ namespace AviUtlAutoInstaller.Models.Files
                     tomlItem.Add(_rwKeyTypeDic[RWKeyType.Version], item.Version);
                     tomlItem.Add(_rwKeyTypeDic[RWKeyType.RefType], (int)i);
 
-                    table.Add(tomlItem);
+                    itemList.Add(tomlItem);
                 }
             }
 
-            TomlTableArray array = new TomlTableArray(new Root(), table);
-            toml.Add(MainKeyName, array);
+            itemList = itemList.Distinct(new TomlTableComparer()).ToList();
+            TomlTableArray tomlTableArray = new TomlTableArray(new Root(), itemList);
+            toml.Add(mainKeyName, tomlTableArray);
 
             return toml;
         }
@@ -145,8 +214,9 @@ namespace AviUtlAutoInstaller.Models.Files
         /// v1.0.0用読み出し
         /// </summary>
         /// <param name="array"></param>
-        private void SetEnableListV100(TomlTableArray array)
+        private void SetEnableListV100()
         {
+            TomlTableArray array = new TomlTableArray(new Root(), itemList);
             List<InstallationItem> list = new List<InstallationItem>();
             for (int i = 0; i < array.Count; i++)
             {
@@ -173,13 +243,31 @@ namespace AviUtlAutoInstaller.Models.Files
                     // ユーザーリポジトリを優先
                     InstallItemList.SetIsSelect(InstallItemList.RepoType.Pre, item.Name, false);
                 }
-
             }
         }
 
         private class Root : ITomlRoot
         {
             public TomlSettings Settings => TomlSettings.Create();
+        }
+
+        private class TomlTableComparer : IEqualityComparer<TomlTable>
+        {
+            public bool Equals(TomlTable x, TomlTable y)
+            {
+                if (x[_rwKeyTypeDic[RWKeyType.Name]].ToString() == y[_rwKeyTypeDic[RWKeyType.Name]].ToString() &&
+                    x[_rwKeyTypeDic[RWKeyType.FileName]].ToString() == y[_rwKeyTypeDic[RWKeyType.FileName]].ToString() &&
+                    x[_rwKeyTypeDic[RWKeyType.Version]].ToString() == y[_rwKeyTypeDic[RWKeyType.Version]].ToString())
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            public int GetHashCode(TomlTable obj)
+            {
+                return 0;
+            }
         }
     }
 }

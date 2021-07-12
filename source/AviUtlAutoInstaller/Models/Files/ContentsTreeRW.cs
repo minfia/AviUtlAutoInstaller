@@ -30,11 +30,28 @@ namespace AviUtlAutoInstaller.Models.Files
         }
 
         /// <summary>
+        /// コンテンツの削除
+        /// </summary>
+        /// <param name="contents">コンテンツ</param>
+        public static void DeleteContents(string contents)
+        {
+            if (0 <= _contentsList.IndexOf(contents))
+            {
+                _contentsList.Remove(contents);
+            }
+        }
+
+        /// <summary>
         /// コンテンツツリーをファイルから読み出す
         /// </summary>
         /// <param name="dirPath"></param>
         public void Read(string dirPath)
         {
+
+            if (!File.Exists($"{dirPath}\\{_saveFileName}"))
+            {
+                return;
+            }
             _contentsList.Clear();
 
             using (StreamReader sr = new StreamReader($"{dirPath}\\{_saveFileName}", Encoding.UTF8))
@@ -60,8 +77,7 @@ namespace AviUtlAutoInstaller.Models.Files
         public void Write(string dirPath)
         {
             const int DivCount = 10;
-            bool append = File.Exists($"{dirPath}\\{_saveFileName}");
-            using (StreamWriter sw = new StreamWriter($"{dirPath}\\{_saveFileName}", append, Encoding.UTF8))
+            using (StreamWriter sw = new StreamWriter($"{dirPath}\\{_saveFileName}", false, Encoding.UTF8))
             {
                 sw.NewLine = "\n";
                 var contentsTreeList = _contentsList.Distinct().ToArray();
@@ -83,7 +99,6 @@ namespace AviUtlAutoInstaller.Models.Files
                     loopCnt++;
                 }
             }
-            _contentsList.Clear();
         }
     }
 }
