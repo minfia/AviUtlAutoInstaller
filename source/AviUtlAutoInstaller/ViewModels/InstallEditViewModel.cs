@@ -48,16 +48,12 @@ namespace AviUtlAutoInstaller.ViewModels
         private DelegateCommand _addItemCommand;
         private DelegateCommand _modifyItemCommand;
         private DelegateCommand<SelectCommandType> _deleteItemCommand;
-        private DelegateCommand _singleInstallCommand;
-        private DelegateCommand _singleUninstallCommand;
 
         public DelegateCommand OpenUserRepoCommand { get => _openUserRepoCommand; }
         public DelegateCommand SaveUserRepoCommand { get => _saveUserRepoCommand; }
         public DelegateCommand AddItemCommand { get => _addItemCommand; }
         public DelegateCommand ModifyItemCommand { get => _modifyItemCommand; }
         public DelegateCommand<SelectCommandType> DeleteItemCommand { get => _deleteItemCommand; }
-        public DelegateCommand SingleInstallCommand { get => _singleInstallCommand; }
-        public DelegateCommand SingleUninstallCommand { get => _singleUninstallCommand; }
 
         private Action<bool, string> _openUserRepoCallback;
         public Action<bool, string> OpenUserRepoCallback
@@ -74,6 +70,17 @@ namespace AviUtlAutoInstaller.ViewModels
         }
 
         #endregion
+
+        private DelegateCommand _singleInstallCommand;
+        private DelegateCommand _singleUninstallCommand;
+        public DelegateCommand SingleInstallCommand { get => _singleInstallCommand; }
+        public DelegateCommand SingleUninstallCommand { get => _singleUninstallCommand; }
+        private Visibility isVisiblePreRepoContextMenu = Visibility.Collapsed;
+        public Visibility IsVisiblePreRepoContextMenu
+        { 
+            get { return isVisiblePreRepoContextMenu; }
+            private set { SetProperty(ref isVisiblePreRepoContextMenu, value); }
+        }
 
         #region InstallItemEditViewの設定
         private InstallItemEditViewModel _installItemEditViewModel = new InstallItemEditViewModel();
@@ -905,6 +912,11 @@ namespace AviUtlAutoInstaller.ViewModels
                     UserSelectItem = null;
                 }
             }
+        }
+
+        public void ShowWindow(object sender, EventArgs e)
+        {
+            IsVisiblePreRepoContextMenu = SysConfig.IsInstalled ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 }
