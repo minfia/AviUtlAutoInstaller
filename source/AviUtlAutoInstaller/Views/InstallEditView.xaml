@@ -161,6 +161,9 @@
                             <Interactivity:EventTrigger EventName="PreviewMouseLeftButtonUp">
                                 <Interactivity:CallMethodAction TargetObject="{Binding .}" MethodName="UnForcus"/>
                             </Interactivity:EventTrigger>
+                            <Interactivity:EventTrigger EventName="Loaded">
+                                <Interactivity:CallMethodAction TargetObject="{Binding .}" MethodName="ShowWindow"/>
+                            </Interactivity:EventTrigger>
                         </Interactivity:Interaction.Triggers>
                         <DataGrid.Resources>
                                 <Style TargetType="DataGridCell" BasedOn="{StaticResource MahApps.Styles.DataGridCell}">
@@ -168,9 +171,13 @@
                                         <Setter.Value>
                                             <ContextMenu>
                                                 <MenuItem Header="インストール"
+                                                          Visibility="{Binding Source={StaticResource proxyElement},
+                                                                               Path=DataContext.IsVisiblePreRepoContextMenu}"
                                                           Command="{Binding Source={StaticResource proxyElement},
                                                                             Path=DataContext.SingleInstallCommand}"/>
                                                 <MenuItem Header="アンインストール"
+                                                          Visibility="{Binding Source={StaticResource proxyElement},
+                                                                               Path=DataContext.IsVisiblePreRepoContextMenu}"
                                                           Command="{Binding Source={StaticResource proxyElement},
                                                                             Path=DataContext.SingleUninstallCommand}"
                                                           CommandParameter="{x:Static vm:SelectCommandType.DataGrid}"/>
