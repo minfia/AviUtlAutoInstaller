@@ -145,6 +145,12 @@ namespace AviUtlAutoInstaller.ViewModels
         {
             if (isOk)
             {
+                if (!Directory.Exists(installPath))
+                {
+                    int lastIndex = installPath.LastIndexOf("\\");
+                    installPath = installPath.Substring(0, lastIndex);
+                }
+
                 if (!FileOperation.IsWritableOfDirectory(installPath))
                 {
                     MessageBox.Show("書き込み権限がありません", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
