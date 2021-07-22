@@ -99,6 +99,7 @@ namespace AviUtlAutoInstaller
                     Current.Shutdown();
                     return;
                 }
+                preRepoFileR.ReadMakerList();
                 preRepoFileR.ReadInstallItemList();
                 preRepoFileR.Close();
                 productInfo.SetRepoVersion(major, minor, maintenance, app_match);

@@ -70,6 +70,32 @@ namespace AviUtlAutoInstaller.Models.Files
             }
         }
 
+        public bool ReadMakerList()
+        {
+            InstallItem.MakerTypeDic.Clear();
+            int cnt = 0;
+            InstallItem.MakerTypeDic.Add(cnt++, "全て");
+            try
+            {
+                using (SQLiteCommand cmd = new SQLiteCommand(connection))
+                {
+                    cmd.CommandText = $"select * from {_makerTableName}";
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while(reader.Read())
+                        {
+                            InstallItem.MakerTypeDic.Add(cnt++, reader["maker_name"].ToString());
+                        }
+                    }
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// インストールリストを読み出す
         /// </summary>

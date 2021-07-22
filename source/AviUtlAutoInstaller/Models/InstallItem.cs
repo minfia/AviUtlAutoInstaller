@@ -348,6 +348,8 @@ namespace AviUtlAutoInstaller.Models
             set { SetProperty(ref _downloadExecute, value); }
         }
 
+        public static Dictionary<int, string> MakerTypeDic = new Dictionary<int, string>();
+
         /// <summary>
         /// ファイルタイプに対応する文字列
         /// </summary>
