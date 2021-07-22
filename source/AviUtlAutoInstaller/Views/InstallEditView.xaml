@@ -241,7 +241,7 @@
                             <DataGridTextColumn Header="ジャンル"
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                 Width="80"
-                                                Binding="{Binding SectionTypeString}"/>
+                                                Binding="{Binding SectionType}"/>
                             <DataGridTemplateColumn CanUserResize="False" Width="40">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>

@@ -70,6 +70,40 @@ namespace AviUtlAutoInstaller.Models.Files
             }
         }
 
+        /// <summary>
+        /// セクションリストを読み出す
+        /// </summary>
+        /// <returns></returns>
+        public bool ReadSectionList()
+        {
+            InstallItem.SectionTypeDic.Clear();
+            int cnt = 0;
+            InstallItem.SectionTypeDic.Add(cnt++, "全て");
+            try
+            {
+                using (SQLiteCommand cmd = new SQLiteCommand(connection))
+                {
+                    cmd.CommandText = $"select * from {_sectionTableName}";
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            InstallItem.SectionTypeDic.Add(cnt++, reader["section"].ToString());
+                        }
+                    }
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 製作者名リストを読み出す
+        /// </summary>
+        /// <returns></returns>
         public bool ReadMakerList()
         {
             InstallItem.MakerTypeDic.Clear();
@@ -127,7 +161,7 @@ namespace AviUtlAutoInstaller.Models.Files
                                 ExternalFile = reader["external_file"].ToString(),
                                 ExternalFileURL = reader["external_file_url"].ToString(),
                                 NicoVideoID = reader["nico_video_id"].ToString(),
-                                SectionType = (InstallSectionType)uint.Parse(reader["section"].ToString()),
+                                SectionType = reader["section"].ToString(),
                                 DependentName = reader["parent_name"].ToString()
                             };
                             item.IsSelect = ((InstallFileType.Main == item.FileType) || (item.CommandName == "exedit")) ? true : false;

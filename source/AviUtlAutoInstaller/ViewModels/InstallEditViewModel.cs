@@ -233,10 +233,6 @@ namespace AviUtlAutoInstaller.ViewModels
 
         #region 製作者のフィルタ
         /// <summary>
-        /// 製作者のフィルタ用定数
-        /// </summary>
-        private const int MakerAll = int.MaxValue;
-        /// <summary>
         /// コンボボックスに表示する内容
         /// </summary>
         public Dictionary<int, string> MakerFilter { get; } = InstallItem.MakerTypeDic;
@@ -338,27 +334,9 @@ namespace AviUtlAutoInstaller.ViewModels
 
         #region ジャンルタイプのフィルタ
         /// <summary>
-        /// ジャンルタイプのフィルタ用定数
-        /// </summary>
-        private const int SectionAll = int.MaxValue;
-        /// <summary>
         /// コンボボックスに表示する内容
         /// </summary>
-        public Dictionary<int, string> SectionFilter { get; } = new Dictionary<int, string>()
-        {
-            { SectionAll, "全て" },
-            { (int)InstallSectionType.Main, InstallItem.GetSectionTypeString(InstallSectionType.Main) },
-            { (int)InstallSectionType.Encoder, InstallItem.GetSectionTypeString(InstallSectionType.Encoder) },
-            { (int)InstallSectionType.FileInput, InstallItem.GetSectionTypeString(InstallSectionType.FileInput) },
-            { (int)InstallSectionType.Effect, InstallItem.GetSectionTypeString(InstallSectionType.Effect) },
-            { (int)InstallSectionType.EffectAudio, InstallItem.GetSectionTypeString(InstallSectionType.EffectAudio) },
-            { (int)InstallSectionType.Filter, InstallItem.GetSectionTypeString(InstallSectionType.Filter) },
-            { (int)InstallSectionType.SceneChange, InstallItem.GetSectionTypeString(InstallSectionType.SceneChange) },
-
-            { (int)InstallSectionType.AppAssist, InstallItem.GetSectionTypeString(InstallSectionType.AppAssist) },
-
-            { (int)InstallSectionType.Other, InstallItem.GetSectionTypeString(InstallSectionType.Other) },
-        };
+        public Dictionary<int, string> SectionFilter { get; } = InstallItem.SectionTypeDic;
         private string _sectionSelectValue;
         /// <summary>
         /// 各Listのジャンルタイプフィルタ値保持用
@@ -439,11 +417,11 @@ namespace AviUtlAutoInstaller.ViewModels
         {
             InstallItem installItem = e.Item as InstallItem;
             int fileType = FileTypeFilter.First(x => x.Value.Contains(_fileTypeSelectValue)).Key;
-            int sectionType = SectionFilter.First(x => x.Value.Contains(_sectionSelectValue)).Key;
+            string sectionType = SectionFilter[SectionFilter.First(x => x.Value.Contains(_sectionSelectValue)).Key];
             string makerName = MakerFilter[MakerFilter.First(x => x.Value.Contains(_makerSelectValue)).Key];
             if (installItem.Name.Contains(NameFilter) && installItem.ScriptDirName.Contains(ScriptDirNameFilter) &&
                 ((int)installItem.FileType == fileType || FileTypeAll == fileType) &&
-                ((int)installItem.SectionType == sectionType || SectionAll == sectionType) &&
+                (installItem.SectionType == sectionType || SectionFilter[0] == sectionType) &&
                 (installItem.MakerName == makerName || MakerFilter[0] == makerName))
             {
                 e.Accepted = true;
@@ -477,7 +455,7 @@ namespace AviUtlAutoInstaller.ViewModels
         {
             _installItemList = new InstallItemList();
             _fileTypeSelectValue = FileTypeFilter[FileTypeAll];
-            _sectionSelectValue = SectionFilter[SectionAll];
+            _sectionSelectValue = SectionFilter[0];
             _makerSelectValue = MakerFilter[0];
 
             PreInstallList = _installItemList.GetInstalItemList(InstallItemList.RepoType.Pre);
