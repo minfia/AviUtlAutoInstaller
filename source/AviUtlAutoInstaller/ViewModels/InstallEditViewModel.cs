@@ -167,6 +167,7 @@ namespace AviUtlAutoInstaller.ViewModels
         private enum FilterType
         {
             Name,
+            MakerName,
             ScriptDirName,
             FileType,
             Section,
@@ -195,14 +196,17 @@ namespace AviUtlAutoInstaller.ViewModels
                 {
                     IsFileTypeFilterVisible = Visibility.Collapsed;
                     IsSectionFilterVisible = Visibility.Visible;
+                    IsMakerFilterVisible = Visibility.Visible;
                 }
                 else
                 {
                     IsFileTypeFilterVisible = Visibility.Visible;
                     IsSectionFilterVisible = Visibility.Collapsed;
+                    IsMakerFilterVisible = Visibility.Collapsed;
                 }
                 FileTypeFilterSelectIndex = _fileTypeFilterList[value];
                 SectionFilterSelectIndex = _sectionFilterList[value];
+                MakerFilterSelectIndex = _makerFilterList[value];
             }
         }
 
@@ -224,6 +228,46 @@ namespace AviUtlAutoInstaller.ViewModels
                 SetProperty(ref _nameFilter, value);
                 UpdateFilterData(_selectTab[TabControlSelectIndex], FilterType.Name, value);
             }
+        }
+        #endregion
+
+        #region 製作者のフィルタ
+        /// <summary>
+        /// 製作者のフィルタ用定数
+        /// </summary>
+        private const int MakerAll = int.MaxValue;
+        /// <summary>
+        /// コンボボックスに表示する内容
+        /// </summary>
+        public Dictionary<int, string> MakerFilter { get; } = InstallItem.MakerTypeDic;
+        private string _makerSelectValue;
+        /// <summary>
+        /// 各Listの製作者フィルタ値保持用
+        /// </summary>
+        private readonly int[] _makerFilterList = new int[(int)InstallItemList.RepoType.MAX] { 0, 0 };
+        private int _makerFilterSelectIndex;
+        /// <summary>
+        /// 製作者のフィルタ値
+        /// </summary>
+        public int MakerFilterSelectIndex
+        {
+            get { return _makerFilterSelectIndex; }
+            set
+            {
+                SetProperty(ref _makerFilterSelectIndex, value);
+                string[] itemNameList = MakerFilter.Values.ToArray();
+                _makerSelectValue = itemNameList[value];
+                UpdateFilterData(_selectTab[TabControlSelectIndex], FilterType.MakerName, value);
+            }
+        }
+        private Visibility _isMakerFilterVisible = Visibility.Visible;
+        /// <summary>
+        /// 製作者のフィルタの表示設定
+        /// </summary>
+        public Visibility IsMakerFilterVisible
+        {
+            get { return _isMakerFilterVisible; }
+            set { SetProperty(ref _isMakerFilterVisible, value); }
         }
         #endregion
 
@@ -292,9 +336,9 @@ namespace AviUtlAutoInstaller.ViewModels
         }
         #endregion
 
-        #region ファイルタイプのフィルタ
+        #region ジャンルタイプのフィルタ
         /// <summary>
-        /// ファイルタイプのフィルタ用定数
+        /// ジャンルタイプのフィルタ用定数
         /// </summary>
         private const int SectionAll = int.MaxValue;
         /// <summary>
@@ -317,12 +361,12 @@ namespace AviUtlAutoInstaller.ViewModels
         };
         private string _sectionSelectValue;
         /// <summary>
-        /// 各Listのファイルタイプフィルタ値保持用
+        /// 各Listのジャンルタイプフィルタ値保持用
         /// </summary>
         private readonly int[] _sectionFilterList = new int[(int)InstallItemList.RepoType.MAX] { 0, 0 };
         private int _sectionFilterSelectIndex;
         /// <summary>
-        /// ファイルタイプのフィルタ値
+        /// ジャンルタイプのフィルタ値
         /// </summary>
         public int SectionFilterSelectIndex
         {
@@ -337,7 +381,7 @@ namespace AviUtlAutoInstaller.ViewModels
         }
         private Visibility _IsSectionFilterVisible = Visibility.Visible;
         /// <summary>
-        /// ファイルタイプのフィルタの表示設定
+        /// ジャンルタイプのフィルタの表示設定
         /// </summary>
         public Visibility IsSectionFilterVisible
         {
@@ -362,6 +406,9 @@ namespace AviUtlAutoInstaller.ViewModels
             {
                 case FilterType.Name:
                     _nameFilterList[(int)selectTab] = (string)data;
+                    break;
+                case FilterType.MakerName:
+                    _makerFilterList[(int)selectTab] = (int)data;
                     break;
                 case FilterType.ScriptDirName:
                     _scriptDirNameFilterList[(int)selectTab] = (string)data;
@@ -393,9 +440,11 @@ namespace AviUtlAutoInstaller.ViewModels
             InstallItem installItem = e.Item as InstallItem;
             int fileType = FileTypeFilter.First(x => x.Value.Contains(_fileTypeSelectValue)).Key;
             int sectionType = SectionFilter.First(x => x.Value.Contains(_sectionSelectValue)).Key;
+            string makerName = MakerFilter[MakerFilter.First(x => x.Value.Contains(_makerSelectValue)).Key];
             if (installItem.Name.Contains(NameFilter) && installItem.ScriptDirName.Contains(ScriptDirNameFilter) &&
                 ((int)installItem.FileType == fileType || FileTypeAll == fileType) &&
-                ((int)installItem.SectionType == sectionType || SectionAll == sectionType))
+                ((int)installItem.SectionType == sectionType || SectionAll == sectionType) &&
+                (installItem.MakerName == makerName || MakerFilter[0] == makerName))
             {
                 e.Accepted = true;
             }
@@ -429,6 +478,7 @@ namespace AviUtlAutoInstaller.ViewModels
             _installItemList = new InstallItemList();
             _fileTypeSelectValue = FileTypeFilter[FileTypeAll];
             _sectionSelectValue = SectionFilter[SectionAll];
+            _makerSelectValue = MakerFilter[0];
 
             PreInstallList = _installItemList.GetInstalItemList(InstallItemList.RepoType.Pre);
             UserInstallList = _installItemList.GetInstalItemList(InstallItemList.RepoType.User);
