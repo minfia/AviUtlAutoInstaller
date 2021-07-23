@@ -145,15 +145,15 @@ namespace AviUtlAutoInstaller.Models
                     {
                         case ExternalFileType.VSRuntime:
                             {
-                                if (exFile.Contains("vc2008") && !Properties.Settings.Default.vs2008runtime)
+                                if (exFile.Contains("vc2008") && !AppConfig.Runtime.vs2008)
                                 {
                                     args = "/q";
                                 }
-                                else if (exFile.Contains("vc2013") && !Properties.Settings.Default.vs2013runtime)
+                                else if (exFile.Contains("vc2013") && !AppConfig.Runtime.vs2013)
                                 {
                                     args = "quiet";
                                 }
-                                else if (exFile.Contains("vc201X") && !Properties.Settings.Default.vs201Xruntime)
+                                else if (exFile.Contains("vc201X") && !AppConfig.Runtime.vs201X)
                                 {
                                     args = "quiet";
                                 }
@@ -165,16 +165,17 @@ namespace AviUtlAutoInstaller.Models
                                 {
                                     if (exFile.Contains("vc2008"))
                                     {
-                                        Properties.Settings.Default.vs2008runtime = true;
+                                        AppConfig.Runtime.vs2008 = true;
                                     }
                                     else if (exFile.Contains("vc2013"))
                                     {
-                                        Properties.Settings.Default.vs2013runtime = true;
+                                        AppConfig.Runtime.vs2013 = true;
                                     }
                                     else if (exFile.Contains("vc201X"))
                                     {
-                                        Properties.Settings.Default.vs201Xruntime = true;
+                                        AppConfig.Runtime.vs201X = true;
                                     }
+                                    AppConfig.Save();
                                 }
                             }
                             break;

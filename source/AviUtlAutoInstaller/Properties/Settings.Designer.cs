@@ -22,41 +22,5 @@ namespace AviUtlAutoInstaller.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool vs2008runtime {
-            get {
-                return ((bool)(this["vs2008runtime"]));
-            }
-            set {
-                this["vs2008runtime"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool vs2013runtime {
-            get {
-                return ((bool)(this["vs2013runtime"]));
-            }
-            set {
-                this["vs2013runtime"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool vs201Xruntime {
-            get {
-                return ((bool)(this["vs201Xruntime"]));
-            }
-            set {
-                this["vs201Xruntime"] = value;
-            }
-        }
     }
 }

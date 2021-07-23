@@ -106,6 +106,8 @@ namespace AviUtlAutoInstaller
                 productInfo.SetRepoVersion(major, minor, maintenance, app_match);
             }
 
+            AppConfig.Load();
+
             var mv = new MainView();
             var mvm = new MainViewModel();
 
