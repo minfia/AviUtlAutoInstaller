@@ -49,6 +49,11 @@ namespace AviUtlAutoInstaller.Models
         }
 
         /// <summary>
+        /// 設定ファイル等のディレクトリパス
+        /// </summary>
+        public static string UserAppDataPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\{ProductInfo.Company}\\{ProductInfo.Product}";
+
+        /// <summary>
         /// AviUtlインストール済み
         /// </summary>
         public static bool IsInstalled = false;

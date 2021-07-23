@@ -127,6 +127,7 @@ namespace AviUtlAutoInstaller.ViewModels
                     return false;
                 }
             }
+            AppConfig.Save();
             App.Current.Shutdown();
             return true;
         }
