@@ -19,11 +19,12 @@ AviUtlの動画作成環境を自動で行うツールです。
 
 ## ダウンロード
 [注意](#注意)を了承された方は、以下のURLからダウンロードしてください。  
-[https://github.com/minfia/AviUtlAutoInstaller/releases](https://github.com/minfia/AviUtlAutoInstaller/releases)
+[https://github.com/minfia/AviUtlAutoInstaller/releases](https://github.com/minfia/AviUtlAutoInstaller/releases)  
+AviUtlAutoInstallerで使用しているaai.repoは[こちら](https://github.com/minfia/AAI_Repo/releases)から  
 
 ## 使い方
 付属の`manual/index.html`を参照してください。  
-リリース時に記載
+軽くですが使い方を[ここ](https://www.nicovideo.jp/watch/sm39152679)で説明しています。  
 
 ## 開発環境
 |           ツール名           | version |     備考     |
