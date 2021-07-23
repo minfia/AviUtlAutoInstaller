@@ -39,7 +39,8 @@
                            Text="{Binding ApplicationVersion, StringFormat=ApplicationVersion:  {0}}"/>
                 <TextBlock Margin="0,4,0,0"
                            Text="{Binding PreRepoVersion, StringFormat=PreinstallRepoVersion:  {0}}"/>
-                <TextBlock Margin="0,4,0,0">
+                <TextBlock Margin="0,4,0,0"
+                           Text="GitHub: ">
                     <Hyperlink NavigateUri="https://github.com/minfia/AviUtlAutoInstaller">
                         <Interactivity:Interaction.Triggers>
                             <Interactivity:EventTrigger EventName="RequestNavigate">
@@ -47,7 +48,17 @@
                             </Interactivity:EventTrigger>
                         </Interactivity:Interaction.Triggers>
                         <Hyperlink.Inlines>
-                            <Run Text="GitHub"/>
+                            <Run Text="Application"/>
+                        </Hyperlink.Inlines>
+                    </Hyperlink>
+                    <Hyperlink NavigateUri="https://github.com/minfia/AAI_Repo">
+                        <Interactivity:Interaction.Triggers>
+                            <Interactivity:EventTrigger EventName="RequestNavigate">
+                                <Interactivity:CallMethodAction TargetObject="{Binding .}" MethodName="OpenLink"/>
+                            </Interactivity:EventTrigger>
+                        </Interactivity:Interaction.Triggers>
+                        <Hyperlink.Inlines>
+                            <Run Text="Repo"/>
                         </Hyperlink.Inlines>
                     </Hyperlink>
                 </TextBlock>
