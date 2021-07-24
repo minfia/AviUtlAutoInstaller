@@ -12,6 +12,7 @@ using System.Windows;
 [assembly: AssemblyCompany("minfia Lab.")]
 [assembly: AssemblyProduct("AviUtlAutoInstaller")]
 [assembly: AssemblyCopyright("Copyright ©  2021 minfia")]
+[assembly: Guid("76EB474B-6471-4EDB-9FF8-C650A0C7C9D9")]
 
 // ComVisible を false に設定すると、このアセンブリ内の型は COM コンポーネントから
 // 参照できなくなります。COM からこのアセンブリ内の型にアクセスする必要がある場合は、
