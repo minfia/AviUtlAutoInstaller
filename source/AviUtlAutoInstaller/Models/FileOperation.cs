@@ -143,6 +143,18 @@ namespace AviUtlAutoInstaller.Models
         }
 
         /// <summary>
+        /// ディレクトリの空チェック
+        /// </summary>
+        /// <param name="dirPath">チェックするとディレクトリパス</param>
+        /// <returns></returns>
+        public bool IsDirectoryEmpty(string dirPath)
+        {
+            var paths = Directory.EnumerateFileSystemEntries(dirPath);
+
+            return (paths.ToArray().Length == 0) ? true : false;
+        }
+
+        /// <summary>
         /// ファイル一覧の生成
         /// </summary>
         /// <param name="srcDirPath">取得元のディレクトリパス</param>
