@@ -32,6 +32,7 @@ namespace AviUtlAutoInstaller.ViewModels
             NG,
             NotDownload,
             DownloadFailed,
+            NotSupportInstall,
         }
 
         private enum UninstallResult
@@ -554,7 +555,11 @@ namespace AviUtlAutoInstaller.ViewModels
                                 image = MessageBoxImage.Error;
                                 break;
                             case InstallResult.NotDownload:
-                                message = "事前にファイルのダウンロードが必要です";
+                                message = "事前にファイルのダウンロードが必要です。";
+                                image = MessageBoxImage.Error;
+                                break;
+                            case InstallResult.NotSupportInstall:
+                                message = "このバージョンではインストールに対応していません。";
                                 image = MessageBoxImage.Error;
                                 break;
                             default:
@@ -826,7 +831,7 @@ namespace AviUtlAutoInstaller.ViewModels
             }
             if (!selectItem.IsInstallCompleted)
             {
-                return InstallResult.NG;
+                return (selectItem.IsSpecialItem) ? InstallResult.NotSupportInstall : InstallResult.NG;
             }
             if (selectItem.IsInstallCompleted)
             {
