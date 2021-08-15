@@ -700,6 +700,7 @@ namespace AviUtlAutoInstaller.ViewModels
                             ContentsTreeRW.AddContents(item.NicoVideoID);
                         }
                         item.IsInstallCompleted = res;
+                        item.IsSelect = res;
                     }
 
                     if (!string.IsNullOrWhiteSpace(item.ExternalFile))

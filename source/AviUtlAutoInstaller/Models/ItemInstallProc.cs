@@ -244,7 +244,15 @@ namespace AviUtlAutoInstaller.Models
         /// <returns></returns>
         private static bool InstallSpecialPlugin(InstallItem item)
         {
-            var type = _specialPluginDic.First(x => x.Value == item.Name).Key;
+            SpecialPluginType type;
+            try
+            {
+                type = _specialPluginDic.First(x => x.Value == item.Name).Key;
+            }
+            catch
+            {
+                return false;
+            }
 
             switch (type)
             {
@@ -313,7 +321,15 @@ namespace AviUtlAutoInstaller.Models
         /// <returns></returns>
         private static bool UninstallSpecialPlugin(InstallItem item)
         {
-            var type = _specialPluginDic.First(x => x.Value == item.Name).Key;
+            SpecialPluginType type;
+            try
+            {
+                type = _specialPluginDic.First(x => x.Value == item.Name).Key;
+            }
+            catch
+            {
+                return false;
+            }
 
             switch (type)
             {
