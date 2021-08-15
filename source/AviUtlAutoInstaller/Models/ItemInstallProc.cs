@@ -44,7 +44,7 @@ namespace AviUtlAutoInstaller.Models
                         }
                         break;
                     case InstallFileType.Plugin:
-                        if (IsSpecialPlugin(item.Name))
+                        if (item.IsSpecialItem)
                         {
                             return InstallSpecialPlugin(item);
                         }
@@ -79,7 +79,7 @@ namespace AviUtlAutoInstaller.Models
                     baseDir = $"{SysConfig.InstallRootPath}";
                     break;
                 case InstallFileType.Plugin:
-                    if (IsSpecialPlugin(item.Name))
+                    if (item.IsSpecialItem)
                     {
                         return UninstallSpecialPlugin(item);
                     }
@@ -218,23 +218,15 @@ namespace AviUtlAutoInstaller.Models
         private enum SpecialPluginType
         {
             PSDToolkit,
+            ExToolBar,
         };
 
         private static readonly Dictionary<SpecialPluginType, string> _specialPluginDic = new Dictionary<SpecialPluginType, string>()
         {
             { SpecialPluginType.PSDToolkit, "PSDToolKit" },
+            { SpecialPluginType.ExToolBar, "拡張ツールバー" },
         };
 
-        /// <summary>
-        /// 単純にインストール出来ないプラグインの判定
-        /// </summary>
-        /// <param name="name">名称</param>
-        /// <returns></returns>
-        private static bool IsSpecialPlugin(string name)
-        {
-            bool b = _specialPluginDic.Any(x => x.Value == name);
-            return b;
-        }
 
         /// <summary>
         /// 単純にインストール出来ないプラグインのインストール
@@ -249,6 +241,9 @@ namespace AviUtlAutoInstaller.Models
             {
                 case SpecialPluginType.PSDToolkit:
                     InstallPSDToolKit(item.DownloadFileName);
+                    break;
+                case SpecialPluginType.ExToolBar:
+                    InstallExToolBar(item.DownloadFileName);
                     break;
                 default:
                     return false;
@@ -285,6 +280,24 @@ namespace AviUtlAutoInstaller.Models
         }
 
         /// <summary>
+        /// 拡張ツールバーのインストール
+        /// </summary>
+        /// <param name="downloadFileName"></param>
+        private static void InstallExToolBar(string downloadFileName)
+        {
+            FileOperation fileOperation = new FileOperation();
+            string exToolSrcPath = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}";
+
+            string iconFileDestPath = $"{SysConfig.AviUtlPluginDir}";
+            Directory.CreateDirectory($"{iconFileDestPath}\\extoolbar");
+
+            File.Delete($"{exToolSrcPath}\\extoolbar.txt");
+
+            string exToolIconSrcPath = $"{exToolSrcPath}";
+            fileOperation.DirectoryMove(exToolIconSrcPath, iconFileDestPath);
+        }
+
+        /// <summary>
         /// 単純にインストール出来ないプラグインのアンインストール
         /// </summary>
         /// <param name="item"></param>
@@ -297,6 +310,9 @@ namespace AviUtlAutoInstaller.Models
             {
                 case SpecialPluginType.PSDToolkit:
                     UninstallPSDToolKit();
+                    break;
+                case SpecialPluginType.ExToolBar:
+                    UninstallExToolBar();
                     break;
                 default:
                     return false;
@@ -342,7 +358,26 @@ namespace AviUtlAutoInstaller.Models
             {
                 File.Delete(path);
             }
+        }
 
+        /// <summary>
+        /// 拡張ツールバーのアンインストール
+        /// </summary>
+        private static void UninstallExToolBar()
+        {
+            string exToolBarDirPath = $"{SysConfig.AviUtlPluginDir}\\extoolbar";
+            Directory.Delete(exToolBarDirPath, true);
+
+            string[] filePath = new string[] {
+                $"{SysConfig.AviUtlPluginDir}\\extoolbar.auf",
+                $"{SysConfig.AviUtlPluginDir}\\extoolbar.ini",
+                $"{SysConfig.AviUtlPluginDir}\\extoolkey.tsv"
+            };
+
+            foreach (string path in filePath)
+            {
+                File.Delete(path);
+            }
         }
 
         private static void InstallRigayaEncoder(string downloadFileName)
