@@ -151,6 +151,7 @@ namespace AviUtlAutoInstaller.Models.Files
                                 Priority = (InstallPriority)uint.Parse(reader["priority"].ToString()),
                                 Name = reader["name"].ToString(),
                                 CommandName = reader["command_name"].ToString(),
+                                IsSpecialItem = bool.Parse(reader["is_special_item"].ToString()),
                                 MakerName = reader["maker_name"].ToString(),
                                 URL = reader["url"].ToString(),
                                 DownloadFileName = reader["download_file_name"].ToString(),

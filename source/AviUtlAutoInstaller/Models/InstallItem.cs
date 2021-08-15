@@ -105,6 +105,16 @@ namespace AviUtlAutoInstaller.Models
             set { SetProperty(ref _commandName, value); }
         }
 
+        private bool _isSpecialItem;
+        /// <summary>
+        /// 単純にインストールできないアイテム
+        /// </summary>
+        public bool IsSpecialItem
+        {
+            get { return _isSpecialItem; }
+            set { SetProperty(ref _isSpecialItem, value); }
+        }
+
         private string _makerName;
         /// <summary>
         /// 製作者名
