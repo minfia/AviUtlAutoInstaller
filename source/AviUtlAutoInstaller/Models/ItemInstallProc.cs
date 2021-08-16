@@ -131,8 +131,8 @@ namespace AviUtlAutoInstaller.Models
             { "vc2008redist_x64.exe", ExternalFileType.VSRuntime },
             { "vc2013redist_x86.exe", ExternalFileType.VSRuntime },
             { "vc2013redist_x64.exe", ExternalFileType.VSRuntime },
-            { "vc201Xredist.x86.exe", ExternalFileType.VSRuntime },
-            { "vc201Xredist.x64.exe", ExternalFileType.VSRuntime },
+            { "vc201Xredist_x86.exe", ExternalFileType.VSRuntime },
+            { "vc201Xredist_x64.exe", ExternalFileType.VSRuntime },
         };
 
         /// <summary>
@@ -154,37 +154,13 @@ namespace AviUtlAutoInstaller.Models
                     {
                         case ExternalFileType.VSRuntime:
                             {
-                                if (exFile.Contains("vc2008") && !AppConfig.Runtime.vs2008)
-                                {
-                                    args = "/q";
-                                }
-                                else if (exFile.Contains("vc2013") && !AppConfig.Runtime.vs2013)
-                                {
-                                    args = "quiet";
-                                }
-                                else if (exFile.Contains("vc201X") && !AppConfig.Runtime.vs201X)
-                                {
-                                    args = "quiet";
-                                }
-                                else
+                                if ((args = GetVSRuntimeArgument(exFile)) == string.Empty)
                                 {
                                     break;
                                 }
                                 if (VSRuntimeInstall(exFilePath, args))
                                 {
-                                    if (exFile.Contains("vc2008"))
-                                    {
-                                        AppConfig.Runtime.vs2008 = true;
-                                    }
-                                    else if (exFile.Contains("vc2013"))
-                                    {
-                                        AppConfig.Runtime.vs2013 = true;
-                                    }
-                                    else if (exFile.Contains("vc201X"))
-                                    {
-                                        AppConfig.Runtime.vs201X = true;
-                                    }
-                                    AppConfig.Save();
+                                    RegistVSRuntime(exFile);
                                 }
                             }
                             break;
@@ -196,6 +172,37 @@ namespace AviUtlAutoInstaller.Models
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// VisualStudioのランタイムインストール用の引数を取得
+        /// </summary>
+        /// <param name="exFile">インストーラ名</param>
+        /// <returns>arg or string.Empty</returns>
+        private static string GetVSRuntimeArgument(string exFile)
+        {
+            string args = string.Empty;
+
+            if (exFile.Contains("vc2008") &&
+                (exFile.Contains("_x86") && !AppConfig.Runtime.vs2008_x86) ||
+                (exFile.Contains("_x64") && !AppConfig.Runtime.vs2008_x64))
+            {
+                args = "/q";
+            }
+            else if (exFile.Contains("vc2013") &&
+                     (exFile.Contains("_x86") && !AppConfig.Runtime.vs2013_x86) ||
+                     (exFile.Contains("_x64") && !AppConfig.Runtime.vs2013_x64))
+            {
+                args = "quiet";
+            }
+            else if (exFile.Contains("vc201X") &&
+                     (exFile.Contains("_x86") && !AppConfig.Runtime.vs201X_x86) ||
+                     (exFile.Contains("_x64") && !AppConfig.Runtime.vs201X_x64))
+            {
+                args = "quiet";
+            }
+
+            return args;
         }
 
         /// <summary>
@@ -222,6 +229,48 @@ namespace AviUtlAutoInstaller.Models
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// VisualStudioのランタイムの登録
+        /// </summary>
+        /// <param name="exFile">インストーラ名</param>
+        private static void RegistVSRuntime(string exFile)
+        {
+            if (exFile.Contains("vc2008"))
+            {
+                if (exFile.Contains("_x86"))
+                {
+                    AppConfig.Runtime.vs2008_x86 = true;
+                }
+                else if (exFile.Contains("_x64"))
+                {
+                    AppConfig.Runtime.vs2008_x86 = true;
+                }
+            }
+            else if (exFile.Contains("vc2013"))
+            {
+                if (exFile.Contains("_x86"))
+                {
+                    AppConfig.Runtime.vs2013_x86 = true;
+                }
+                else if (exFile.Contains("_x64"))
+                {
+                    AppConfig.Runtime.vs2013_x64 = true;
+                }
+            }
+            else if (exFile.Contains("vc201X"))
+            {
+                if (exFile.Contains("_x86"))
+                {
+                    AppConfig.Runtime.vs201X_x86 = true;
+                }
+                else if (exFile.Contains("_x64"))
+                {
+                    AppConfig.Runtime.vs201X_x64 = true;
+                }
+            }
+            AppConfig.Save();
         }
 
         private enum SpecialPluginType
