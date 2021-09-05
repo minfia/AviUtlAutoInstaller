@@ -182,10 +182,8 @@ namespace AviUtlAutoInstaller.Models
 
             string searchSrcDir;
 
-            string fileExtention = Path.GetExtension(item.DownloadFileName);
             FileOperation fileOperation = new FileOperation();
-            if ((Array.IndexOf(SysConfig.PluginFileExtension, fileExtention) == -1) &&
-                (Array.IndexOf(SysConfig.ScriptFileExtension, fileExtention) == -1))
+            if (IsExtractExtension(item.DownloadFileName))
             {
                 // ダウンロードしたファイルが圧縮ファイル
                 string extractFile = $"{SysConfig.CacheDirPath}\\{item.DownloadFileName}";   // 解凍するファイルのパス: .\cache\FileName.圧縮形式
@@ -196,7 +194,8 @@ namespace AviUtlAutoInstaller.Models
             else
             {
                 // ダウンロードしたファイルがスクリプトorプラグインファイル
-                searchSrcDir = $"{SysConfig.CacheDirPath}"; // cache\FileName
+                File.Copy($"{SysConfig.CacheDirPath}\\{item.DownloadFileName}", $"{SysConfig.InstallExpansionDir}\\{item.DownloadFileName}", true);
+                searchSrcDir = $"{SysConfig.InstallExpansionDir}";
             }
 
             if (InstallItemList.RepoType.Pre == repoType)
@@ -226,6 +225,24 @@ namespace AviUtlAutoInstaller.Models
             return installFiles;
         }
 
+        /// <summary>
+        /// ダウンロードしたファイルが圧縮ファイルか判定
+        /// </summary>
+        /// <param name="fileExtension">拡張子</param>
+        /// <returns></returns>
+        private bool IsExtractExtension(string fileName)
+        {
+            string fileExtension = "*" + Path.GetExtension(fileName);
+            if (Array.IndexOf(SysConfig.PluginFileExtension, fileExtension) != -1)
+            {
+                return false;
+            }
+            if (Array.IndexOf(SysConfig.ScriptFileExtension, fileExtension) != -1)
+            {
+                return false;
+            }
 
+            return true;
+        }
     }
 }
