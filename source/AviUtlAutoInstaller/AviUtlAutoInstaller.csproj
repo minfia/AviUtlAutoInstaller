@@ -100,6 +100,7 @@
     <Compile Include="Models\SysConfig.cs" />
     <Compile Include="Models\Files\TomlFileRW.cs" />
     <Compile Include="Models\Files\UserRepoFileRW.cs" />
+    <Compile Include="Models\UpdateCheck.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ViewModels\DelegateCommand.cs" />
     <Compile Include="ViewModels\InstallEditViewModel.cs" />
