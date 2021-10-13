@@ -38,7 +38,7 @@
                         Orientation="Horizontal">
                 <TextBlock Text="リポジトリファイル"/>
                 <TextBlock Margin="8,0,0,0"
-                           Text="{Binding PreRepoUpdateExist}"
+                           Text="{Binding PreRepoUpdateMsg}"
                            Foreground="#FFFF375F"/>
             </StackPanel>
             <TextBlock Margin="12,4,0,0"
@@ -91,7 +91,7 @@
                         Orientation="Horizontal">
                 <TextBlock Text="アプリケーション"/>
                 <TextBlock Margin="8,0,0,0"
-                           Text="{Binding ApplicationUpdateExist}"
+                           Text="{Binding ApplicationUpdateMsg}"
                            Foreground="#FFFF375F"/>
             </StackPanel>
             <TextBlock Grid.Column="0"
