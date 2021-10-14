@@ -1,0 +1,25 @@
+﻿<Controls:MetroWindow x:Class="AAIUpdater.Views.MainView"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:Interactivity="http://schemas.microsoft.com/xaml/behaviors"
+                      xmlns:local="clr-namespace:AAIUpdater.Views"
+                      mc:Ignorable="d"
+                      WindowTitleBrush="#FF333337"
+                      NonActiveWindowTitleBrush="#FF333337"
+                      Background="#FF333337"
+                      GlowBrush="MediumAquamarine"
+                      TitleCharacterCasing="Normal"
+                      Title="Updater"
+                      ShowCloseButton="False"
+                      ResizeMode="NoResize"
+                      SizeToContent="Height"
+                      Height="450" Width="800"
+                      WindowStartupLocation="CenterScreen"
+                      WindowTransitionsEnabled="False">
+    <Grid>
+        
+    </Grid>
+</Controls:MetroWindow>
