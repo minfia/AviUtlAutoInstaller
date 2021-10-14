@@ -98,7 +98,7 @@ namespace AviUtlAutoInstaller.Models
         /// </summary>
         /// <param name="srcDirPath">移動元のディレクトパス</param>
         /// <param name="destDirPath">移動先のディレクトリパス</param>
-        public void DirectoryMove(string srcDirPath, string destDirPath)
+        public void DirectoryMove(string srcDirPath, string destDirPath, string[] excludeFileList)
         {
             string[] srcDirHierarchy = Directory.GetDirectories(srcDirPath, "*", SearchOption.AllDirectories);
             string srcDirLastName = srcDirPath.Split('\\').Last();
@@ -112,6 +112,13 @@ namespace AviUtlAutoInstaller.Models
             }
 
             var fileList = GenerateFilePathList(srcDirPath, "*.*");
+            if (excludeFileList != null)
+            {
+                foreach (var fileName in excludeFileList)
+                {
+                    fileList.Remove($"{fileName}");
+                }
+            }
 
             // 出力先のファイル一覧を生成と移動
             foreach (string file in fileList)

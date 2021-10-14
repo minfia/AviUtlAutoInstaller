@@ -331,7 +331,7 @@ namespace AviUtlAutoInstaller.Models
             Directory.CreateDirectory(psdManualDestPath);
 
             string srcDocsPath = $"{psdSrcPath}\\PSDToolKitDocs";
-            fileOperation.DirectoryMove(srcDocsPath, $"{psdManualDestPath}\\PSDToolKitDocs");
+            fileOperation.DirectoryMove(srcDocsPath, $"{psdManualDestPath}\\PSDToolKitDocs", null);
             Directory.Delete(srcDocsPath, true);
             string[] fileNames = { "GCMZDrops.txt", "PSDToolKit.txt", "PSDToolKit説明書.html", "ZRamPreview.txt", "キャッシュテキスト.txt" };
             List<string> srcFileNamePath = new List<string>();
@@ -342,7 +342,7 @@ namespace AviUtlAutoInstaller.Models
             fileOperation.FileMove(srcFileNamePath.ToArray(), psdManualDestPath);
 
             // 本体の移動
-            fileOperation.DirectoryMove($"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}", $"{SysConfig.AviUtlPluginDir}");
+            fileOperation.DirectoryMove($"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}", $"{SysConfig.AviUtlPluginDir}", null);
         }
 
         /// <summary>
@@ -360,7 +360,7 @@ namespace AviUtlAutoInstaller.Models
             File.Delete($"{exToolSrcPath}\\extoolbar.txt");
 
             string exToolIconSrcPath = $"{exToolSrcPath}";
-            fileOperation.DirectoryMove(exToolIconSrcPath, iconFileDestPath);
+            fileOperation.DirectoryMove(exToolIconSrcPath, iconFileDestPath, null);
         }
 
         /// <summary>
@@ -471,7 +471,7 @@ namespace AviUtlAutoInstaller.Models
                 }
             }
 
-            fileOperation.DirectoryMove($"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}", tempDir);
+            fileOperation.DirectoryMove($"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}", tempDir, null);
 
             string[] exe = { "auo_setup.exe" };
             var exeList = fileOperation.GenerateFilePathList(extractDirPath, exe);
