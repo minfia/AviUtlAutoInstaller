@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AviUtlAutoInstaller.Models.Files;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -188,7 +189,8 @@ namespace AviUtlAutoInstaller.Models
                 // ダウンロードしたファイルが圧縮ファイル
                 string extractFile = $"{SysConfig.CacheDirPath}\\{item.DownloadFileName}";   // 解凍するファイルのパス: .\cache\FileName.圧縮形式
                 string extractDestDir = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(item.DownloadFileName)}";  //解凍先: root\EX_TEMP\FileNameDir\
-                fileOperation.Extract(extractFile, extractDestDir);
+                Extractor extractor = new Extractor();
+                extractor.Extract(extractFile, extractDestDir);
                 searchSrcDir = extractDestDir;
             }
             else
