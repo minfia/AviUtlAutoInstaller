@@ -109,9 +109,6 @@ namespace AviUtlAutoInstaller
             AppConfig.Load();
 
             var mv = new MainView();
-            var mvm = new MainViewModel();
-
-            mv.DataContext = mvm;
             mv.Show();
         }
 

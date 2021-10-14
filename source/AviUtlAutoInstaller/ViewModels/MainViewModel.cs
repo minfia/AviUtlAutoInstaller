@@ -734,5 +734,48 @@ namespace AviUtlAutoInstaller.ViewModels
                 File.Copy($"{SysConfig.CacheDirPath}\\{file.DownloadFileName}", copyFile);
             }
         }
+
+        public async void ShowWindow(object sender, EventArgs e)
+        {
+            UpdateCheck updateCheck = new UpdateCheck();
+
+            UpdateCheck.CheckResult[] res = new UpdateCheck.CheckResult[2];
+            res[0] = updateCheck.Check(UpdateCheck.CheckTarget.PreRepo, ProductInfo.RepoVersion, out string getRepoVersion, out string repoURL);
+            res[1] = updateCheck.Check(UpdateCheck.CheckTarget.App, ProductInfo.AppVersion, out string getAppVersion, out string appURL);
+
+            if (res[1] == UpdateCheck.CheckResult.Update)
+            {
+                // アプリ
+                MessageBox.Show($"アプリのアップデート({getAppVersion})があります", "情報", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else if (res[0] == UpdateCheck.CheckResult.Update)
+            {
+                // プリインストールリポジトリ
+                if (MessageBoxResult.Yes == MessageBox.Show($"リポジトリのアップデート({getRepoVersion})があります\nアップデートしますか？", "情報", MessageBoxButton.YesNo, MessageBoxImage.Question))
+                {
+                    Task<UpdateCheck.RepoUpdateResult> task = Task.Run(() => updateCheck.UpdatePreRepo(repoURL));
+                    await task;
+
+                    switch (task.Result)
+                    {
+                        case UpdateCheck.RepoUpdateResult.UnSupported:
+                            MessageBox.Show("新しいバージョンは、このアプリケーションのバージョンでは使用できません", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                        case UpdateCheck.RepoUpdateResult.Failed:
+                            MessageBox.Show("アップデートに失敗しました", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                        case UpdateCheck.RepoUpdateResult.Success:
+                            MessageBox.Show("アップデートしました", "情報", MessageBoxButton.OK, MessageBoxImage.Information);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            else if ((res[0] == UpdateCheck.CheckResult.Failed) || res[1] == UpdateCheck.CheckResult.Failed)
+            {
+                // アップデートチェック失敗
+            }
+        }
     }
 }
