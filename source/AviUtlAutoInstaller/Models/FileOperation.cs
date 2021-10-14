@@ -1,5 +1,4 @@
-﻿using SevenZipExtractor;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -56,19 +55,6 @@ namespace AviUtlAutoInstaller.Models
                 }
             }
             return writable;
-        }
-
-        /// <summary>
-        /// 圧縮ファイルを解凍
-        /// </summary>
-        /// <param name="srcFilePath">解凍するファイルのパス</param>
-        /// <param name="destPath">解凍先のパス</param>
-        public void Extract(string srcFilePath, string destPath)
-        {
-            using (ArchiveFile file = new ArchiveFile(srcFilePath))
-            {
-                file.Extract(destPath, true);
-            }
         }
 
         /// <summary>
