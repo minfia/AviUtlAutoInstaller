@@ -133,7 +133,11 @@ namespace AviUtlAutoInstaller.Models
                 uint.TryParse(sv[i], out uint s);
                 uint.TryParse(tv[i], out uint t);
 
-                if (s < t)
+                if (s > t)
+                {
+                    return false;
+                }
+                else if (s < t)
                 {
                     return true;
                 }
