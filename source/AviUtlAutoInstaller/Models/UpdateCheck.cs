@@ -184,5 +184,24 @@ namespace AviUtlAutoInstaller.Models
 
             return RepoUpdateResult.Failed;
         }
+
+        /// <summary>
+        /// アプリケーションのアップデート
+        /// </summary>
+        /// <param name="url">アプリケーションのURL</param>
+        public void UpdateApplication(string url)
+        {
+            FileOperation fileOperation = new FileOperation();
+
+            fileOperation.ExecApp(SysConfig.UpdaterFilePath, $"--app {url}", FileOperation.ExecAppType.GUI, out System.Diagnostics.Process proc);
+        }
+
+
+        public void UpdateApplication(string appURL, string preRepoURL)
+        {
+            FileOperation fileOperation = new FileOperation();
+
+            fileOperation.ExecApp(SysConfig.UpdaterFilePath, $"--app {appURL} --repo {preRepoURL}", FileOperation.ExecAppType.GUI, out System.Diagnostics.Process proc);
+        }
     }
 }

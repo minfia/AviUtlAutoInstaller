@@ -6,7 +6,8 @@ setlocal EnableDelayedExpansion
 set APP_NAME=AviUtlAutoInstaller
 set APP_VERSION=
 set VERSION_FILE=".\\source\\AviUtlAutoInstaller\\Properties\\AssemblyInfo.cs"
-set RELEASE_DIR=".\\source\\AviUtlAutoInstaller\\bin\\Release"
+set APP_RELEASE_DIR=".\\source\\AviUtlAutoInstaller\\bin\\Release"
+set UPDATER_RELEASE_DIR=".\\source\\Updater\\bin\\Release"
 set OUTPUT_DIR=".\\release"
 set MANUAL_DIR=".\\docs"
 set LICENSE_DIR=".\\Licenses"
@@ -15,8 +16,15 @@ set LICENSE_DIR=".\\Licenses"
 set SV_EXE="""C:\Program Files\7-Zip\7z.exe"""
 
 @rem releaseディレクトリが存在するかチェック
-if not exist "%RELEASE_DIR%\\aai.exe" (
-    echo リリースビルドしてください
+if not exist "%APP_RELEASE_DIR%\\aai.exe" (
+    echo アプリケーションをリリースビルドしてください
+    pause
+    exit
+)
+
+@rem releaseディレクトリが存在するかチェック
+if not exist "%UPDATER_RELEASE_DIR%\\updater.exe" (
+    echo アップデーターをリリースビルドしてください
     pause
     exit
 )
@@ -37,9 +45,9 @@ del "archive_ver.txt"
 
 set ARCHIVE_FILE=%APP_NAME%_v%APP_VERSION%.zip
 
-@rem 圧縮
+@rem ファイル/ディレクトリコピー
 mkdir %OUTPUT_DIR%
-xcopy /e "%RELEASE_DIR%" %OUTPUT_DIR%
+xcopy /e "%APP_RELEASE_DIR%" %OUTPUT_DIR%
 del "%OUTPUT_DIR%\\*.pdb"
 rmdir /s /q "%OUTPUT_DIR%\\cache"
 mkdir %OUTPUT_DIR%\\manual
@@ -48,6 +56,9 @@ rmdir /s /q "%OUTPUT_DIR%\\manual\\images\\base"
 mkdir %OUTPUT_DIR%\\Licenses
 xcopy /s %LICENSE_DIR% "%OUTPUT_DIR%\\Licenses"
 copy ".\\LICENSE" "%OUTPUT_DIR%"
+copy "%UPDATER_RELEASE_DIR%\\updater.*" %OUTPUT_DIR%
+
+@rem 圧縮
 %SV_EXE% a -tzip "%ARCHIVE_FILE%" "%OUTPUT_DIR%\\*"
 rmdir /s /q "%OUTPUT_DIR%"
 

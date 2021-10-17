@@ -119,7 +119,6 @@
                        Grid.Row="2"
                        Margin="4,4,0,0"
                        Text="{Binding ApplicationGetVersion}"/>
-            <!--
             <Button Margin="0,0,20,0"
                     Grid.Row="1"
                     Grid.Column="2"
@@ -131,7 +130,6 @@
                     Content="更新"
                     IsEnabled="{Binding AppUpdateEnable}"
                     Command="{Binding AppUpdateCommand}"/>
-            -->
         </Grid>
         <Controls:MetroProgressBar Margin="0,4,0,4"
                                    Foreground="DeepSkyBlue"

@@ -746,7 +746,16 @@ namespace AviUtlAutoInstaller.ViewModels
             if (res[1] == UpdateCheck.CheckResult.Update)
             {
                 // アプリ
-                MessageBox.Show($"アプリのアップデート({getAppVersion})があります", "情報", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (MessageBoxResult.Yes == MessageBox.Show($"アプリのアップデート({getAppVersion})があります\nアップデートしますか？", "情報", MessageBoxButton.YesNo, MessageBoxImage.Question))
+                {
+                    if (!File.Exists(SysConfig.UpdaterFilePath))
+                    {
+                        MessageBox.Show("updater.exeがありません、アプリケーションを再ダウンロードしてください", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                    updateCheck.UpdateApplication(appURL, repoURL);
+                    App.Current.Shutdown();
+                }
             }
             else if (res[0] == UpdateCheck.CheckResult.Update)
             {

@@ -92,6 +92,19 @@ namespace AviUtlAutoInstaller.ViewModels
             private set { SetProperty(ref _applicationGetVersion, value); }
         }
 
+        /// <summary>
+        /// アプリケーションのダウンロードURL
+        /// </summary>
+        private string _appURL = "";
+        private bool _appUpdateEnable = false;
+        /// <summary>
+        /// アプリケーション更新ボタンの有効/無効
+        /// </summary>
+        public bool AppUpdateEnable
+        {
+            get { return _appUpdateEnable; }
+            private set { SetProperty(ref _appUpdateEnable, value); }
+        }
         private string _applicationUpdateMsg;
         public string ApplicationUpdateMsg
         {
@@ -103,6 +116,9 @@ namespace AviUtlAutoInstaller.ViewModels
         /// アプリが対応するプリインストールリポジトリバージョン
         /// </summary>
         public string SupportRepoVersion { get; private set; }
+
+        private readonly DelegateCommand _appUpdateCommand;
+        public DelegateCommand AppUpdateCommand { get => _appUpdateCommand; }
         #endregion
 
         private bool _updateCheckButtonEnable = true;
@@ -133,6 +149,12 @@ namespace AviUtlAutoInstaller.ViewModels
                     PreRepoUpdateEnable = UpdateCheckButtonEnable = false;
                     await PreRepoUpdate();
                     UpdateCheckButtonEnable = true;
+                });
+            _appUpdateCommand = new DelegateCommand(
+                _ =>
+                {
+                    AppUpdateEnable = UpdateCheckButtonEnable = false;
+                    AppUpdate();
                 });
             _updateCheckCommand = new DelegateCommand(
                 async _ =>
@@ -209,19 +231,22 @@ namespace AviUtlAutoInstaller.ViewModels
         {
             UpdateCheck updateCheck = new UpdateCheck();
 
-            var res = updateCheck.Check(UpdateCheck.CheckTarget.App, ApplicationVersion, out string getVersion, out string url);
+            var res = updateCheck.Check(UpdateCheck.CheckTarget.App, ApplicationVersion, out string getVersion, out _appURL);
             switch (res)
             {
                 case UpdateCheck.CheckResult.Failed:
                     ApplicationUpdateMsg = "アップデートチェックに失敗しました";
+                    AppUpdateEnable = false;
                     return false;
                 case UpdateCheck.CheckResult.NoUpdate:
                     ApplicationUpdateMsg = "";
                     ApplicationGetVersion = getVersion;
+                    AppUpdateEnable = false;
                     break;
                 case UpdateCheck.CheckResult.Update:
                     ApplicationUpdateMsg = "アップデートがあります";
                     ApplicationGetVersion = getVersion;
+                    AppUpdateEnable = true;
                     break;
             }
 
@@ -256,6 +281,23 @@ namespace AviUtlAutoInstaller.ViewModels
                 default:
                     return false;
             }
+        }
+
+        /// <summary>
+        /// アプリケーションの更新
+        /// </summary>
+        private void AppUpdate()
+        {
+            if (!File.Exists(SysConfig.UpdaterFilePath))
+            {
+                MessageBox.Show("updater.exeがありません、アプリケーションを再ダウンロードしてください", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                AppUpdateEnable = UpdateCheckButtonEnable = true;
+                return;
+            }
+            UpdateCheck updateCheck = new UpdateCheck();
+
+            updateCheck.UpdateApplication(_appURL);
+            App.Current.Shutdown();
         }
     }
 }
