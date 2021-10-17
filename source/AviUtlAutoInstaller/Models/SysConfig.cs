@@ -29,6 +29,11 @@ namespace AviUtlAutoInstaller.Models
         /// </summary>
         public static readonly string AaiRepoFilePath = $"{RepoDirPath}\\aai.repo";
 
+        /// <summary>
+        /// アップデーターのファイルパス
+        /// </summary>
+        public static readonly string UpdaterFilePath = $".\\updater.exe";
+
         private static string _installRootPath = $"{Path.GetFullPath(".")}\\AviUtl";
         /// <summary>
         /// インストール先のルートディレクトリパス
