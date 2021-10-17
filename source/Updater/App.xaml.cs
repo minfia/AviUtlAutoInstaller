@@ -19,11 +19,15 @@ namespace AAIUpdater
         {
             base.OnStartup(e);
 
-            var mv = new MainView();
-            var mvm = new MainViewModel();
-
-            mv.DataContext = mvm;
-            mv.Show();
+            if (Environment.GetCommandLineArgs().Length <= 1)
+            {
+                Shutdown();
+            }
+            else
+            {
+                var mv = new MainView();
+                mv.Show();
+            }
         }
     }
 }

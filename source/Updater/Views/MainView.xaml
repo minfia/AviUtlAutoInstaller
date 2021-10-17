@@ -5,7 +5,8 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:Interactivity="http://schemas.microsoft.com/xaml/behaviors"
-                      xmlns:local="clr-namespace:AAIUpdater.Views"
+                      xmlns:vw="clr-namespace:AAIUpdater.Views"
+                      xmlns:vm="clr-namespace:AAIUpdater.ViewModels"
                       mc:Ignorable="d"
                       WindowTitleBrush="#FF333337"
                       NonActiveWindowTitleBrush="#FF333337"
@@ -16,10 +17,36 @@
                       ShowCloseButton="False"
                       ResizeMode="NoResize"
                       SizeToContent="Height"
-                      Height="450" Width="800"
+                      Height="auto" Width="800"
                       WindowStartupLocation="CenterScreen"
                       WindowTransitionsEnabled="False">
-    <Grid>
-        
-    </Grid>
+    <Controls:MetroWindow.DataContext>
+        <vm:MainViewModel/>
+    </Controls:MetroWindow.DataContext>
+    <Interactivity:Interaction.Triggers>
+        <Interactivity:EventTrigger EventName="ContentRendered">
+            <Interactivity:CallMethodAction TargetObject="{Binding .}" MethodName="ShowWindow"/>
+        </Interactivity:EventTrigger>
+    </Interactivity:Interaction.Triggers>
+    <StackPanel Orientation="Vertical"
+                Margin="8">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="{Binding ProcessName, Mode=OneWay}"/>
+            <TextBlock Padding="4,0,0,0">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{} ({0} {1}/{2})">
+                        <Binding Path="DownloadFileName" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="DownloadSizeNow" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="DownloadSizeMax" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </StackPanel>
+        <Controls:MetroProgressBar Foreground="DeepSkyBlue"
+                                   Padding="0,4,0,0"
+                                   Height="12"
+                                   Minimum="0"
+                                   Maximum="{Binding UpdateProgressMax, Mode=OneWay}"
+                                   Value="{Binding UpdateProgressValue, Mode=OneWay}"/>
+    </StackPanel>
 </Controls:MetroWindow>
