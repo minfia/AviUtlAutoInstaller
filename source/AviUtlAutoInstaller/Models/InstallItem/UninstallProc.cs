@@ -42,7 +42,14 @@ namespace AviUtlAutoInstaller.Models
                         }
                         break;
                     case InstallFileType.Script:
-                        baseDir = $"{SysConfig.AviUtlScriptDir}";
+                        if (item.IsSpecialItem)
+                        {
+                            return UninstallSpecialScript(item);
+                        }
+                        else
+                        {
+                            baseDir = $"{SysConfig.AviUtlScriptDir}";
+                        }
                         break;
                 }
 
@@ -58,6 +65,12 @@ namespace AviUtlAutoInstaller.Models
                     {
                         return false;
                     }
+                }
+
+                string scriptNameDir = $"{baseDir}\\{item.ScriptDirName}";
+                if (fileOperation.IsDirectoryEmpty(scriptNameDir))
+                {
+                    Directory.Delete(scriptNameDir, true);
                 }
             }
 
@@ -153,6 +166,32 @@ namespace AviUtlAutoInstaller.Models
             {
                 File.Delete(path);
             }
+        }
+
+        /// <summary>
+        /// 単純にアンインストール出来ないスクリプトのアンインストール
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        private static bool UninstallSpecialScript(InstallItem item)
+        {
+            SpecialScriptType type;
+            try
+            {
+                type = _specialScriptDic.First(x => x.Value == item.Name).Key;
+            }
+            catch
+            {
+                return false;
+            }
+
+            switch (type)
+            {
+                default:
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>

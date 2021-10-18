@@ -42,6 +42,10 @@ namespace AviUtlAutoInstaller.Models
                         {
                             Directory.CreateDirectory(installDir);
                         }
+                        if (item.IsSpecialItem)
+                        {
+                            return InstallSpecialScript(item);
+                        }
                         break;
                     case InstallFileType.Plugin:
                         if (item.IsSpecialItem)
@@ -305,6 +309,40 @@ namespace AviUtlAutoInstaller.Models
 
             string exToolIconSrcPath = $"{exToolSrcPath}";
             fileOperation.DirectoryMove(exToolIconSrcPath, iconFileDestPath, null);
+        }
+
+        private enum SpecialScriptType
+        {
+        };
+
+        private static readonly Dictionary<SpecialScriptType, string> _specialScriptDic = new Dictionary<SpecialScriptType, string>()
+        {
+        };
+
+        /// <summary>
+        /// 単純にインストールできないプラグインのインストール
+        /// </summary>
+        /// <param name="item">インストールアイテム</param>
+        /// <returns></returns>
+        private static bool InstallSpecialScript(InstallItem item)
+        {
+            SpecialScriptType type;
+            try
+            {
+                type = _specialScriptDic.First(x => x.Value == item.Name).Key;
+            }
+            catch
+            {
+                return false;
+            }
+
+            switch (type)
+            {
+                default:
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>
