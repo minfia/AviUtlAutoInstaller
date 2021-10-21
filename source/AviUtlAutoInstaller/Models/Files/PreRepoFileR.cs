@@ -163,7 +163,10 @@ namespace AviUtlAutoInstaller.Models.Files
                                 ExternalFileURL = reader["external_file_url"].ToString(),
                                 NicoVideoID = reader["nico_video_id"].ToString(),
                                 SectionType = reader["section"].ToString(),
-                                DependentName = reader["parent_name"].ToString()
+                                DependentName = reader["parent_name"].ToString(),
+                                Description = reader["description"].ToString(),
+                                DownloadPage = reader["download_page"].ToString(),
+                                GuideURL = reader["guide_url"].ToString()
                             };
                             item.IsSelect = ((InstallFileType.Main == item.FileType) || (item.CommandName == "exedit")) ? true : false;
                             item.IsItemSelectEnable = (InstallFileType.Main == item.FileType || (item.CommandName == "exedit")) ? false : true;
