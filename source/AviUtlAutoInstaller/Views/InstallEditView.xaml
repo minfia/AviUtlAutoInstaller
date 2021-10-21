@@ -193,7 +193,16 @@
                                                           Command="{Binding Source={StaticResource proxyElement},
                                                                             Path=DataContext.SingleUninstallCommand}"
                                                           CommandParameter="{x:Static vm:SelectCommandType.DataGrid}"/>
-                                            </ContextMenu>
+                                                <MenuItem Header="プロパティ"
+                                                          Command="{Binding Source={StaticResource proxyElement},
+                                                                            Path=DataContext.ItemPropertyCommand}"
+                                                          b:OpenDialogBehavior.Callback="{Binding Source={StaticResource proxyElement},
+                                                                                                  Path=DataContext.ItemPropertyViewCallback}"
+                                                          b:OpenDialogBehavior.WindowType="{x:Type vw:ItemPropertyView}"
+                                                          b:OpenDialogBehavior.DataContext="{Binding Source={StaticResource proxyElement},
+                                                                                                     Path=DataContext.ItemPropertyViewModel}"
+                                                          b:OpenDialogBehavior.Modal="True"/>
+                                        </ContextMenu>
                                         </Setter.Value>
                                     </Setter>
                                 </Style>

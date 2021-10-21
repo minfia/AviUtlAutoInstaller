@@ -107,6 +107,7 @@
     <Compile Include="ViewModels\DelegateCommand.cs" />
     <Compile Include="ViewModels\InstallEditViewModel.cs" />
     <Compile Include="ViewModels\InstallItemEditViewModel.cs" />
+    <Compile Include="ViewModels\ItemPropertyViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Models\NotificationObject.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
@@ -119,6 +120,9 @@
     </Compile>
     <Compile Include="Views\InstallItemEditView.xaml.cs">
       <DependentUpon>InstallItemEditView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ItemPropertyView.xaml.cs">
+      <DependentUpon>ItemPropertyView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
@@ -163,6 +167,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\InstallItemEditView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ItemPropertyView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

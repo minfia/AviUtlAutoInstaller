@@ -1,0 +1,150 @@
+﻿<Controls:MetroWindow x:Class="AviUtlAutoInstaller.Views.ItemPropertyView"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:Interactivity="http://schemas.microsoft.com/xaml/behaviors"
+                      xmlns:vw="clr-namespace:AviUtlAutoInstaller.Views"
+                      xmlns:vm="clr-namespace:AviUtlAutoInstaller.ViewModels"
+                      mc:Ignorable="d"
+                      WindowTitleBrush="#FF333337"
+                      NonActiveWindowTitleBrush="#FF333337"
+                      Background="#FF333337"
+                      GlowBrush="MediumAquamarine"
+                      TitleCharacterCasing="Normal"
+                      Title="{Binding Title, StringFormat={} {0} のプロパティ}"
+                      SizeToContent="Height"
+                      Height="Auto" Width="400"
+                      WindowStartupLocation="CenterScreen"
+                      WindowTransitionsEnabled="False">
+    <Controls:MetroWindow.DataContext>
+        <vm:ItemPropertyViewModel/>
+    </Controls:MetroWindow.DataContext>
+    <StackPanel Orientation="Vertical"
+                Margin="16,8,8,8">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="96"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="0"
+                       Grid.Row="0"
+                       Margin="0,2,0,2"
+                       Text="概要："/>
+            <TextBlock Grid.Column="1"
+                       Grid.Row="0"
+                       Margin="0,2,0,2"
+                       Text="{Binding Description}"
+                       TextTrimming="CharacterEllipsis"/>
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="1"
+                       Margin="0,2,0,2"
+                       Text="製作者："/>
+            <TextBlock Grid.Column="1"
+                       Grid.Row="1"
+                       Margin="0,2,0,2"
+                       Text="{Binding MakerName}"
+                       TextTrimming="CharacterEllipsis"/>
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="2"
+                       Margin="0,2,0,2"
+                       Text="バージョン："/>
+            <TextBlock Grid.Column="1"
+                       Grid.Row="2"
+                       Margin="0,2,0,2"
+                       Text="{Binding Version}"
+                       TextTrimming="CharacterEllipsis"/>
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="3"
+                       Margin="0,2,0,2"
+                       Text="ジャンル："/>
+            <TextBlock Grid.Column="1"
+                       Grid.Row="3"
+                       Margin="0,2,0,2"
+                       Text="{Binding Section}"
+                       TextTrimming="CharacterEllipsis"/>
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="4"
+                       Margin="0,2,0,2"
+                       Text="種類："
+                       TextTrimming="CharacterEllipsis"/>
+            <TextBlock Grid.Column="1"
+                       Grid.Row="4"
+                       Margin="0,2,0,2"
+                       Text="{Binding ItemType}"
+                       TextTrimming="CharacterEllipsis"/>
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="5"
+                       Margin="0,2,0,2"
+                       Text="依存元："
+                       TextTrimming="CharacterEllipsis"/>
+            <TextBlock Grid.Column="1"
+                       Grid.Row="5"
+                       Margin="0,2,0,2"
+                       Text="{Binding Dependent}"
+                       TextTrimming="CharacterEllipsis"/>
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="6"
+                       Margin="0,2,0,2"
+                       Text="ダウンロードURL："/>
+            <TextBlock Grid.Column="1"
+                       Grid.Row="6"
+                       Margin="0,2,0,2">
+                <Hyperlink NavigateUri="{Binding DownloadURL}">
+                    <Interactivity:Interaction.Triggers>
+                        <Interactivity:EventTrigger EventName="RequestNavigate">
+                            <Interactivity:CallMethodAction TargetObject="{Binding .}" MethodName="OpenLink"/>
+                        </Interactivity:EventTrigger>
+                    </Interactivity:Interaction.Triggers>
+                    <TextBlock Text="{Binding DownloadURL}"
+                               TextTrimming="CharacterEllipsis"/>
+                </Hyperlink>
+            </TextBlock>
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="7"
+                       Margin="0,2,0,2"
+                       Text="ダウンロード状態："/>
+            <TextBlock Grid.Column="1"
+                       Grid.Row="7"
+                       Margin="0,2,0,2"
+                       Text="{Binding DLStatus}"/>
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="8"
+                       Margin="0,2,0,2"
+                       Text="使い方："/>
+            <TextBlock Grid.Column="1"
+                       Grid.Row="8"
+                       Margin="0,2,0,2">
+                <Hyperlink NavigateUri="{Binding GuideURL}">
+                    <Interactivity:Interaction.Triggers>
+                        <Interactivity:EventTrigger EventName="RequestNavigate">
+                            <Interactivity:CallMethodAction TargetObject="{Binding .}" MethodName="OpenLink"/>
+                        </Interactivity:EventTrigger>
+                    </Interactivity:Interaction.Triggers>
+                    <TextBlock Text="{Binding GuideURL}"
+                               TextTrimming="CharacterEllipsis"/>
+                </Hyperlink>
+            </TextBlock>
+        </Grid>
+    </StackPanel>
+</Controls:MetroWindow>
