@@ -72,16 +72,32 @@ namespace AviUtlAutoInstaller.ViewModels
 
         #endregion
 
+        #region コンテキストメニュー
         private DelegateCommand _singleInstallCommand;
         private DelegateCommand _singleUninstallCommand;
+        private DelegateCommand _itemPropertyCommand;
         public DelegateCommand SingleInstallCommand { get => _singleInstallCommand; }
         public DelegateCommand SingleUninstallCommand { get => _singleUninstallCommand; }
+        public DelegateCommand ItemPropertyCommand { get => _itemPropertyCommand; }
         private Visibility isVisiblePreRepoContextMenu = Visibility.Collapsed;
         public Visibility IsVisiblePreRepoContextMenu
         { 
             get { return isVisiblePreRepoContextMenu; }
             private set { SetProperty(ref isVisiblePreRepoContextMenu, value); }
         }
+        private ItemPropertyViewModel _itemPropertyViewModel = new ItemPropertyViewModel();
+        public ItemPropertyViewModel ItemPropertyViewModel { get { return _itemPropertyViewModel; } }
+        private Action<bool> _itemPropertyViewCallback;
+        public Action<bool> ItemPropertyViewCallback
+        {
+            get { return _itemPropertyViewCallback; }
+            private set { SetProperty(ref _itemPropertyViewCallback, value); }
+        }
+        private void OnItemPropertyView(bool result)
+        {
+            ItemPropertyViewCallback = null;
+        }
+        #endregion
 
         #region InstallItemEditViewの設定
         private InstallItemEditViewModel _installItemEditViewModel = new InstallItemEditViewModel();
@@ -597,6 +613,17 @@ namespace AviUtlAutoInstaller.ViewModels
                         MessageBox.Show(message, title, MessageBoxButton.OK, image);
                     }
                 });
+            _itemPropertyCommand = new DelegateCommand(
+                _ =>
+                {
+                    if (PreSelectItem == null)
+                    {
+                        return;
+                    }
+                    _itemPropertyViewModel.Title = PreSelectItem.Name;
+                    _itemPropertyViewModel.SetInstallItem(PreSelectItem);
+                    ItemPropertyViewCallback = OnItemPropertyView;
+                });
         }
 
         private void InitializeValue()
@@ -914,6 +941,16 @@ namespace AviUtlAutoInstaller.ViewModels
             }
 
             return UninstallResult.OK;
+        }
+
+        private void ShowItemProperty()
+        {
+            InstallItem selectItem = null;
+
+            if (InstallItemList.RepoType.Pre == _selectTab[TabControlSelectIndex])
+            {
+                selectItem = PreSelectItem;
+            }
         }
 
         public Func<bool> ClosingCallback
