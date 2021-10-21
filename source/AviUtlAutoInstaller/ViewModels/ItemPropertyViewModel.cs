@@ -112,15 +112,15 @@ namespace AviUtlAutoInstaller.ViewModels
         /// <param name="item"></param>
         public void SetInstallItem(InstallItem item)
         {
-            Description = "なにか";
+            Description = item.Description;
             MakerName = item.MakerName;
             Version = item.Version;
             Section = item.SectionType;
             ItemType = string.IsNullOrEmpty(item.ScriptDirName) ? (item.SectionType.Equals("本体") ? "本体" : "プラグイン") : "スクリプト";
             Dependent = item.DependentName.Equals("None") ? "なし" : item.DependentName;
-            DownloadURL = (string.IsNullOrEmpty(item.URL) ? "" : item.URL);
+            DownloadURL = (string.IsNullOrEmpty(item.URL) ? item.DownloadPage : item.URL);
             DLStatus = File.Exists($"{SysConfig.CacheDirPath}\\{item.DownloadFileName}") ? "ダウンロード済み" : "未ダウンロード";
-            GuideURL = string.IsNullOrEmpty(item.NicoVideoID) ? "どこか" : $"https://www.nicovideo.jp/watch/{item.NicoVideoID}";
+            GuideURL = string.IsNullOrEmpty(item.NicoVideoID) ? item.GuideURL : $"https://www.nicovideo.jp/watch/{item.NicoVideoID}";
         }
 
         /// <summary>

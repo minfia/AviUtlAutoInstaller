@@ -285,6 +285,9 @@ namespace AviUtlAutoInstaller.Models
         }
 
         private string _sectionType;
+        /// <summary>
+        /// ジャンル
+        /// </summary>
         public string SectionType
         {
             get { return _sectionType; }
@@ -300,6 +303,36 @@ namespace AviUtlAutoInstaller.Models
         {
             get { return _downloadExecute; }
             set { SetProperty(ref _downloadExecute, value); }
+        }
+
+        private string _description;
+        /// <summary>
+        /// 概要
+        /// </summary>
+        public string Description
+        {
+            get { return _description; }
+            set { SetProperty(ref _description, value); }
+        }
+
+        private string _downloadPage;
+        /// <summary>
+        /// ダウンロードページ
+        /// </summary>
+        public string DownloadPage
+        {
+            get { return _downloadPage; }
+            set { SetProperty(ref _downloadPage, value); }
+        }
+
+        private string _guideURL;
+        /// <summary>
+        /// 使い方URL
+        /// </summary>
+        public string GuideURL
+        {
+            get { return _guideURL; }
+            set { SetProperty(ref _guideURL, value); }
         }
 
         public static Dictionary<int, string> MakerTypeDic = new Dictionary<int, string>();
