@@ -263,7 +263,7 @@ namespace AviUtlAutoInstaller.ViewModels
         /// <param name="installItem"></param>
         /// <param name="status"></param>
         /// <returns>true: 表示, false: 非表示</returns>
-        private bool IsStatusFilterVisible(InstallItem installItem, string status)
+        private bool IsFilteringStatus(InstallItem installItem, string status)
         {
             /*
              * 表示条件
@@ -334,6 +334,24 @@ namespace AviUtlAutoInstaller.ViewModels
             get { return _isMakerFilterVisible; }
             set { SetProperty(ref _isMakerFilterVisible, value); }
         }
+        /// <summary>
+        /// 製作者名に合わせたインストール項目の表示状態
+        /// </summary>
+        /// <param name="installItem"></param>
+        /// <param name="makerName"></param>
+        /// <returns>true: 表示, false: 非表示</returns>
+        private bool IsFilteringMaker(InstallItem installItem, string makerName)
+        {
+            /*
+             * 表示条件
+             * 1. "全て" -> 全製作者名
+             * 2. "各製作者名" -> InstallItem.MakerName = makerName
+             */
+            if (MakerFilter[0] == makerName) return true;
+            if (installItem.MakerName == makerName) return true;
+
+            return false;
+        }
         #endregion
 
         #region スクリプトフォルダ名のフィルタ
@@ -399,6 +417,25 @@ namespace AviUtlAutoInstaller.ViewModels
             get { return _IsFileTypeFilterVisible; }
             set { SetProperty(ref _IsFileTypeFilterVisible, value); }
         }
+        /// <summary>
+        /// ファイルタイプに合わせたインストール項目の表示状態
+        /// </summary>
+        /// <param name="installItem"></param>
+        /// <param name="fileType"></param>
+        /// <returns>true: 表示, false: 非表示</returns>
+        private bool IsFilteringFileType(InstallItem installItem, int fileType)
+        {
+            /*
+             * 表示条件
+             * 1. "全て" -> スクリプト and プラグイン
+             * 2. "スクリプト" -> fileType = InstallFileType.Script
+             * 3. "プラグイン" -> fileType = InstallFileType.Plugin
+             */
+            if (FileTypeAll == fileType) return true;
+            if ((int)installItem.FileType == fileType) return true;
+
+            return false;
+        }
         #endregion
 
         #region ジャンルタイプのフィルタ
@@ -434,6 +471,23 @@ namespace AviUtlAutoInstaller.ViewModels
         {
             get { return _IsSectionFilterVisible; }
             set { SetProperty(ref _IsSectionFilterVisible, value); }
+        }
+        /// <summary>
+        /// ジャンルに合わせたインストール項目の表示状態
+        /// </summary>
+        /// <param name="installItem"></param>
+        /// <param name="sectionType"></param>
+        /// <returns>true: 表示, false: 非表示</returns>
+        private bool IsFilteringSectionType(InstallItem installItem, string sectionType)
+        {
+            /*
+             * 表示条件
+             * 1. "全て" -> 全ジャンル
+             * 2. "各項目" -> InstallItem.SectionType = sectionType
+             */
+            if (SectionFilter[0] == sectionType) return true;
+            if (installItem.SectionType == sectionType) return true;
+            return false;
         }
         #endregion
 
@@ -493,10 +547,10 @@ namespace AviUtlAutoInstaller.ViewModels
             string sectionType = SectionFilter[SectionFilter.First(x => x.Value.Contains(_sectionSelectValue)).Key];
             string makerName = MakerFilter[MakerFilter.First(x => x.Value.Contains(_makerSelectValue)).Key];
             if (installItem.Name.Contains(NameFilter) && installItem.ScriptDirName.Contains(ScriptDirNameFilter) &&
-                IsStatusFilterVisible(installItem, status) &&
-                ((int)installItem.FileType == fileType || FileTypeAll == fileType) &&
-                (installItem.SectionType == sectionType || SectionFilter[0] == sectionType) &&
-                (installItem.MakerName == makerName || MakerFilter[0] == makerName))
+                IsFilteringStatus(installItem, status) &&
+                IsFilteringFileType(installItem, fileType) &&
+                IsFilteringSectionType(installItem, sectionType) &&
+                IsFilteringMaker(installItem, makerName))
             {
                 // 表示
                 e.Accepted = true;
