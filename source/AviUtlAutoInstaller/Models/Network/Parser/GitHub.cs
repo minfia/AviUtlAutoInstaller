@@ -107,13 +107,14 @@ namespace AviUtlAutoInstaller.Models.Network.Parser
         private bool ParseVersionList(AngleSharp.Html.Dom.IHtmlDocument htmlDocument)
         {
             List<string> verList = new List<string>();
-            var ulNodes = htmlDocument.QuerySelectorAll("ul[class='d-none d-md-block mt-2 list-style-none']");
+            var ulNodes = htmlDocument.QuerySelectorAll("div[class='css-truncate css-truncate-overflow']");
             foreach (var ulNode in ulNodes)
             {
-                var spanNodes = ulNode.QuerySelectorAll("span[class='css-truncate-target']");
+                var spanNodes = ulNode.QuerySelectorAll("span[class='ml-1 wb-break-all']");
                 foreach (var spanNode in spanNodes)
                 {
                     string text = spanNode.TextContent;
+                    text = text.Trim().Trim(new char[] { '\n' });
                     if (text.Length > 0)
                     {
                         verList.Add(text);
@@ -140,10 +141,15 @@ namespace AviUtlAutoInstaller.Models.Network.Parser
         private bool ParseVersionLinkList(AngleSharp.Html.Dom.IHtmlDocument htmlDocument)
         {
             List<string> versionLinkList = new List<string>();
-            var divNodes = htmlDocument.QuerySelectorAll("div[class='d-flex flex-justify-between flex-items-center py-1 py-md-2 Box-body px-2']");
+            var divNodes = htmlDocument.QuerySelectorAll("div[class='Box Box--condensed mt-3']");
             foreach (var divNode in divNodes)
             {
-                var aNodes = divNode.QuerySelectorAll("a[class='d-flex flex-items-center min-width-0']");
+                var liNodes = divNode.QuerySelectorAll("li");
+                if (liNodes.Count() == 0)
+                {
+                    return false;
+                }
+                var aNodes = liNodes[0].QuerySelectorAll("a");
                 foreach (var href in aNodes)
                 {
                     string link = href.GetAttribute("href");
