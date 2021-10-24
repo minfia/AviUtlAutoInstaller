@@ -184,6 +184,9 @@
                             <Interactivity:EventTrigger EventName="PreviewMouseLeftButtonUp">
                                 <Interactivity:CallMethodAction TargetObject="{Binding .}" MethodName="UnForcus"/>
                             </Interactivity:EventTrigger>
+                            <Interactivity:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                <Interactivity:CallMethodAction TargetObject="{Binding .}" MethodName="VisibleSettingContextMenu"/>
+                            </Interactivity:EventTrigger>
                             <Interactivity:EventTrigger EventName="CurrentCellChanged">
                                 <Interactivity:CallMethodAction TargetObject="{Binding .}" MethodName="VisibleSettingContextMenu"/>
                             </Interactivity:EventTrigger>
