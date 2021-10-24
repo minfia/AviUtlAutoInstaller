@@ -19,54 +19,62 @@ namespace AviUtlAutoInstaller.Models
         /// <returns></returns>
         public static bool Install(InstallItem item, string[] installFileList)
         {
-            if (InstallFileType.Encoder == item.FileType)
-            {
-                InstallRigayaEncoder(item.DownloadFileName);
+            bool success = false;
+            string installDir = string.Empty;
 
-                return true;
-            }
-            else
+            switch (item.FileType)
             {
-                string installDir = string.Empty;
-                switch (item.FileType)
-                {
-                    case InstallFileType.Tool:
-                        break;
-                    case InstallFileType.Main:
-                        installDir = SysConfig.InstallRootPath;
-                        AviUtlIniFileBuild();
-                        break;
-                    case InstallFileType.Script:
-                        installDir = $"{SysConfig.AviUtlScriptDir}\\{item.ScriptDirName}";
-                        if (!Directory.Exists(installDir))
+                case InstallFileType.Tool:
+                    break;
+                case InstallFileType.Main:
+                    installDir = SysConfig.InstallRootPath;
+                    AviUtlIniFileBuild();
+                    break;
+                case InstallFileType.Script:
+                    {
+                        string scriptDir = $"{SysConfig.AviUtlScriptDir}\\{item.ScriptDirName}";
+                        if (!Directory.Exists(scriptDir))
                         {
-                            Directory.CreateDirectory(installDir);
+                            Directory.CreateDirectory(scriptDir);
                         }
                         if (item.IsSpecialItem)
                         {
-                            return InstallSpecialScript(item);
-                        }
-                        break;
-                    case InstallFileType.Plugin:
-                        if (item.IsSpecialItem)
-                        {
-                            return InstallSpecialPlugin(item);
+                            success = InstallSpecialScript(item);
                         }
                         else
                         {
-                            installDir = SysConfig.AviUtlPluginDir;
+                            installDir = scriptDir;
                         }
-                        break;
-                    case InstallFileType.Image:
-                        installDir = SysConfig.AviUtlFigureDir;
-                        return true;
-                }
-                FileOperation fileOperation = new FileOperation();
-                fileOperation.FileMove(installFileList, installDir);
+                    }
+                    break;
+                case InstallFileType.Plugin:
+                    if (item.IsSpecialItem)
+                    {
+                        success = InstallSpecialPlugin(item);
+                    }
+                    else
+                    {
+                        installDir = SysConfig.AviUtlPluginDir;
+                    }
+                    break;
+                case InstallFileType.Encoder:
+                    InstallRigayaEncoder(item.DownloadFileName);
+                    success = true;
+                    break;
+                case InstallFileType.Image:
+                    installDir = SysConfig.AviUtlFigureDir;
+                    break;
             }
 
-            item.IsInstalled = false;
-            return true;
+            if (installDir != string.Empty)
+            {
+                FileOperation fileOperation = new FileOperation();
+                fileOperation.FileMove(installFileList, installDir);
+                success = true;
+            }
+
+            item.IsInstalled = success;
+            return success;
         }
 
         private enum ExternalFileType

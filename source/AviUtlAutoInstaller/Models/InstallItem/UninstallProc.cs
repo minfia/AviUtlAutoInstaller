@@ -16,45 +16,53 @@ namespace AviUtlAutoInstaller.Models
         /// <returns></returns>
         public static bool Uninstall(InstallItem item)
         {
-            string baseDir = $"{SysConfig.InstallRootPath}";
+            bool success = false;
+            string baseDir = string.Empty;
 
-            if (InstallFileType.Encoder == item.FileType)
+            switch (item.FileType)
             {
-                UninstallRigayaEncoder(item);
-
-                return true;
+                case InstallFileType.Tool:
+                    break;
+                case InstallFileType.Script:
+                    if (item.IsSpecialItem)
+                    {
+                        success = UninstallSpecialScript(item);
+                    }
+                    else
+                    {
+                        baseDir = $"{SysConfig.AviUtlScriptDir}";
+                    }
+                    break;
+                case InstallFileType.Plugin:
+                    if (item.IsSpecialItem)
+                    {
+                        success = UninstallSpecialPlugin(item);
+                    }
+                    else
+                    {
+                        baseDir = $"{SysConfig.AviUtlPluginDir}";
+                    }
+                    break;
+                case InstallFileType.Encoder:
+                    UninstallRigayaEncoder(item);
+                    success = true;
+                    break;
+                case InstallFileType.Image:
+                    baseDir = SysConfig.AviUtlFigureDir;
+                    break;
             }
-            else
-            {
-                switch (item.FileType)
-                {
-                    case InstallFileType.Tool:
-                        baseDir = $"{SysConfig.InstallRootPath}";
-                        break;
-                    case InstallFileType.Plugin:
-                        if (item.IsSpecialItem)
-                        {
-                            return UninstallSpecialPlugin(item);
-                        }
-                        else
-                        {
-                            baseDir = $"{SysConfig.AviUtlPluginDir}";
-                        }
-                        break;
-                    case InstallFileType.Script:
-                        if (item.IsSpecialItem)
-                        {
-                            return UninstallSpecialScript(item);
-                        }
-                        else
-                        {
-                            baseDir = $"{SysConfig.AviUtlScriptDir}";
-                        }
-                        break;
-                }
 
+            if (baseDir != string.Empty)
+            {
+                // ファイルの削除
                 FileOperation fileOperation = new FileOperation();
-                List<string> uninstallFileList = fileOperation.GenerateFilePathList(baseDir, item.InstallFileList.ToArray());
+                List<string> uninstallFiles = new List<string>();
+                foreach (string file in item.InstallFileList)
+                {
+                    var f = file.Split('\\');
+                    uninstallFiles.Add(f[f.Length - 1]);
+                }
+                List<string> uninstallFileList = fileOperation.GenerateFilePathList(baseDir, uninstallFiles.ToArray());
                 foreach (var file in uninstallFileList)
                 {
                     try
@@ -63,19 +71,24 @@ namespace AviUtlAutoInstaller.Models
                     }
                     catch
                     {
-                        return false;
+                        success = false;
                     }
+                    success = true;
                 }
 
-                string scriptNameDir = $"{baseDir}\\{item.ScriptDirName}";
-                if (fileOperation.IsDirectoryEmpty(scriptNameDir))
+                if ((InstallFileType.Script == item.FileType) && success)
                 {
-                    Directory.Delete(scriptNameDir, true);
+                    // 空ディレクトリの削除
+                    string scriptNameDir = $"{baseDir}\\{item.ScriptDirName}";
+                    if (fileOperation.IsDirectoryEmpty(scriptNameDir))
+                    {
+                        Directory.Delete(scriptNameDir, true);
+                    }
                 }
             }
 
-            item.IsInstalled = true;
-            return true;
+            item.IsInstalled = !success;
+            return success;
         }
 
         /// <summary>
