@@ -189,6 +189,7 @@ namespace AviUtlAutoInstaller.ViewModels
         /// </summary>
         private enum FilterType
         {
+            Status,
             Name,
             MakerName,
             ScriptDirName,
@@ -233,6 +234,51 @@ namespace AviUtlAutoInstaller.ViewModels
             }
         }
 
+        #region 状態フィルタ
+        private readonly Dictionary<int, string> _statusFilter = new Dictionary<int, string>()
+        {
+            { 0, "全て" },
+            { 1, "インストール済み" },
+            { 2, "未インストール" },
+            { 3, "選択された項目" },
+        };
+        private readonly int[] _statusFilterList = new int[(int)InstallItemList.RepoType.MAX] { 0, 0 };
+        public Dictionary<int, string> StatusFilter { get { return _statusFilter; } }
+        private string _statusSelectValue;
+        private int _statusFilterSelectIndex;
+        public int StatusFilterSelectIndex
+        {
+            get { return _statusFilterSelectIndex; }
+            set
+            {
+                SetProperty(ref _statusFilterSelectIndex, value);
+                string[] itemNameList = StatusFilter.Values.ToArray();
+                _statusSelectValue = itemNameList[value];
+                UpdateFilterData(_selectTab[TabControlSelectIndex], FilterType.Status, value);
+            }
+        }
+        /// <summary>
+        /// 状態に合わせたインストール項目の表示状態
+        /// </summary>
+        /// <param name="installItem"></param>
+        /// <param name="status"></param>
+        /// <returns>true: 表示, false: 非表示</returns>
+        private bool IsStatusFilterVisible(InstallItem installItem, string status)
+        {
+            /*
+             * 表示条件
+             * 1. "全て" -> 全状態
+             * 2. "インストール済み" -> InstallItem.IsInstalled = true
+             * 3. "未インストール" -> InstallItem.IsInstalled = false
+             * 4. "選択された項目" -> InstallItem.IsSelect = true
+             */
+            if (StatusFilter[0] == status) return true;
+            if (StatusFilter[1] == status && installItem.IsInstalled) return true;
+            if (StatusFilter[2] == status && !installItem.IsInstalled) return true;
+            if (StatusFilter[3] == status && installItem.IsSelect) return true;
+            return false;
+        }
+        #endregion
 
         #region 項目名のフィルタ
         /// <summary>
@@ -405,6 +451,9 @@ namespace AviUtlAutoInstaller.ViewModels
             }
             switch (filterType)
             {
+                case FilterType.Status:
+                    _statusFilterList[(int)selectTab] = (int)data;
+                    break;
                 case FilterType.Name:
                     _nameFilterList[(int)selectTab] = (string)data;
                     break;
@@ -439,18 +488,22 @@ namespace AviUtlAutoInstaller.ViewModels
         private void FilterEvent(object sender, FilterEventArgs e)
         {
             InstallItem installItem = e.Item as InstallItem;
+            string status = StatusFilter[StatusFilter.First(x => x.Value.Contains(_statusSelectValue)).Key];
             int fileType = FileTypeFilter.First(x => x.Value.Contains(_fileTypeSelectValue)).Key;
             string sectionType = SectionFilter[SectionFilter.First(x => x.Value.Contains(_sectionSelectValue)).Key];
             string makerName = MakerFilter[MakerFilter.First(x => x.Value.Contains(_makerSelectValue)).Key];
             if (installItem.Name.Contains(NameFilter) && installItem.ScriptDirName.Contains(ScriptDirNameFilter) &&
+                IsStatusFilterVisible(installItem, status) &&
                 ((int)installItem.FileType == fileType || FileTypeAll == fileType) &&
                 (installItem.SectionType == sectionType || SectionFilter[0] == sectionType) &&
                 (installItem.MakerName == makerName || MakerFilter[0] == makerName))
             {
+                // 表示
                 e.Accepted = true;
             }
             else
             {
+                // 非表示
                 e.Accepted = false;
             }
         }
@@ -477,6 +530,7 @@ namespace AviUtlAutoInstaller.ViewModels
         public InstallEditViewModel()
         {
             _installItemList = new InstallItemList();
+            _statusSelectValue = StatusFilter[0];
             _fileTypeSelectValue = FileTypeFilter[FileTypeAll];
             _sectionSelectValue = SectionFilter[0];
             _makerSelectValue = MakerFilter[0];
