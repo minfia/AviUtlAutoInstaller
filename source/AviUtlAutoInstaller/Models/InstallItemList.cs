@@ -149,7 +149,7 @@ namespace AviUtlAutoInstaller.Models
             {
                 if (item.Name == name)
                 {
-                    item.IsSelect = b;
+                    item.IsSelect = item.IsInstalled = b;
                     break;
                 }
             }

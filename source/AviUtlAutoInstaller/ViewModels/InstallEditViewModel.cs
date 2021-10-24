@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -40,7 +41,6 @@ namespace AviUtlAutoInstaller.ViewModels
             OK,
             NG,
             IsMain,
-            NotInstalled,
         }
 
         #region ユーザータブ
@@ -79,11 +79,17 @@ namespace AviUtlAutoInstaller.ViewModels
         public DelegateCommand SingleInstallCommand { get => _singleInstallCommand; }
         public DelegateCommand SingleUninstallCommand { get => _singleUninstallCommand; }
         public DelegateCommand ItemPropertyCommand { get => _itemPropertyCommand; }
-        private Visibility isVisiblePreRepoContextMenu = Visibility.Collapsed;
-        public Visibility IsVisiblePreRepoContextMenu
+        private Visibility _isVisiblePreRepoInstallContextMenu = Visibility.Collapsed;
+        public Visibility IsVisiblePreRepoInstallContextMenu
         { 
-            get { return isVisiblePreRepoContextMenu; }
-            private set { SetProperty(ref isVisiblePreRepoContextMenu, value); }
+            get { return _isVisiblePreRepoInstallContextMenu; }
+            private set { SetProperty(ref _isVisiblePreRepoInstallContextMenu, value); }
+        }
+        private Visibility _isVisiblePreRepoUninstallContextMenu = Visibility.Collapsed;
+        public Visibility IsVisiblePreRepoUninstallContextMenu
+        { 
+            get { return _isVisiblePreRepoUninstallContextMenu; }
+            private set { SetProperty(ref _isVisiblePreRepoUninstallContextMenu, value); }
         }
         private ItemPropertyViewModel _itemPropertyViewModel = new ItemPropertyViewModel();
         public ItemPropertyViewModel ItemPropertyViewModel { get { return _itemPropertyViewModel; } }
@@ -554,7 +560,7 @@ namespace AviUtlAutoInstaller.ViewModels
             _singleInstallCommand = new DelegateCommand(
                 async _ =>
                 {
-                    if (SysConfig.IsInstalled && MessageBox.Show("インストールしますか？", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    if (SysConfig.IsInstalledAviUtl && MessageBox.Show("インストールしますか？", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                     {
                         var res = await OnInstall();
                         string message = "インストールが完了しました。";
@@ -588,7 +594,7 @@ namespace AviUtlAutoInstaller.ViewModels
             _singleUninstallCommand = new DelegateCommand(
                 async _ =>
                 {
-                    if (SysConfig.IsInstalled && MessageBox.Show("アンインストールしますか？", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    if (SysConfig.IsInstalledAviUtl && MessageBox.Show("アンインストールしますか？", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                     {
                         var res = await OnUninstall();
                         string message = "アンインストールが完了しました。";
@@ -602,10 +608,6 @@ namespace AviUtlAutoInstaller.ViewModels
                                 break;
                             case UninstallResult.IsMain:
                                 message = "基本構成のためアンインストールできません。";
-                                image = MessageBoxImage.Error;
-                                break;
-                            case UninstallResult.NotInstalled:
-                                message = "インストールされていません。";
                                 image = MessageBoxImage.Error;
                                 break;
                         }
@@ -909,11 +911,6 @@ namespace AviUtlAutoInstaller.ViewModels
                 return UninstallResult.IsMain;
             }
 
-            if (!InstallProfileRW.IsExistContents(selectItem))
-            {
-                return UninstallResult.NotInstalled;
-            }
-
             {
                 var func = new Func<InstallItem, bool>(InstallItem.Uninstall);
                 var task = Task.Run(() => func(selectItem));
@@ -941,16 +938,6 @@ namespace AviUtlAutoInstaller.ViewModels
             }
 
             return UninstallResult.OK;
-        }
-
-        private void ShowItemProperty()
-        {
-            InstallItem selectItem = null;
-
-            if (InstallItemList.RepoType.Pre == _selectTab[TabControlSelectIndex])
-            {
-                selectItem = PreSelectItem;
-            }
         }
 
         public Func<bool> ClosingCallback
@@ -984,9 +971,16 @@ namespace AviUtlAutoInstaller.ViewModels
             }
         }
 
-        public void ShowWindow(object sender, EventArgs e)
+        public void VisibleSettingContextMenu(object sender, EventArgs e)
         {
-            IsVisiblePreRepoContextMenu = SysConfig.IsInstalled ? Visibility.Visible : Visibility.Collapsed;
+            DataGrid grid = (DataGrid)sender;
+            InstallItem item = (InstallItem)grid.CurrentItem;
+            if ((item == null) || !SysConfig.IsInstalledAviUtl)
+            {
+                return;
+            }
+            IsVisiblePreRepoInstallContextMenu = item.IsInstalled ? Visibility.Collapsed : Visibility.Visible;
+            IsVisiblePreRepoUninstallContextMenu = item.IsInstalled ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 }

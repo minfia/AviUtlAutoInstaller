@@ -74,6 +74,7 @@ namespace AviUtlAutoInstaller.Models
                 }
             }
 
+            item.IsInstalled = true;
             return true;
         }
 

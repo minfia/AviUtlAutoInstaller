@@ -131,24 +131,6 @@ namespace AviUtlAutoInstaller.Models.Files
             }
         }
 
-        /// <summary>
-        /// コンテンツがインストールされているかチェック
-        /// </summary>
-        /// <param name="contents"></param>
-        /// <returns></returns>
-        public static bool IsExistContents(InstallItem item)
-        {
-            int index = itemList.FindIndex(x => x[_rwKeyTypeDic[RWKeyType.Name]].ToString() == item.Name);
-            if (0 <= index)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
         protected override void ConvertToData(TomlTable data)
         {
             string tomlFileVersion = data.Get<string>("version");
