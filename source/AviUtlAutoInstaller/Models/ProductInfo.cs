@@ -77,7 +77,7 @@ namespace AviUtlAutoInstaller.Models
             get { return _repoVersion; }
         }
 
-        private static uint _appMatchVersion = 1;
+        private static uint _appMatchVersion = 2;
         /// <summary>
         /// リポジトリが対応しているバージョン
         /// </summary>
@@ -86,7 +86,7 @@ namespace AviUtlAutoInstaller.Models
             get { return _appMatchVersion; }
         }
 
-        private const uint _supportRepoVersion = 1;
+        private const uint _supportRepoVersion = 2;
         /// <summary>
         /// アプリが対応するリポジトリバージョン
         /// </summary>
