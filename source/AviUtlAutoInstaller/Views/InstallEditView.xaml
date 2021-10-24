@@ -94,6 +94,17 @@
                             HorizontalAlignment="Left">
                     <TextBlock Padding="0,0,8,0"
                                VerticalAlignment="Center"
+                               Text="状態フィルタ"/>
+                    <ComboBox Width="120"
+                              SelectedIndex="{Binding StatusFilterSelectIndex}"
+                              ItemsSource="{Binding StatusFilter, UpdateSourceTrigger=PropertyChanged}"
+                              SelectedValuePath="Key"
+                              DisplayMemberPath="Value"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Left">
+                    <TextBlock Padding="12,0,8,0"
+                               VerticalAlignment="Center"
                                Text="名前フィルタ"/>
                     <TextBox Width="140"
                              Controls:TextBoxHelper.ClearTextButton="True"
@@ -367,13 +378,16 @@
                                                     HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                     Width="148"
                                                     Binding="{Binding NicoVideoID}"/>
-                                <DataGridTemplateColumn CanUserResize="False" Width="44">
+                                <DataGridTemplateColumn CanUserResize="False" Width="40">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Button Content="DL"
-                                                Width="40"
-                                                IsEnabled="{Binding DownloadExecute}"
-                                                Command="{Binding Source={StaticResource proxyElement}, Path=DataContext.DownloadCommand}"/>
+                                            <Button Width="36"
+                                                    IsEnabled="{Binding DownloadExecute}"
+                                                    Command="{Binding Source={StaticResource proxyElement}, Path=DataContext.DownloadCommand}">
+                                                <Button.Content>
+                                                    <Path Data="M0,7.3121409 L2,7.3121409 2,11.31242 14,11.31242 14,7.3121409 16,7.3121409 16,11.31242 16,13.31256 14,13.31256 2,13.31256 0,13.31256 0,11.31242 z M6.9792457,0 L8.9792767,3.0994415E-05 8.9792929,1.0601282 8.9807262,1.0601282 8.9807959,5.5634842 10.104957,4.4393239 11.519214,5.8535812 9.3828039,7.9899912 9.3882141,7.9954014 7.974,9.4096153 4.4383569,5.8739724 5.852571,4.4597585 6.9807658,5.5879536 6.98071,2.000031 6.9792767,2.000031 z" Fill="#FFF4F4F5"/>
+                                                </Button.Content>
+                                            </Button>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
