@@ -65,6 +65,7 @@ namespace AviUtlAutoInstaller.Models
                 fileOperation.FileMove(installFileList, installDir);
             }
 
+            item.IsInstalled = false;
             return true;
         }
 

@@ -159,9 +159,9 @@ namespace AviUtlAutoInstaller.ViewModels
                     return;
                 }
 
-                SysConfig.IsInstalled = File.Exists($"{installPath}\\aviutl.exe");
-                SysConfig.InstallRootPath = SysConfig.IsInstalled ? $"{installPath}" : $"{installPath}\\AviUtl";
-                if (SysConfig.IsInstalled)
+                SysConfig.IsInstalledAviUtl = File.Exists($"{installPath}\\aviutl.exe");
+                SysConfig.InstallRootPath = SysConfig.IsInstalledAviUtl ? $"{installPath}" : $"{installPath}\\AviUtl";
+                if (SysConfig.IsInstalledAviUtl)
                 {
                     ContentsTreeRW contentsTreeRW = new ContentsTreeRW();
                     contentsTreeRW.Read(SysConfig.InstallRootPath);
@@ -372,7 +372,7 @@ namespace AviUtlAutoInstaller.ViewModels
                     }
                     if (result == InstallResult.OK)
                     {
-                        SysConfig.IsInstalled = true;
+                        SysConfig.IsInstalledAviUtl = true;
                     }
                     MessageBox.Show(message, title, MessageBoxButton.OK, image);
                 });
