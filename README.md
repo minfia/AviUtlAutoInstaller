@@ -30,7 +30,7 @@ AviUtlAutoInstallerで使用しているaai.repoは[こちら](https://github.co
 |           ツール名           | version |     備考     |
 | ---------------------------- | ------- | ------------ |
 | Windows10 Pro                | 20H2    | 動作確認含む |
-| Visual Studio Community 2019 | 16.8    | 言語はC#7.3  |
+| Visual Studio Community 2019 | 16.11   | 言語はC#7.3  |
 | .Net Framework               | 4.8     |              |
 
 ## 使用ライブラリ
