@@ -57,8 +57,11 @@ namespace AviUtlAutoInstaller.Models
         }
 
 
-        private string _preRepoGitHubUrl = "https://github.com/minfia/AAI_Repo/releases";
-        private string _applicationGitHubUrl = "https://github.com/minfia/AviUtlAutoInstaller/releases";
+        //private string _preRepoGitHubUrl = "https://api.github.com/repos/minfia/AAI_Repo/releases/latest";
+        //private string _applicationGitHubUrl = "https://api.github.com/repos/minfia/AviUtlAutoInstaller/releases/latest";
+
+        private string _preRepoGitHubUrl = "https://api.github.com/repos/minfia/AAI_Repo/releases";
+        private string _applicationGitHubUrl = "https://api.github.com/repos/minfia/AviUtlAutoInstaller/releases";
 
         /// <summary>
         /// アップデートチェックを行う
