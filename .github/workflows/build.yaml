@@ -1,0 +1,16 @@
+name: build
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+      - uses: microsoft/setup-msbuild@v1
+      - uses: nuget/setup-nuget@v1
+      - run: nuget restore $Env:GITHUB_WORKSPACE\source\AviUtlAutoInstaller\AviUtlAutoInstaller.csproj
+      - run: MSBuild.exe $Env:GITHUB_WORKSPACE\source\AviUtlAutoInstaller\AviUtlAutoInstaller.csproj -p:Configuration=Release
+      - run: nuget restore $Env:GITHUB_WORKSPACE\source\Updater\Updater.csproj
+      - run: MSBuild.exe $Env:GITHUB_WORKSPACE\source\Updater\Updater.csproj -p:Configuration=Release
+
