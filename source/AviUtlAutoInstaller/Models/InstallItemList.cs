@@ -156,6 +156,24 @@ namespace AviUtlAutoInstaller.Models
         }
 
         /// <summary>
+        /// インストールの有無をクリアする
+        /// </summary>
+        public static void ClearAllIsSelect()
+        {
+            for (RepoType i=0;i<RepoType.MAX; i++)
+            {
+                foreach (var item in _installItemList[(int)i])
+                {
+                    item.IsSelect = false;
+                }
+            }
+
+            // 必須項目のため有効
+            SetIsSelect(RepoType.Pre, "AviUtl", true);
+            SetIsSelect(RepoType.Pre, "拡張編集", true);
+        }
+
+        /// <summary>
         /// インストールアイテムの項目番号を採番
         /// </summary>
         /// <param name="repoType">リポジトリの選択</param>
@@ -200,7 +218,7 @@ namespace AviUtlAutoInstaller.Models
                 searchSrcDir = $"{SysConfig.InstallExpansionDir}";
             }
 
-            if (InstallItemList.RepoType.Pre == repoType)
+            if (RepoType.Pre == repoType)
             {
                 readyInstallFiles = fileOperation.GenerateFilePathList(searchSrcDir, item.InstallFileList.ToArray());
             }
