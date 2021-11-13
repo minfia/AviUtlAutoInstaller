@@ -722,7 +722,6 @@ namespace AviUtlAutoInstaller.ViewModels
         private void BackupInstallFile(List<InstallItem> installItems)
         {
             Directory.CreateDirectory(SysConfig.InstallFileBackupDir);
-            FileOperation fileOperation = new FileOperation();
 
             foreach (var file in installItems)
             {

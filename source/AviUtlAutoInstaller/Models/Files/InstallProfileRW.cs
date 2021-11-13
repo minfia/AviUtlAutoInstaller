@@ -146,6 +146,7 @@ namespace AviUtlAutoInstaller.Models.Files
             }
 
             itemList = data.Get<TomlTableArray>(mainKeyName).Items;
+            InstallItemList.ClearAllIsSelect();
 
             switch (version)
             {
