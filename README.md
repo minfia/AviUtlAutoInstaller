@@ -49,6 +49,8 @@ AviUtlAutoInstallerで使用しているaai.repoは[こちら](https://github.co
 ライセンス: [Licenses/MahApps.Metro.txt](Licenses/MahApps.Metro.txt)
 * [Nett](https://github.com/paiden/Nett)  
 ライセンス: [Licenses/Nett.txt](Licenses/Nett.txt)
+* [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)  
+ライセンス: [Licenses/Newtonsoft.Json.txt](Licenses/Newtonsoft.Json.txt)
 * [SevenZipExtractor](https://github.com/adoconnection/SevenZipExtractor)  
 ライセンス: [Licenses/SevenZipExtractor.txt](Licenses/SevenZipExtractor.txt)
 * [System.Runtime.CompilerServices.Unsafe](https://github.com/dotnet/runtime)  
