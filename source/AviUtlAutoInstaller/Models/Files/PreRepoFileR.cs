@@ -166,11 +166,12 @@ namespace AviUtlAutoInstaller.Models.Files
                                 DependentName = reader["parent_name"].ToString(),
                                 Description = reader["description"].ToString(),
                                 DownloadPage = reader["download_page"].ToString(),
-                                GuideURL = reader["guide_url"].ToString()
+                                GuideURL = reader["guide_url"].ToString(),
                             };
                             item.IsSelect = ((InstallFileType.Main == item.FileType) || (item.CommandName == "exedit")) ? true : false;
                             item.IsItemSelectEnable = (InstallFileType.Main == item.FileType || (item.CommandName == "exedit")) ? false : true;
 
+                            InstallItem.DependentAction = InstallItemList.DependentAction;
                             InstallItemList.AddInstallItem(InstallItemList.RepoType.Pre, item);
                         }
                     }

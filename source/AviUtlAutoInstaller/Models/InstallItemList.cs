@@ -190,6 +190,51 @@ namespace AviUtlAutoInstaller.Models
         }
 
         /// <summary>
+        /// 依存先のチェックを行い、インストールの有効/無効を設定する(プリインストールリポジトリ専用)
+        /// </summary>
+        /// <param name="DependentName"></param>
+        public static void DependentAction(InstallItem item)
+        {
+            if (item == null || string.IsNullOrEmpty(item.DependentName)) return;
+
+            if (item.IsSelect && !item.DependentName.Contains("None"))
+            {
+                // 依存アイテム -> 依存元
+                InstallItem dependentItem = _installItemList[(int)RepoType.Pre].FirstOrDefault(x => x.CommandName == item.DependentName);
+                if (dependentItem == null) return;
+
+                dependentItem.IsSelect = true;
+
+                if (string.IsNullOrEmpty(dependentItem.DependentName)) DependentAction(dependentItem);
+
+            }
+            else
+            {
+                if (item.IsSelect) return;
+
+                // 依存元 -> 依存アイテム
+                var items = _installItemList[(int)RepoType.Pre].ToList().FindAll(x => x.DependentName == item.CommandName);
+
+                foreach (var i in items)
+                {
+                    i.IsSelect = false;
+                }
+            }
+        }
+
+
+        /*
+        public static void DisabledDpendencyChildren(string ParentName)
+        {
+            if (string.IsNullOrEmpty(ParentName)) return;
+
+            {
+                // 依存元 -> 依存アイテム
+            }
+        }
+        */
+
+        /// <summary>
         /// インストールアイテムから、実際にインストールするファイル一覧を生成
         /// </summary>
         /// <param name="repoType">リポジトリの種類</param>
