@@ -37,8 +37,18 @@ namespace AviUtlAutoInstaller.Models
         public bool IsSelect
         {
             get { return _isSelect; }
-            set { SetProperty(ref _isSelect, value); }
+            set
+            {
+                if (SetProperty(ref _isSelect, value) && DependentAction != null &&
+                    (!DependentName.Equals("None") || !string.IsNullOrEmpty(DependentName)))
+                {
+                    DependentAction(this);
+                }
+            }
         }
+
+        public delegate void DependentDelegate(InstallItem item);
+        public static DependentDelegate DependentAction = null;
 
         /// <summary>
         /// アイテムセレクトの許可/不許可
