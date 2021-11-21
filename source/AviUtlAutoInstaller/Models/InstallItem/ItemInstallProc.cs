@@ -87,6 +87,10 @@ namespace AviUtlAutoInstaller.Models
         {
             { "vc2008redist_x86.exe", ExternalFileType.VSRuntime },
             { "vc2008redist_x64.exe", ExternalFileType.VSRuntime },
+            { "vc2010redist_x86.exe", ExternalFileType.VSRuntime },
+            { "vc2010redist_x64.exe", ExternalFileType.VSRuntime },
+            { "vc2012redist_x86.exe", ExternalFileType.VSRuntime },
+            { "vc2012redist_x64.exe", ExternalFileType.VSRuntime },
             { "vc2013redist_x86.exe", ExternalFileType.VSRuntime },
             { "vc2013redist_x64.exe", ExternalFileType.VSRuntime },
             { "vc201Xredist_x86.exe", ExternalFileType.VSRuntime },
@@ -146,6 +150,18 @@ namespace AviUtlAutoInstaller.Models
             {
                 args = "/q";
             }
+            else if (exFile.Contains("vc2010") &&
+                    (exFile.Contains("_x86") && !AppConfig.Runtime.vs2010_x86) ||
+                    (exFile.Contains("_x64") && !AppConfig.Runtime.vs2010_x64))
+            {
+                args = "/q";
+            }
+            else if (exFile.Contains("vc2012") &&
+                     (exFile.Contains("_x86") && !AppConfig.Runtime.vs2012_x86) ||
+                     (exFile.Contains("_x64") && !AppConfig.Runtime.vs2012_x64))
+            {
+                args = "quiet";
+            }
             else if (exFile.Contains("vc2013") &&
                      (exFile.Contains("_x86") && !AppConfig.Runtime.vs2013_x86) ||
                      (exFile.Contains("_x64") && !AppConfig.Runtime.vs2013_x64))
@@ -203,6 +219,28 @@ namespace AviUtlAutoInstaller.Models
                 else if (exFile.Contains("_x64"))
                 {
                     AppConfig.Runtime.vs2008_x86 = true;
+                }
+            }
+            else if (exFile.Contains("vc2010"))
+            {
+                if (exFile.Contains("_x86"))
+                {
+                    AppConfig.Runtime.vs2010_x86 = true;
+                }
+                else if (exFile.Contains("_x64"))
+                {
+                    AppConfig.Runtime.vs2010_x86 = true;
+                }
+            }
+            else if (exFile.Contains("vc2012"))
+            {
+                if (exFile.Contains("_x86"))
+                {
+                    AppConfig.Runtime.vs2012_x86 = true;
+                }
+                else if (exFile.Contains("_x64"))
+                {
+                    AppConfig.Runtime.vs2012_x86 = true;
                 }
             }
             else if (exFile.Contains("vc2013"))
