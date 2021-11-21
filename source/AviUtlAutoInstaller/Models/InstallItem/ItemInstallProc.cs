@@ -322,10 +322,12 @@ namespace AviUtlAutoInstaller.Models
 
         private enum SpecialScriptType
         {
+            EqualizeHist,
         };
 
         private static readonly Dictionary<SpecialScriptType, string> _specialScriptDic = new Dictionary<SpecialScriptType, string>()
         {
+            { SpecialScriptType.EqualizeHist, "自動明暗補正" },
         };
 
         /// <summary>
@@ -347,11 +349,31 @@ namespace AviUtlAutoInstaller.Models
 
             switch (type)
             {
+                case SpecialScriptType.EqualizeHist:
+                    InstallEqualizeHist(item.DownloadFileName);
+                    break;
                 default:
                     return false;
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// 自動明暗補正のインストール
+        /// </summary>
+        /// <param name="downloadFileName"></param>
+        private static void InstallEqualizeHist(string downloadFileName)
+        {
+            FileOperation fileOperation = new FileOperation();
+
+            string extractSrcPath = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}\\{Path.GetFileNameWithoutExtension(downloadFileName)}";
+
+            fileOperation.FileMove(new string[] { $"{extractSrcPath}\\opencv_world452.dll" }, SysConfig.InstallRootPath);
+
+            var list = fileOperation.GenerateFilePathList($"{extractSrcPath}\\明暗補正", new string[] { "equalizeHist.dll", "明暗補正.anm" });
+
+            fileOperation.FileMove(list.ToArray(), $"{SysConfig.AviUtlScriptDir}\\ちはユキ氏");
         }
 
         /// <summary>
