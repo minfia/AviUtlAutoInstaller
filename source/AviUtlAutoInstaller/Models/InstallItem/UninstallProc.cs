@@ -201,11 +201,32 @@ namespace AviUtlAutoInstaller.Models
 
             switch (type)
             {
+                case SpecialScriptType.EqualizeHist:
+                    UninstallEqualizeHist();
+                    break;
                 default:
                     return false;
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// 自動明暗補正のアンインストール
+        /// </summary>
+        /// <param name="downloadFileName"></param>
+        private static void UninstallEqualizeHist()
+        {
+            string[] filePath = new string[] {
+                $"{SysConfig.InstallRootPath}\\opencv_world452.dll",
+                $"{SysConfig.AviUtlScriptDir}\\ちはユキ氏\\equalizeHist.dll",
+                $"{SysConfig.AviUtlScriptDir}\\ちはユキ氏\\明暗補正.anm"
+            };
+
+            foreach (string path in filePath)
+            {
+                File.Delete(path);
+            }
         }
 
         /// <summary>
