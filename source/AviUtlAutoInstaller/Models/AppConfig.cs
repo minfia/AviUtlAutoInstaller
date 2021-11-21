@@ -12,6 +12,10 @@ namespace AviUtlAutoInstaller.Models
         #region 設定キー名
         private const string KEY_RUNTIME_VS2008_x86 = "vs2008runtime_x86";
         private const string KEY_RUNTIME_VS2008_x64 = "vs2008runtime_x64";
+        private const string KEY_RUNTIME_VS2010_x86 = "vs2010runtime_x86";
+        private const string KEY_RUNTIME_VS2010_x64 = "vs2010runtime_x64";
+        private const string KEY_RUNTIME_VS2012_x86 = "vs2012runtime_x86";
+        private const string KEY_RUNTIME_VS2012_x64 = "vs2012runtime_x64";
         private const string KEY_RUNTIME_VS2013_x86 = "vs2013runtime_x86";
         private const string KEY_RUNTIME_VS2013_x64 = "vs2013runtime_x64";
         private const string KEY_RUNTIME_VS201X_x86 = "vs201Xruntime_x86";
@@ -31,6 +35,22 @@ namespace AviUtlAutoInstaller.Models
             /// VS2008ランタイム(x64)
             /// </summary>
             public static bool vs2008_x64 = false;
+            /// <summary>
+            /// VS2010ランタイム(x86)
+            /// </summary>
+            public static bool vs2010_x86 = false;
+            /// <summary>
+            /// VS2010ランタイム(x64)
+            /// </summary>
+            public static bool vs2010_x64 = false;
+            /// <summary>
+            /// VS2012ランタイム(x86)
+            /// </summary>
+            public static bool vs2012_x86 = false;
+            /// <summary>
+            /// VS2012ランタイム(x64)
+            /// </summary>
+            public static bool vs2012_x64 = false;
             /// <summary>
             /// VS2013ランタイム(x86)
             /// </summary>
@@ -84,6 +104,22 @@ namespace AviUtlAutoInstaller.Models
                 {
                     Runtime.vs2008_x64 = Convert.ToBoolean(appConfig[key].Value);
                 }
+                if (key == KEY_RUNTIME_VS2010_x86)
+                {
+                    Runtime.vs2010_x86 = Convert.ToBoolean(appConfig[key].Value);
+                }
+                if (key == KEY_RUNTIME_VS2010_x64)
+                {
+                    Runtime.vs2010_x64 = Convert.ToBoolean(appConfig[key].Value);
+                }
+                if (key == KEY_RUNTIME_VS2012_x86)
+                {
+                    Runtime.vs2012_x86 = Convert.ToBoolean(appConfig[key].Value);
+                }
+                if (key == KEY_RUNTIME_VS2012_x64)
+                {
+                    Runtime.vs2012_x64 = Convert.ToBoolean(appConfig[key].Value);
+                }
                 if (key == KEY_RUNTIME_VS2013_x86)
                 {
                     Runtime.vs2013_x86 = Convert.ToBoolean(appConfig[key].Value);
@@ -117,6 +153,10 @@ namespace AviUtlAutoInstaller.Models
 
                 Update(settings, KEY_RUNTIME_VS2008_x86, Runtime.vs2008_x86.ToString());
                 Update(settings, KEY_RUNTIME_VS2008_x64, Runtime.vs2008_x64.ToString());
+                Update(settings, KEY_RUNTIME_VS2010_x86, Runtime.vs2010_x86.ToString());
+                Update(settings, KEY_RUNTIME_VS2010_x64, Runtime.vs2010_x64.ToString());
+                Update(settings, KEY_RUNTIME_VS2012_x86, Runtime.vs2012_x86.ToString());
+                Update(settings, KEY_RUNTIME_VS2012_x64, Runtime.vs2012_x64.ToString());
                 Update(settings, KEY_RUNTIME_VS2013_x86, Runtime.vs2013_x86.ToString());
                 Update(settings, KEY_RUNTIME_VS2013_x64, Runtime.vs2013_x64.ToString());
                 Update(settings, KEY_RUNTIME_VS201X_x86, Runtime.vs201X_x86.ToString());
