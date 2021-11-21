@@ -39,8 +39,7 @@ namespace AviUtlAutoInstaller.Models
             get { return _isSelect; }
             set
             {
-                if (SetProperty(ref _isSelect, value) && DependentAction != null &&
-                    (!DependentName.Equals("None") || !string.IsNullOrEmpty(DependentName)))
+                if (SetProperty(ref _isSelect, value) && DependentAction != null && !string.IsNullOrEmpty(DependentName))
                 {
                     DependentAction(this);
                 }
