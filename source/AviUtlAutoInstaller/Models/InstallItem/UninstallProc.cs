@@ -116,6 +116,12 @@ namespace AviUtlAutoInstaller.Models
                 case SpecialPluginType.ExToolBar:
                     UninstallExToolBar();
                     break;
+                case SpecialPluginType.CameraAssist:
+                    UninstallCameraAssist(item);
+                    break;
+                case SpecialPluginType.Redo:
+                    UninstallRedo();
+                    break;
                 default:
                     return false;
             }
@@ -179,6 +185,69 @@ namespace AviUtlAutoInstaller.Models
             foreach (string path in filePath)
             {
                 File.Delete(path);
+            }
+        }
+
+        /// <summary>
+        /// カメラ操作補助のアンインストール
+        /// </summary>
+        private static void UninstallCameraAssist(InstallItem item)
+        {
+            string[] uninstallItem = new string[] {
+                "CameraAssist.auf",
+                "上方向ベクトル.cam",
+                "カメラ制御(視点).exa",
+                "カメラ制御(視点移動).exa"
+            };
+
+            FileOperation fileOperation = new FileOperation();
+            var fileList = fileOperation.GenerateFilePathList($"{SysConfig.AviUtlPluginDir}", uninstallItem);
+
+            foreach(var filePath in fileList)
+            {
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+
+            string cameraCtrlDirPath = $"{SysConfig.AviUtlPluginDir}\\カメラ制御";
+            if (fileOperation.IsDirectoryEmpty(cameraCtrlDirPath))
+            {
+                Directory.Delete(cameraCtrlDirPath, false);
+            }
+
+            string makerDirPath = $"{SysConfig.AviUtlScriptDir}\\{item.MakerName}";
+            if (fileOperation.IsDirectoryEmpty(makerDirPath))
+            {
+                Directory.Delete(makerDirPath, false);
+            }
+        }
+
+        /// <summary>
+        /// やり直し機能追加のアンインストール
+        /// </summary>
+        private static void UninstallRedo()
+        {
+            string[] uninstallItem = new string[] {
+                "Redo.auf"
+            };
+
+            FileOperation fileOperation = new FileOperation();
+            var fileList = fileOperation.GenerateFilePathList($"{SysConfig.AviUtlPluginDir}", uninstallItem);
+
+            foreach (var filePath in fileList)
+            {
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+
+            string undoTmpDirPath = $"{SysConfig.InstallRootPath}\\UndoTmp";
+            if (Directory.Exists(undoTmpDirPath))
+            {
+                Directory.Delete(undoTmpDirPath, true);
             }
         }
 
