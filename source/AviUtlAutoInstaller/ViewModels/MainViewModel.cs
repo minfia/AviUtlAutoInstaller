@@ -28,6 +28,10 @@ namespace AviUtlAutoInstaller.ViewModels
             /// </summary>
             NG,
             /// <summary>
+            /// 部分的に失敗
+            /// </summary>
+            PartlyNG,
+            /// <summary>
             /// キャンセル
             /// </summary>
             Cancel,
@@ -308,6 +312,8 @@ namespace AviUtlAutoInstaller.ViewModels
             private set { SetProperty(ref _progressVisiblity, value); }
         }
 
+        private List<string> InstallFailedList = new List<string>();
+
         public MainViewModel()
         {
             InstallDirPath = SysConfig.InstallRootPath;
@@ -341,6 +347,7 @@ namespace AviUtlAutoInstaller.ViewModels
             _installStartCommand = new DelegateCommand(
                 async _ =>
                 {
+                    InstallFailedList.Clear();
                     ProgressVisiblity = Visibility.Visible;
                     _installing = true;
                     IsInstallButtonEnable = IsFileOpenMenuEnable = IsInstallEditManuEnable = IsUpdateCheckManuEnable = IsCopyBackupEnable = IsMakeShortcutEnable = IsSelectInstallDirEnable = false;
@@ -363,6 +370,16 @@ namespace AviUtlAutoInstaller.ViewModels
                             message = "インストールに失敗しました";
                             title = "エラー";
                             image = MessageBoxImage.Error;
+                            break;
+                        case InstallResult.PartlyNG:
+                            {
+                                string list = "";
+                                foreach (var str in InstallFailedList)
+                                {
+                                    list += $"・{str}\n";
+                                }
+                                message = $"インストールできなかった項目があります\n{list}";
+                            }
                             break;
                         case InstallResult.Cancel:
                             message = "インストールがキャンセルされました";
@@ -475,6 +492,11 @@ namespace AviUtlAutoInstaller.ViewModels
             {
                 FileOperation fileOperation = new FileOperation();
                 fileOperation.MakeShortcut($"{InstallDirPath}\\AviUtl.exe", "AviUtl");
+            }
+
+            if (InstallFailedList.Count != 0)
+            {
+                installResult = InstallResult.PartlyNG;
             }
 
             return installResult;
@@ -701,6 +723,10 @@ namespace AviUtlAutoInstaller.ViewModels
                         }
                         item.IsInstallCompleted = res;
                         item.IsSelect = res;
+                        if (!res)
+                        {
+                            InstallFailedList.Add(item.Name);
+                        }
                     }
 
                     if (!string.IsNullOrWhiteSpace(item.ExternalFile))
