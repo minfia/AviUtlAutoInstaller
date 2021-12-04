@@ -272,12 +272,16 @@ namespace AviUtlAutoInstaller.Models
         {
             PSDToolkit,
             ExToolBar,
+            CameraAssist,
+            Redo,
         };
 
         private static readonly Dictionary<SpecialPluginType, string> _specialPluginDic = new Dictionary<SpecialPluginType, string>()
         {
             { SpecialPluginType.PSDToolkit, "PSDToolKit" },
             { SpecialPluginType.ExToolBar, "拡張ツールバー" },
+            { SpecialPluginType.CameraAssist, "カメラ操作補助" },
+            { SpecialPluginType.Redo, "やり直し機能追加" },
         };
 
 
@@ -305,6 +309,12 @@ namespace AviUtlAutoInstaller.Models
                     break;
                 case SpecialPluginType.ExToolBar:
                     InstallExToolBar(item.DownloadFileName);
+                    break;
+                case SpecialPluginType.CameraAssist:
+                    InstallCameraAssist(item);
+                    break;
+                case SpecialPluginType.Redo:
+                    InstallRedo(item.DownloadFileName);
                     break;
                 default:
                     return false;
@@ -356,6 +366,60 @@ namespace AviUtlAutoInstaller.Models
 
             string exToolIconSrcPath = $"{exToolSrcPath}";
             fileOperation.DirectoryMove(exToolIconSrcPath, iconFileDestPath, null);
+        }
+
+        /// <summary>
+        /// カメラ操作補助のインストール
+        /// </summary>
+        /// <param name="downloadFileName"></param>
+        private static void InstallCameraAssist(InstallItem item)
+        {
+            string cameraAssistSrcPath = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(item.DownloadFileName)}";
+            FileOperation fileOperation = new FileOperation();
+
+            {
+                // プラグインの移動
+                string[] pluginName = new string[] { "CameraAssist.auf" };
+                var pluginList = fileOperation.GenerateFilePathList(cameraAssistSrcPath, pluginName);
+                fileOperation.FileMove(pluginList.ToArray(), $"{SysConfig.AviUtlPluginDir}");
+            }
+
+            { 
+                // スクリプトの移動
+                string[] scriptName = new string[] { "上方向ベクトル.cam" };
+                string scriptDir = $"{SysConfig.AviUtlScriptDir}\\{item.MakerName}";
+                var scriptList = fileOperation.GenerateFilePathList(cameraAssistSrcPath, scriptName);
+                if (!Directory.Exists(scriptDir))
+                {
+                    Directory.CreateDirectory(scriptDir);
+                }
+                fileOperation.FileMove(scriptList.ToArray(), scriptDir);
+            }
+
+            {
+                // エイリアスの移動
+                string[] aliasName = new string[] { "カメラ制御(視点).exa", "カメラ制御(視点移動).exa" };
+                string aliasDir = $"{SysConfig.AviUtlPluginDir}\\カメラ制御";
+                var aliasList = fileOperation.GenerateFilePathList(cameraAssistSrcPath, aliasName);
+                if (!Directory.Exists(aliasDir))
+                {
+                    Directory.CreateDirectory(aliasDir);
+                }
+                fileOperation.FileMove(aliasList.ToArray(), aliasDir);
+            }
+        }
+
+        /// <summary>
+        /// やり直し機能追加のインストール
+        /// </summary>
+        /// <param name="downloadFileName"></param>
+        private static void InstallRedo(string downloadFileName)
+        {
+            FileOperation fileOperation = new FileOperation();
+            string redoSrcPath = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}";
+            string[] pluginName = new string[] { "Redo.auf" };
+            var pluginList = fileOperation.GenerateFilePathList(redoSrcPath, pluginName);
+            fileOperation.FileMove(pluginList.ToArray(), $"{SysConfig.AviUtlPluginDir}");
         }
 
         private enum SpecialScriptType
