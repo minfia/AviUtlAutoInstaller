@@ -237,6 +237,22 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="済み"
+                                                HeaderStyle="{StaticResource DataGridTextHederStyle}">
+                                <DataGridTextColumn.CellStyle>
+                                    <Style TargetType="{x:Type DataGridCell}">
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsInstalled}" Value="true">
+                                                <Setter Property="Background" Value="PaleGreen"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsInstalled}" Value="false">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGridTextColumn.CellStyle>
+                            </DataGridTextColumn>
                             <DataGridTextColumn Header="No."
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                 Width="52"
@@ -265,7 +281,8 @@
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                 Width="80"
                                                 Binding="{Binding SectionType}"/>
-                            <DataGridTemplateColumn CanUserResize="False" Width="40">
+                            <DataGridTemplateColumn CanUserResize="False"
+                                                    Width="40">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Button Width="36"
@@ -344,7 +361,22 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-
+                                <DataGridTextColumn Header="済み"
+                                                    HeaderStyle="{StaticResource DataGridTextHederStyle}">
+                                    <DataGridTextColumn.CellStyle>
+                                        <Style TargetType="{x:Type DataGridCell}">
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsInstalled}" Value="true">
+                                                    <Setter Property="Background" Value="PaleGreen"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsInstalled}" Value="false">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGridTextColumn.CellStyle>
+                                </DataGridTextColumn>
                                 <DataGridTextColumn Header="No."
                                                     HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                     Width="52"

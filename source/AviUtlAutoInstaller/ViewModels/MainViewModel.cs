@@ -356,6 +356,8 @@ namespace AviUtlAutoInstaller.ViewModels
                     _installing = false;
                     ProgressVisiblity = Visibility.Collapsed;
 
+                    InstallItemList.ClearAllIsSelect();
+
                     string message = "インストールが完了しました";
                     string title = "情報";
                     var image = MessageBoxImage.Information;
