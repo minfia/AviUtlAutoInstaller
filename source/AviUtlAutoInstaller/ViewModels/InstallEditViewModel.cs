@@ -75,15 +75,25 @@ namespace AviUtlAutoInstaller.ViewModels
         #region コンテキストメニュー
         private DelegateCommand _singleInstallCommand;
         private DelegateCommand _singleUninstallCommand;
+        private DelegateCommand _batchInstallCommand;
+        private DelegateCommand _batchUninstallCommand;
         private DelegateCommand _itemPropertyCommand;
         public DelegateCommand SingleInstallCommand { get => _singleInstallCommand; }
         public DelegateCommand SingleUninstallCommand { get => _singleUninstallCommand; }
+        public DelegateCommand BatchInstallCommand { get => _batchInstallCommand; }
+        public DelegateCommand BatchUninstallCommand { get => _batchUninstallCommand; }
         public DelegateCommand ItemPropertyCommand { get => _itemPropertyCommand; }
         private Visibility _isVisiblePreRepoInstallContextMenu = Visibility.Collapsed;
         public Visibility IsVisiblePreRepoInstallContextMenu
         { 
             get { return _isVisiblePreRepoInstallContextMenu; }
             private set { SetProperty(ref _isVisiblePreRepoInstallContextMenu, value); }
+        }
+        private Visibility _isVisiblePreRepoBatchInstallUninstallContextMenu = Visibility.Collapsed;
+        public Visibility IsVisiblePreRepoBatchInstallUninstallContextMenu
+        {
+            get { return _isVisiblePreRepoBatchInstallUninstallContextMenu; }
+            private set { SetProperty(ref _isVisiblePreRepoBatchInstallUninstallContextMenu, value); }
         }
         private Visibility _isVisiblePreRepoUninstallContextMenu = Visibility.Collapsed;
         public Visibility IsVisiblePreRepoUninstallContextMenu
@@ -670,7 +680,16 @@ namespace AviUtlAutoInstaller.ViewModels
                 {
                     if (SysConfig.IsInstalledAviUtl && MessageBox.Show("インストールしますか？", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                     {
-                        var res = await OnInstall();
+                        InstallItem selectItem = null;
+                        if (InstallItemList.RepoType.Pre == _selectTab[TabControlSelectIndex])
+                        {
+                            selectItem = PreSelectItem;
+                        }
+                        else if (InstallItemList.RepoType.User == _selectTab[TabControlSelectIndex])
+                        {
+                            selectItem = UserSelectItem;
+                        }
+                        var res = await OnInstall(selectItem);
                         string message = "インストールが完了しました。";
                         string title = "情報";
                         var image = MessageBoxImage.Information;
@@ -704,7 +723,16 @@ namespace AviUtlAutoInstaller.ViewModels
                 {
                     if (SysConfig.IsInstalledAviUtl && MessageBox.Show("アンインストールしますか？", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                     {
-                        var res = await OnUninstall();
+                        InstallItem selectItem = null;
+                        if (InstallItemList.RepoType.Pre == _selectTab[TabControlSelectIndex])
+                        {
+                            selectItem = PreSelectItem;
+                        }
+                        else if (InstallItemList.RepoType.User == _selectTab[TabControlSelectIndex])
+                        {
+                            selectItem = UserSelectItem;
+                        }
+                        var res = await OnUninstall(selectItem);
                         string message = "アンインストールが完了しました。";
                         string title = "情報";
                         var image = MessageBoxImage.Information;
@@ -720,6 +748,54 @@ namespace AviUtlAutoInstaller.ViewModels
                                 break;
                         }
 
+                        MessageBox.Show(message, title, MessageBoxButton.OK, image);
+                    }
+                });
+            _batchInstallCommand = new DelegateCommand(
+                async _ =>
+                {
+                    if (SysConfig.IsInstalledAviUtl && MessageBox.Show("まとめてインストールしますか？\n" +
+                                                                       "(AviUtlと拡張編集はインストール済みのためインストールされません)", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    {
+                        List<string> res = await OnBatchInstall();
+                        string message = "インストールが完了しました。";
+                        string title = "情報";
+                        var image = MessageBoxImage.Information;
+                        if (res.Count != 0)
+                        {
+                            string list = "";
+                            foreach (string item in res)
+                            {
+                                list += $"{item}\n";
+                            }
+                            message = $"以下の項目のインストールに失敗しました。\n{list}";
+                            title = "エラー";
+                            image = MessageBoxImage.Error;
+                        }
+                        MessageBox.Show(message, title, MessageBoxButton.OK, image);
+                    }
+                });
+            _batchUninstallCommand = new DelegateCommand(
+                async _ =>
+                {
+                    if (SysConfig.IsInstalledAviUtl && MessageBox.Show("まとめてアンインストールしますか？\n" +
+                                                                       "(AviUtlと拡張編集はアンインストールされません)", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    {
+                        List<string> res = await OnBatchUninstall();
+                        string message = "アンインストールが完了しました。";
+                        string title = "情報";
+                        var image = MessageBoxImage.Information;
+                        if (res.Count != 0)
+                        {
+                            string list = "";
+                            foreach (string item in res)
+                            {
+                                list += $"{item}\n";
+                            }
+                            message = $"以下の項目のアンインストールに失敗しました。\n{list}";
+                            title = "エラー";
+                            image = MessageBoxImage.Error;
+                        }
                         MessageBox.Show(message, title, MessageBoxButton.OK, image);
                     }
                 });
@@ -922,36 +998,27 @@ namespace AviUtlAutoInstaller.ViewModels
         /// 単体インストール処理
         /// </summary>
         /// <returns></returns>
-        private async Task<InstallResult> OnInstall()
+        private async Task<InstallResult> OnInstall(InstallItem item)
         {
-            InstallItem selectItem = null;
-            if (InstallItemList.RepoType.Pre == _selectTab[TabControlSelectIndex])
-            {
-                selectItem = PreSelectItem;
-            }
-            else if (InstallItemList.RepoType.User == _selectTab[TabControlSelectIndex])
-            {
-                selectItem = UserSelectItem;
-            }
 
             // ダウンロード
-            if (selectItem == null)
+            if (item == null)
             {
                 return InstallResult.NG;
             }
-            if (!File.Exists($"{SysConfig.CacheDirPath}\\{selectItem.DownloadFileName}") && string.IsNullOrEmpty(selectItem.URL))
+            if (!File.Exists($"{SysConfig.CacheDirPath}\\{item.DownloadFileName}") && string.IsNullOrEmpty(item.URL))
             {
                 return InstallResult.NotDownload;
             }
-            else if (!File.Exists($"{SysConfig.CacheDirPath}\\{selectItem.DownloadFileName}"))
+            else if (!File.Exists($"{SysConfig.CacheDirPath}\\{item.DownloadFileName}"))
             {
                 await OnDownload();
             }
-            if (File.Exists($"{SysConfig.CacheDirPath}\\{selectItem.DownloadFileName}"))
+            if (File.Exists($"{SysConfig.CacheDirPath}\\{item.DownloadFileName}"))
             {
-                selectItem.IsDownloadCompleted = true;
+                item.IsDownloadCompleted = true;
             }
-            if (!selectItem.IsDownloadCompleted)
+            if (!item.IsDownloadCompleted)
             {
                 return InstallResult.DownloadFailed;
             }
@@ -961,35 +1028,35 @@ namespace AviUtlAutoInstaller.ViewModels
             {
                 InstallItemList installItemList = new InstallItemList();
                 var func = new Func<InstallItem, string[], bool>(InstallItem.Install);
-                var installFileList = installItemList.GenerateInstalList(_selectTab[TabControlSelectIndex], selectItem);
-                var task = Task.Run(() => func(selectItem, installFileList.ToArray()));
+                var installFileList = installItemList.GenerateInstalList(_selectTab[TabControlSelectIndex], item);
+                var task = Task.Run(() => func(item, installFileList.ToArray()));
                 var res = await task;
-                selectItem.IsInstallCompleted = res;
+                item.IsInstallCompleted = res;
             }
-            if (!selectItem.IsInstallCompleted)
+            if (!item.IsInstallCompleted)
             {
-                return (selectItem.IsSpecialItem) ? InstallResult.NotSupportInstall : InstallResult.NG;
+                return (item.IsSpecialItem) ? InstallResult.NotSupportInstall : InstallResult.NG;
             }
-            if (selectItem.IsInstallCompleted)
+            if (item.IsInstallCompleted)
             {
-                if ("sm".Length < selectItem.NicoVideoID.Length)
+                if ("sm".Length < item.NicoVideoID.Length)
                 {
-                    ContentsTreeRW.AddContents(selectItem.NicoVideoID);
+                    ContentsTreeRW.AddContents(item.NicoVideoID);
                     ContentsTreeRW contentsTreeRW = new ContentsTreeRW();
                     contentsTreeRW.Write($"{SysConfig.InstallRootPath}");
                 }
 
-                selectItem.IsInstallCompleted = false;
-                InstallProfileRW.AddContents(selectItem);
+                item.IsInstallCompleted = false;
+                InstallProfileRW.AddContents(item);
                 InstallProfileRW installProfileRW = new InstallProfileRW();
                 installProfileRW.FileWrite($"{SysConfig.InstallRootPath}");
                 installProfileRW.FileRead($"{SysConfig.InstallRootPath}\\{InstallProfileRW.ReloadFileName}");
             }
 
-            if (!string.IsNullOrWhiteSpace(selectItem.ExternalFile))
+            if (!string.IsNullOrWhiteSpace(item.ExternalFile))
             {
                 var exFunc = new Func<string[], bool>(InstallItem.ExternalInstall);
-                var exTask = Task.Run(() => exFunc(selectItem.ExternalFileList.ToArray()));
+                var exTask = Task.Run(() => exFunc(item.ExternalFileList.ToArray()));
                 var res = await exTask;
             }
             Directory.Delete(SysConfig.InstallExpansionDir, true);
@@ -997,44 +1064,35 @@ namespace AviUtlAutoInstaller.ViewModels
             return InstallResult.OK;
         }
 
-        private async Task<UninstallResult> OnUninstall()
+        private async Task<UninstallResult> OnUninstall(InstallItem item)
         {
-            InstallItem selectItem = null;
-            if (InstallItemList.RepoType.Pre == _selectTab[TabControlSelectIndex])
-            {
-                selectItem = PreSelectItem;
-            }
-            else if (InstallItemList.RepoType.User == _selectTab[TabControlSelectIndex])
-            {
-                selectItem = UserSelectItem;
-            }
 
-            if (selectItem == null)
+            if (item == null)
             {
                 return UninstallResult.NG;
             }
 
-            if (selectItem.FileType == InstallFileType.Main || selectItem.CommandName.Equals("exedit"))
+            if (item.FileType == InstallFileType.Main || item.CommandName.Equals("exedit"))
             {
                 return UninstallResult.IsMain;
             }
 
             {
                 var func = new Func<InstallItem, bool>(InstallItem.Uninstall);
-                var task = Task.Run(() => func(selectItem));
+                var task = Task.Run(() => func(item));
                 var res = await task;
-                selectItem.IsSelect = false;
+                item.IsSelect = false;
 
                 if (res)
                 {
-                    if ("sm".Length < selectItem.NicoVideoID.Length)
+                    if ("sm".Length < item.NicoVideoID.Length)
                     {
-                        ContentsTreeRW.DeleteContents(selectItem.NicoVideoID);
+                        ContentsTreeRW.DeleteContents(item.NicoVideoID);
                         ContentsTreeRW contentsTreeRW = new ContentsTreeRW();
                         contentsTreeRW.Write($"{SysConfig.InstallRootPath}");
                     }
 
-                    InstallProfileRW.DeleteContents(selectItem);
+                    InstallProfileRW.DeleteContents(item);
                     InstallProfileRW installProfileRW = new InstallProfileRW();
                     installProfileRW.FileWrite($"{SysConfig.InstallRootPath}");
                     installProfileRW.FileRead($"{SysConfig.InstallRootPath}\\{InstallProfileRW.ReloadFileName}");
@@ -1046,6 +1104,58 @@ namespace AviUtlAutoInstaller.ViewModels
             }
 
             return UninstallResult.OK;
+        }
+
+        private async Task<List<string>> OnBatchInstall()
+        {
+            List<InstallItem> installList = new List<InstallItem>();
+
+            foreach (InstallItem item in PreInstallList)
+            {
+                if (item.IsSelect && !item.IsInstalled && !item.Name.Equals("AviUtl") && !item.Name.Equals("拡張編集"))
+                {
+                    installList.Add(item);
+                }
+            }
+
+            List<string> failedItemList = new List<string>();
+
+            foreach (InstallItem item in installList)
+            {
+                InstallResult res = await OnInstall(item);
+                if (res != InstallResult.OK)
+                {
+                    failedItemList.Add(item.Name);
+                }
+            }
+
+            return failedItemList;
+        }
+
+        private async Task<List<string>> OnBatchUninstall()
+        {
+            List<InstallItem> uninstallList = new List<InstallItem>();
+
+            foreach (InstallItem item in PreInstallList)
+            {
+                if (item.IsSelect && item.IsInstalled && !item.Name.Equals("AviUtl") && !item.Name.Equals("拡張編集"))
+                {
+                    uninstallList.Add(item);
+                }
+            }
+
+            List<string> failedItemList = new List<string>();
+
+            foreach (InstallItem item in uninstallList)
+            {
+                UninstallResult res = await OnUninstall(item);
+                if (res == UninstallResult.NG)
+                {
+                    failedItemList.Add(item.Name);
+                }
+            }
+
+            return failedItemList;
         }
 
         public Func<bool> ClosingCallback
@@ -1089,6 +1199,7 @@ namespace AviUtlAutoInstaller.ViewModels
             }
             IsVisiblePreRepoInstallContextMenu = item.IsInstalled ? Visibility.Collapsed : Visibility.Visible;
             IsVisiblePreRepoUninstallContextMenu = item.IsInstalled ? Visibility.Visible : Visibility.Collapsed;
+            IsVisiblePreRepoBatchInstallUninstallContextMenu = SysConfig.IsInstalledAviUtl ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 }

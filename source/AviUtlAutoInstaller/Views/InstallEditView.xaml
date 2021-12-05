@@ -207,6 +207,16 @@
                                                           Command="{Binding Source={StaticResource proxyElement},
                                                                             Path=DataContext.SingleUninstallCommand}"
                                                           CommandParameter="{x:Static vm:SelectCommandType.DataGrid}"/>
+                                                <MenuItem Header="チェックしたものを一括インストール"
+                                                                    Visibility="{Binding Source={StaticResource proxyElement},
+                                                                                         Path=DataContext.IsVisiblePreRepoBatchInstallUninstallContextMenu}"
+                                                                    Command="{Binding Source={StaticResource proxyElement},
+                                                                                      Path=DataContext.BatchInstallCommand}"/>
+                                                <MenuItem Header="チェックしたものを一括アンインストール"
+                                                                    Visibility="{Binding Source={StaticResource proxyElement},
+                                                                                         Path=DataContext.IsVisiblePreRepoBatchInstallUninstallContextMenu}"
+                                                                    Command="{Binding Source={StaticResource proxyElement},
+                                                                                      Path=DataContext.BatchUninstallCommand}"/>
                                                 <MenuItem Header="プロパティ"
                                                           Command="{Binding Source={StaticResource proxyElement},
                                                                             Path=DataContext.ItemPropertyCommand}"
