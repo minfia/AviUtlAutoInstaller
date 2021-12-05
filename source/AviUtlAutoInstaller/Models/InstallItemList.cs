@@ -138,18 +138,22 @@ namespace AviUtlAutoInstaller.Models
         }
 
         /// <summary>
-        /// インストールの有無をセットする
+        /// インストール完了の有無をセットする
         /// </summary>
         /// <param name="repoType">リポジトリの選択</param>
         /// <param name="name">セットする項目名</param>
         /// <param name="b">true(有効) or false(無効)</param>
-        public static void SetIsSelect(RepoType repoType, string name, bool b)
+        public static void SetIsInstalled(RepoType repoType, string name, bool b)
         {
             foreach (InstallItem item in _installItemList[(int)repoType])
             {
                 if (item.Name == name)
                 {
-                    item.IsSelect = item.IsInstalled = b;
+                    item.IsInstalled = b;
+                    if ((name == "AviUtl") || (name == "拡張編集"))
+                    {
+                        item.IsSelect = b;
+                    }
                     break;
                 }
             }
@@ -160,7 +164,7 @@ namespace AviUtlAutoInstaller.Models
         /// </summary>
         public static void ClearAllIsSelect()
         {
-            for (RepoType i=0;i<RepoType.MAX; i++)
+            for (RepoType i = 0; i < RepoType.MAX; i++)
             {
                 foreach (var item in _installItemList[(int)i])
                 {
@@ -169,8 +173,8 @@ namespace AviUtlAutoInstaller.Models
             }
 
             // 必須項目のため有効
-            SetIsSelect(RepoType.Pre, "AviUtl", true);
-            SetIsSelect(RepoType.Pre, "拡張編集", true);
+            SetIsInstalled(RepoType.Pre, "AviUtl", true);
+            SetIsInstalled(RepoType.Pre, "拡張編集", true);
         }
 
         /// <summary>
@@ -221,18 +225,6 @@ namespace AviUtlAutoInstaller.Models
                 }
             }
         }
-
-
-        /*
-        public static void DisabledDpendencyChildren(string ParentName)
-        {
-            if (string.IsNullOrEmpty(ParentName)) return;
-
-            {
-                // 依存元 -> 依存アイテム
-            }
-        }
-        */
 
         /// <summary>
         /// インストールアイテムから、実際にインストールするファイル一覧を生成

@@ -170,7 +170,7 @@ namespace AviUtlAutoInstaller.Models.Files
             {
                 foreach (InstallItem item in installItemList.GetInstalItemList(i))
                 {
-                    if (!item.IsSelect || !item.IsInstallCompleted)
+                    if (!item.IsInstalled || !item.IsInstallCompleted)
                     {
                         continue;
                     }
@@ -220,11 +220,11 @@ namespace AviUtlAutoInstaller.Models.Files
                 {
                     continue;
                 }
-                InstallItemList.SetIsSelect(item.RefRepoType, item.Name, true);
+                InstallItemList.SetIsInstalled(item.RefRepoType, item.Name, true);
                 if (InstallItemList.CheckDuplicateName(InstallItemList.RepoType.Pre, item.Name) && (InstallItemList.RepoType.User == item.RefRepoType))
                 {
                     // ユーザーリポジトリを優先
-                    InstallItemList.SetIsSelect(InstallItemList.RepoType.Pre, item.Name, false);
+                    InstallItemList.SetIsInstalled(InstallItemList.RepoType.Pre, item.Name, false);
                 }
             }
         }

@@ -32,7 +32,7 @@ namespace AviUtlAutoInstaller.Models
     {
         private bool _isSelect = false;
         /// <summary>
-        /// インストールの有無
+        /// インストール選択の有無
         /// </summary>
         public bool IsSelect
         {
