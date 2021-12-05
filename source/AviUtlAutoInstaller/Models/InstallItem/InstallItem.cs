@@ -47,6 +47,9 @@ namespace AviUtlAutoInstaller.Models
         }
 
         public delegate void DependentDelegate(InstallItem item);
+        /// <summary>
+        /// 依存関係処理
+        /// </summary>
         public static DependentDelegate DependentAction = null;
 
         /// <summary>
