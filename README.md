@@ -23,7 +23,7 @@ AviUtlの動画作成環境を自動で行うツールです。
 AviUtlAutoInstallerで使用しているaai.repoは[こちら](https://github.com/minfia/AAI_Repo/releases)から  
 
 ## 使い方
-付属の`manual/index.html`を参照してください。  
+付属の`manual/index.html`または[こちら](https://minfia.github.io/AviUtlAutoInstaller/)を参照してください。  
 軽くですが使い方を[ここ](https://www.nicovideo.jp/watch/sm39152679)で説明しています。  
 
 ## 開発環境
