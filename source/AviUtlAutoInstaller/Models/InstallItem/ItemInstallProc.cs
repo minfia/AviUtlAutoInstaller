@@ -160,19 +160,19 @@ namespace AviUtlAutoInstaller.Models
                      (exFile.Contains("_x86") && !AppConfig.Runtime.vs2012_x86) ||
                      (exFile.Contains("_x64") && !AppConfig.Runtime.vs2012_x64))
             {
-                args = "quiet";
+                args = "/quiet";
             }
             else if (exFile.Contains("vc2013") &&
                      (exFile.Contains("_x86") && !AppConfig.Runtime.vs2013_x86) ||
                      (exFile.Contains("_x64") && !AppConfig.Runtime.vs2013_x64))
             {
-                args = "quiet";
+                args = "/quiet";
             }
             else if (exFile.Contains("vc201X") &&
                      (exFile.Contains("_x86") && !AppConfig.Runtime.vs201X_x86) ||
                      (exFile.Contains("_x64") && !AppConfig.Runtime.vs201X_x64))
             {
-                args = "quiet";
+                args = "/quiet";
             }
 
             return args;
