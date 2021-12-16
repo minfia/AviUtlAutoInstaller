@@ -981,6 +981,7 @@ namespace AviUtlAutoInstaller.ViewModels
                     break;
                 case DownloadResult.DownloadSizeGetError:
                 case DownloadResult.DownloadFileNameGetError:
+                case DownloadResult.DownloadSizeMismatchError:
                 case DownloadResult.DownloadError:
                     message = "ダウンロードに失敗しました。";
                     break;
