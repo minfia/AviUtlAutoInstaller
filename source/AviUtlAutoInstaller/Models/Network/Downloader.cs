@@ -38,6 +38,10 @@ namespace AviUtlAutoInstaller.Models.Network
         /// </summary>
         DownloadFileNameGetError,
         /// <summary>
+        /// ダウンロードサイズ不一致エラー
+        /// </summary>
+        DownloadSizeMismatchError,
+        /// <summary>
         /// ダウンロードエラー
         /// </summary>
         DownloadError,
@@ -120,7 +124,12 @@ namespace AviUtlAutoInstaller.Models.Network
                     DownloadCompleteSize = dl.DownloadCompleteSize;
                 }
             } while (task.Status != TaskStatus.RanToCompletion);
-            
+
+            if (DownloadCompleteSize != DownloadFileSize)
+            {
+                return DownloadResult.DownloadSizeMismatchError;
+            }
+
             return res;
         }
 
@@ -173,6 +182,11 @@ namespace AviUtlAutoInstaller.Models.Network
                 }
             } while (task.Status != TaskStatus.RanToCompletion);
 
+            if (DownloadCompleteSize != DownloadFileSize)
+            {
+                return DownloadResult.DownloadSizeMismatchError;
+            }
+
             return res;
         }
 
@@ -217,12 +231,13 @@ namespace AviUtlAutoInstaller.Models.Network
                     CookieContainer cookieContainer = new CookieContainer();
                     webRequest.CookieContainer = new CookieContainer();
                     webRequest.CookieContainer.Add(cookieContainer.GetCookies(webRequest.RequestUri));
+                    webRequest.UserAgent = "AviUtlAutoInstaller";
                     WebResponse webResponse = webRequest.GetResponse();
                     _header = ((HttpWebResponse)webResponse).Headers;
                     _cookieCollection = ((HttpWebResponse)webResponse).Cookies;
                 }
                 catch (WebException e)
-                { 
+                {
                     Console.WriteLine(e.Message);
                     return WebExceptionPaser(e);
 
@@ -450,6 +465,7 @@ namespace AviUtlAutoInstaller.Models.Network
 
                 try
                 {
+                    _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("AviUtlAutoInstaller");
                     using (HttpResponseMessage responseMessage = _httpClient.GetAsync(_uri, HttpCompletionOption.ResponseHeadersRead).Result)
                     using (Stream inputStream = responseMessage.Content.ReadAsStreamAsync().Result)
                     using (FileStream fs = new FileStream($"{downloadPath}\\{fileName}", FileMode.Create, FileAccess.ReadWrite))
