@@ -16,24 +16,61 @@ namespace AAIUpdater.Models
         /// <summary>
         /// App更新時削除除外ディレクトリリスト
         /// </summary>
-        private readonly static string[] delExcludeDirNames = { "cache", "repo" };
+        private static List<string> delExcludeDirNames = new List<string>();
 
         /// <summary>
         /// App更新時削除除外ファイルリスト
         /// </summary>
-        private readonly static string[] delExcludeFileNames = { "updater.exe", "updater.exe.config", "updater.pdb" };
+        private static List<string> delExcludeFileNames = new List<string>()
+        {
+            "updater.exe",
+            "updater.exe.config",
+            "updater.pdb"
+        };
 #else
         /// <summary>
         /// App更新時削除除外ディレクトリリスト
         /// </summary>
-        private readonly static string[] delExcludeDirNames = { "cache", "repo" };
+        private static List<string> delExcludeDirNames = new List<string>();
 
         /// <summary>
         /// App更新時削除除外ファイルリスト
         /// </summary>
-        private readonly static string[] delExcludeFileNames = { "updater.exe", "updater.exe.config" };
+        private static List<string> delExcludeFileNames = new List<string>()
+        {
+            "updater.exe",
+            "updater.exe.config",
+        };
 #endif
 
+        /// <summary>
+        /// 引数から取得した削除除外ディレクトリを設定
+        /// </summary>
+        /// <param name="excludeDirNames"></param>
+        public void SetDeleteExcludeDir(string[] excludeDirNames)
+        {
+            foreach (string dirName in excludeDirNames)
+            {
+                delExcludeDirNames.Add(dirName);
+            }
+        }
+
+        /// <summary>
+        /// 引数から取得した削除除外ファイルを設定
+        /// </summary>
+        /// <param name="excludeFileNames"></param>
+        public void SetDeleteExcludeFile(string[] excludeFileNames)
+        {
+            foreach (string fileName in excludeFileNames)
+            {
+                delExcludeFileNames.Add(fileName);
+            }
+        }
+
+        /// <summary>
+        /// アプリアップデート
+        /// </summary>
+        /// <param name="filePath"></param>
         public void AppUpdate(string filePath)
         {
             {
@@ -100,6 +137,10 @@ namespace AAIUpdater.Models
             }
         }
 
+        /// <summary>
+        /// プリインストールリポジトリアップデート
+        /// </summary>
+        /// <param name="filePath"></param>
         public void RepoUpdate(string filePath)
         {
             FileOperation fileOperation = new FileOperation();

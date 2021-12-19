@@ -60,8 +60,29 @@ namespace AviUtlAutoInstaller.Models
         //private string _preRepoGitHubUrl = "https://api.github.com/repos/minfia/AAI_Repo/releases/latest";
         //private string _applicationGitHubUrl = "https://api.github.com/repos/minfia/AviUtlAutoInstaller/releases/latest";
 
+        /// <summary>
+        /// プリインストールリポジトリのGitHub APIのURL
+        /// </summary>
         private string _preRepoGitHubUrl = "https://api.github.com/repos/minfia/AAI_Repo/releases";
+        /// <summary>
+        /// アプリケーションのGitHub APIのURL
+        /// </summary>
         private string _applicationGitHubUrl = "https://api.github.com/repos/minfia/AviUtlAutoInstaller/releases";
+
+        /// <summary>
+        /// 削除除外ディレクトリリスト
+        /// </summary>
+        private List<string> _delExcludeDirList = new List<string>()
+        {
+            "cache", "repo", "AviUtl"
+        };
+
+        /// <summary>
+        /// 削除除外ファイルリスト
+        /// </summary>
+        private List<string> _delExcludeFileList = new List<string>()
+        {
+        };
 
         /// <summary>
         /// アップデートチェックを行う
@@ -196,15 +217,45 @@ namespace AviUtlAutoInstaller.Models
         {
             FileOperation fileOperation = new FileOperation();
 
-            fileOperation.ExecApp(SysConfig.UpdaterFilePath, $"--app {url}", FileOperation.ExecAppType.GUI, out System.Diagnostics.Process proc);
+            string delExcludeDirArgs = "";
+            foreach (string arg in _delExcludeDirList)
+            {
+                delExcludeDirArgs += $" {arg}";
+            }
+
+            string delExcludeFileArgs = "";
+            foreach (string arg in _delExcludeFileList)
+            {
+                delExcludeFileArgs += $" {arg}";
+            }
+
+            string cmd = $"--app {url} --exclude-dirs {delExcludeDirArgs} --exclude-files {delExcludeFileArgs}";
+            fileOperation.ExecApp(SysConfig.UpdaterFilePath, cmd, FileOperation.ExecAppType.GUI, out System.Diagnostics.Process proc);
         }
 
-
+        /// <summary>
+        /// アプリケーションのアップデート
+        /// </summary>
+        /// <param name="appURL">アプリケーションのURL</param>
+        /// <param name="preRepoURL">プリインストールリポジトリのURL</param>
         public void UpdateApplication(string appURL, string preRepoURL)
         {
             FileOperation fileOperation = new FileOperation();
 
-            fileOperation.ExecApp(SysConfig.UpdaterFilePath, $"--app {appURL} --repo {preRepoURL}", FileOperation.ExecAppType.GUI, out System.Diagnostics.Process proc);
+            string delExcludeDirArgs = "";
+            foreach (string arg in _delExcludeDirList)
+            {
+                delExcludeDirArgs += $" {arg}";
+            }
+
+            string delExcludeFileArgs = "";
+            foreach (string arg in _delExcludeFileList)
+            {
+                delExcludeFileArgs += $" {arg}";
+            }
+
+            string cmd = $"--app {appURL} --repo {preRepoURL} --exclude-dirs {delExcludeDirArgs} --exclude-files {delExcludeFileArgs}";
+            fileOperation.ExecApp(SysConfig.UpdaterFilePath, cmd, FileOperation.ExecAppType.GUI, out System.Diagnostics.Process proc);
         }
     }
 }

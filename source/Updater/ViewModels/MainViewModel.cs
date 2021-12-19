@@ -80,6 +80,10 @@ namespace AAIUpdater.ViewModels
 
             string appURL = "";
             string repoURL = "";
+            List<string> dirs = new List<string>();
+            List<string> files = new List<string>();
+            // --は別のオプションとする
+            // ""で括った--も別オプションとする
             for (int i = 0; i < args.Length; i++)
             {
                 switch (args[i])
@@ -94,12 +98,71 @@ namespace AAIUpdater.ViewModels
                         UpdateProgressMax += 2;
                         i++;
                         break;
+                    case "--exclude-dirs":
+                        i++;
+                        {
+                            List<string> dirNames = new List<string>();
+                            for (; i < args.Length; i++)
+                            {
+                                if (args[i].Contains("--") && (args[i].IndexOf(' ') < 0))
+                                {
+                                    i--;    // --は引数のため
+                                    break;
+                                }
+                                dirNames.Add(args[i]);
+                            }
+
+                            foreach (string str in dirNames)
+                            {
+                                if (str.Contains(' '))
+                                {
+                                    var strs = str.Split(' ');
+                                    dirs.AddRange(strs);
+                                }
+                                else 
+                                {
+                                    dirs.Add(str);
+                                }
+                            }
+                        }
+                        break;
+                    case "--exclude-files":
+                        i++;
+                        {
+                            List<string> fileNames = new List<string>();
+                            for (; i < args.Length; i++)
+                            {
+                                if (args[i].Contains("--") && (args[i].IndexOf(' ') < 0))
+                                {
+                                    i--;    // --は引数のため
+                                    break;
+                                }
+                                fileNames.Add(args[i]);
+                            }
+
+                            foreach (string str in fileNames)
+                            {
+                                if (str.Contains(' '))
+                                {
+                                    var strs = str.Split(' ');
+                                    files.AddRange(strs);
+
+                                }
+                                else
+                                {
+                                    files.Add(str);
+                                }
+                            }
+                        }
+                        break;
                     default:
                         break;
                 }
             }
 
             Updater updater = new Updater();
+            updater.SetDeleteExcludeDir(dirs.ToArray());
+            updater.SetDeleteExcludeFile(files.ToArray());
             string cacheDir = ".\\cache";
             {
                 // アプリ
