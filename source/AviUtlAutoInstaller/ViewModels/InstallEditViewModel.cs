@@ -933,6 +933,10 @@ namespace AviUtlAutoInstaller.ViewModels
 
                     string message = GetDownloadResultMessage(res);
                     headItem.DownloadExecute = true;
+                    if (message == "")
+                    {
+                        headItem.IsDownloadCompleted = true;
+                    }
                     if (message != "" && i == 0)
                     {
                         downloadFailedList.Add(headItem, message);

@@ -170,6 +170,7 @@ namespace AviUtlAutoInstaller.Models.Files
                             };
                             item.IsSelect = ((InstallFileType.Main == item.FileType) || (item.CommandName == "exedit")) ? true : false;
                             item.IsItemSelectEnable = (InstallFileType.Main == item.FileType || (item.CommandName == "exedit")) ? false : true;
+                            item.IsDownloadCompleted = System.IO.File.Exists($"{SysConfig.CacheDirPath}\\{item.DownloadFileName}");
 
                             InstallItem.DependentAction = InstallItemList.DependentAction;
                             InstallItemList.AddInstallItem(InstallItemList.RepoType.Pre, item);

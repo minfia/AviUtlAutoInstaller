@@ -161,6 +161,7 @@ namespace AviUtlAutoInstaller.Models.Files
                     InstallFile = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.AppendFile]),
                     NicoVideoID = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.NicoVideoID])
                 };
+                item.IsDownloadCompleted = System.IO.File.Exists($"{SysConfig.CacheDirPath}\\{item.DownloadFileName}");
 
                 if (!InstallItemList.CheckDuplicateName(InstallItemList.RepoType.User, item.Name) ||
                     !InstallItemList.CheckDuplicateURL(InstallItemList.RepoType.User, item.URL) ||
