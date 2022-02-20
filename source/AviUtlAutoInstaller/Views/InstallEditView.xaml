@@ -61,6 +61,9 @@
         <Style x:Key="DataGridTextHederStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}">
             <Setter Property="Controls:ControlsHelper.ContentCharacterCasing" Value="Normal"/>
         </Style>
+        <Style x:Key="DataGridButtonHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}">
+            <Setter Property="BorderThickness" Value="0,0,1,3"/>
+        </Style>
         <FrameworkElement x:Key="proxyElement"/>
     </Window.Resources>
     <DockPanel>
@@ -273,8 +276,20 @@
                                                 Binding="{Binding MakerName}"/>
                             <DataGridTextColumn Header="名前"
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"
-                                                Width="140*"
+                                                Width="100*"
                                                 Binding="{Binding Name}"/>
+                            <DataGridTemplateColumn CanUserResize="False"
+                                                    Width="52"
+                                                    HeaderStyle="{StaticResource DataGridButtonHeaderStyle}">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Width="50"
+                                                Content="詳細"
+                                                Command="{Binding Source={StaticResource proxyElement}, Path=DataContext.ItemPropertyCommand}">
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                             <DataGridTextColumn Header="ファイル名"
                                                 HeaderStyle="{StaticResource DataGridTextHederStyle}"
                                                 Width="80*"
