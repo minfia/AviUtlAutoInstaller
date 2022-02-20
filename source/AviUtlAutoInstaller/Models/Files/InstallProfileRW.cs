@@ -11,9 +11,25 @@ namespace AviUtlAutoInstaller.Models.Files
 {
     class InstallProfileRW : TomlFileRW
     {
+        /// <summary>
+        /// ファイルを読み出すときの種類
+        /// </summary>
+        public enum ReadType
+        {
+            /// <summary>
+            /// IsSelect指定
+            /// </summary>
+            Select,
+            /// <summary>
+            /// IsInstalled指定
+            /// </summary>
+            Installed,
+        }
+
         private const string mainKeyName = "select";
         private const string fileName = "InstallationList";
         private const string fileExtension = "profile";
+        private FileVersion fileVersion;
         private static List<TomlTable> itemList = new List<TomlTable>();
 
         public static string ReloadFileName { get; private set; }
@@ -63,7 +79,7 @@ namespace AviUtlAutoInstaller.Models.Files
         /// インストールプロファイルを読み出す
         /// </summary>
         /// <param name="filePath"></param>
-        public void FileRead(string filePath)
+        public void FileRead(string filePath, ReadType readType)
         {
             try
             {
@@ -72,7 +88,7 @@ namespace AviUtlAutoInstaller.Models.Files
                     return;
                 }
                 TomlTable toml = Read(filePath);
-                ConvertToData(toml);
+                ConvertToData(toml, readType);
             }
             catch
             {
@@ -131,14 +147,42 @@ namespace AviUtlAutoInstaller.Models.Files
             }
         }
 
+        /// <summary>
+        /// TomlTableからデータに変換
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="readType"></param>
+        private void ConvertToData(TomlTable data, ReadType readType)
+        {
+            fileVersion = FileVersion.None;
+            try
+            {
+                ConvertToData(data);
+            }
+            catch
+            {
+                throw;
+            }
+            InstallItemList.ClearIsInstalled();
+            InstallItemList.ClearAllIsSelect();
+
+            switch (fileVersion)
+            {
+                case FileVersion.V100:
+                    SetEnableListV100(readType);
+                    break;
+                default:
+                    return;
+            }
+        }
+
         protected override void ConvertToData(TomlTable data)
         {
             string tomlFileVersion = data.Get<string>("version");
 
-            FileVersion version = FileVersion.None;
             try
             {
-                version = _fileVersionDic.First(x => x.Value == tomlFileVersion).Key;
+                fileVersion = _fileVersionDic.First(x => x.Value == tomlFileVersion).Key;
             }
             catch
             {
@@ -146,16 +190,6 @@ namespace AviUtlAutoInstaller.Models.Files
             }
 
             itemList = data.Get<TomlTableArray>(mainKeyName).Items;
-            InstallItemList.ClearAllIsSelect();
-
-            switch (version)
-            {
-                case FileVersion.V100:
-                    SetEnableListV100();
-                    break;
-                default:
-                    return;
-            }
         }
 
         protected override TomlTable ConvertToTomlTable()
@@ -196,8 +230,8 @@ namespace AviUtlAutoInstaller.Models.Files
         /// <summary>
         /// v1.0.0用読み出し
         /// </summary>
-        /// <param name="array"></param>
-        private void SetEnableListV100()
+        /// <param name="readType"></param>
+        private void SetEnableListV100(ReadType readType)
         {
             TomlTableArray array = new TomlTableArray(new Root(), itemList);
             List<InstallationItem> list = new List<InstallationItem>();
@@ -214,18 +248,47 @@ namespace AviUtlAutoInstaller.Models.Files
                 list.Add(item);
             }
 
-            foreach (InstallationItem item in list)
+            SetInstallItem(list, readType);
+        }
+
+        /// <summary>
+        /// 読み込んだInstallItemListを反映させる
+        /// </summary>
+        /// <param name="list"></param>
+        private void SetInstallItem(List<InstallationItem> list, ReadType readType)
+        {
+            switch(readType)
             {
-                if (!InstallItemList.CheckDuplicateName(item.RefRepoType, item.Name))
-                {
-                    continue;
-                }
-                InstallItemList.SetIsInstalled(item.RefRepoType, item.Name, true);
-                if (InstallItemList.CheckDuplicateName(InstallItemList.RepoType.Pre, item.Name) && (InstallItemList.RepoType.User == item.RefRepoType))
-                {
-                    // ユーザーリポジトリを優先
-                    InstallItemList.SetIsInstalled(InstallItemList.RepoType.Pre, item.Name, false);
-                }
+                case ReadType.Select:
+                    foreach (InstallationItem item in list)
+                    {
+                        if (!InstallItemList.CheckDuplicateName(item.RefRepoType, item.Name))
+                        {
+                            continue;
+                        }
+                        InstallItemList.SetIsSelect(item.RefRepoType, item.Name, true);
+                        if (InstallItemList.CheckDuplicateName(InstallItemList.RepoType.Pre, item.Name) && (InstallItemList.RepoType.User == item.RefRepoType))
+                        {
+                            // ユーザーリポジトリを優先
+                            InstallItemList.SetIsSelect(InstallItemList.RepoType.Pre, item.Name, false);
+                        }
+                    }
+                    break;
+                case ReadType.Installed:
+                    foreach (InstallationItem item in list)
+                    {
+                        if (!InstallItemList.CheckDuplicateName(item.RefRepoType, item.Name))
+                        {
+                            continue;
+                        }
+                        InstallItemList.SetIsInstalled(item.RefRepoType, item.Name, true);
+                        if (InstallItemList.CheckDuplicateName(InstallItemList.RepoType.Pre, item.Name) && (InstallItemList.RepoType.User == item.RefRepoType))
+                        {
+                            // ユーザーリポジトリを優先
+                            InstallItemList.SetIsInstalled(InstallItemList.RepoType.Pre, item.Name, false);
+                        }
+                    }
+                    break;
             }
         }
 

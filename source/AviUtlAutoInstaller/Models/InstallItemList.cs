@@ -138,11 +138,33 @@ namespace AviUtlAutoInstaller.Models
         }
 
         /// <summary>
-        /// インストール完了の有無をセットする
+        /// インストール選択の有無をセットする
         /// </summary>
         /// <param name="repoType">リポジトリの選択</param>
         /// <param name="name">セットする項目名</param>
         /// <param name="b">true(有効) or false(無効)</param>
+        public static void SetIsSelect(RepoType repoType, string name, bool b)
+        {
+            foreach (InstallItem item in _installItemList[(int)repoType])
+            {
+                if (item.Name == name)
+                {
+                    item.IsSelect = b;
+                    if ((name == "AviUtl") || (name == "拡張編集"))
+                    {
+                        item.IsSelect = b;
+                    }
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// インストール済みの有無をセットする
+        /// </summary>
+        /// <param name="repoType"></param>
+        /// <param name="name"></param>
+        /// <param name="b"></param>
         public static void SetIsInstalled(RepoType repoType, string name, bool b)
         {
             foreach (InstallItem item in _installItemList[(int)repoType])
@@ -150,11 +172,24 @@ namespace AviUtlAutoInstaller.Models
                 if (item.Name == name)
                 {
                     item.IsInstalled = b;
-                    if ((name == "AviUtl") || (name == "拡張編集"))
-                    {
-                        item.IsSelect = b;
-                    }
                     break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="repoType"></param>
+        /// <param name="name"></param>
+        /// <param name="b"></param>
+        public static void ClearIsInstalled()
+        {
+            for (RepoType i = 0; i < RepoType.MAX; i++)
+            {
+                foreach (var item in _installItemList[(int)i])
+                {
+                    item.IsInstalled = false;
                 }
             }
         }
@@ -173,8 +208,8 @@ namespace AviUtlAutoInstaller.Models
             }
 
             // 必須項目のため有効
-            SetIsInstalled(RepoType.Pre, "AviUtl", true);
-            SetIsInstalled(RepoType.Pre, "拡張編集", true);
+            SetIsSelect(RepoType.Pre, "AviUtl", true);
+            SetIsSelect(RepoType.Pre, "拡張編集", true);
         }
 
         /// <summary>

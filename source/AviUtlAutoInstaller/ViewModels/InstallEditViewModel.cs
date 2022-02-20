@@ -1051,7 +1051,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 InstallProfileRW.AddContents(item);
                 InstallProfileRW installProfileRW = new InstallProfileRW();
                 installProfileRW.FileWrite($"{SysConfig.InstallRootPath}");
-                installProfileRW.FileRead($"{SysConfig.InstallRootPath}\\{InstallProfileRW.ReloadFileName}");
+                installProfileRW.FileRead($"{SysConfig.InstallRootPath}\\{InstallProfileRW.ReloadFileName}", InstallProfileRW.ReadType.Installed);
             }
 
             if (!string.IsNullOrWhiteSpace(item.ExternalFile))
@@ -1096,7 +1096,7 @@ namespace AviUtlAutoInstaller.ViewModels
                     InstallProfileRW.DeleteContents(item);
                     InstallProfileRW installProfileRW = new InstallProfileRW();
                     installProfileRW.FileWrite($"{SysConfig.InstallRootPath}");
-                    installProfileRW.FileRead($"{SysConfig.InstallRootPath}\\{InstallProfileRW.ReloadFileName}");
+                    installProfileRW.FileRead($"{SysConfig.InstallRootPath}\\{InstallProfileRW.ReloadFileName}", InstallProfileRW.ReadType.Installed);
                 }
                 else
                 {

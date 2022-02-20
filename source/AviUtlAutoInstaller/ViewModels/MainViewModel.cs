@@ -59,7 +59,7 @@ namespace AviUtlAutoInstaller.ViewModels
         #region ファイルダイアログ(インストール設定ファイル)の設定
         private Action<bool, string> _openDialogInstallSettingFileCallback;
         public Action<bool, string> OpenDialogInstallSettingFileCallback
-        { 
+        {
             get { return _openDialogInstallSettingFileCallback; }
             private set { SetProperty(ref _openDialogInstallSettingFileCallback, value); }
         }
@@ -71,7 +71,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 {
                     InstallProfileRW installProfileRW = new InstallProfileRW();
 
-                    installProfileRW.FileRead(filePath);
+                    installProfileRW.FileRead(filePath, InstallProfileRW.ReadType.Select);
                 }
                 catch (Exception e)
                 {
@@ -89,7 +89,7 @@ namespace AviUtlAutoInstaller.ViewModels
         #region ファイルダイアログ(ユーザーリポジトリファイル)の設定
         private Action<bool, string> _openDialogUserRepoFileCallback;
         public Action<bool, string> OpenDialogUserRepoFileCallback
-        { 
+        {
             get { return _openDialogUserRepoFileCallback; }
             private set { SetProperty(ref _openDialogUserRepoFileCallback, value); }
         }
@@ -175,7 +175,7 @@ namespace AviUtlAutoInstaller.ViewModels
                         string[] array = { "InstallationList_*_*.profile" };
                         var list = fileOperation.GenerateFilePathList(SysConfig.InstallRootPath, array);
                         InstallProfileRW installProfileRW = new InstallProfileRW();
-                        installProfileRW.FileRead(list[list.Count - 1]);
+                        installProfileRW.FileRead(list[list.Count - 1], InstallProfileRW.ReadType.Installed);
                     }
                 }
                 InstallDirPath = SysConfig.InstallRootPath;
