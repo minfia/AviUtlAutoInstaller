@@ -689,7 +689,7 @@ namespace AviUtlAutoInstaller.ViewModels
                         {
                             selectItem = UserSelectItem;
                         }
-                        var res = await OnInstall(selectItem);
+                        var res = await OnInstall(selectItem, _selectTab[TabControlSelectIndex]);
                         string message = "インストールが完了しました。";
                         string title = "情報";
                         var image = MessageBoxImage.Information;
@@ -1003,7 +1003,7 @@ namespace AviUtlAutoInstaller.ViewModels
         /// 単体インストール処理
         /// </summary>
         /// <returns></returns>
-        private async Task<InstallResult> OnInstall(InstallItem item)
+        private async Task<InstallResult> OnInstall(InstallItem item, InstallItemList.RepoType repoType)
         {
 
             // ダウンロード
@@ -1052,7 +1052,6 @@ namespace AviUtlAutoInstaller.ViewModels
                 }
 
                 item.IsInstallCompleted = false;
-                InstallProfileRW.AddContents(item);
                 InstallProfileRW installProfileRW = new InstallProfileRW();
                 installProfileRW.FileWrite($"{SysConfig.InstallRootPath}");
                 installProfileRW.FileRead($"{SysConfig.InstallRootPath}\\{InstallProfileRW.ReloadFileName}", InstallProfileRW.ReadType.Installed);
@@ -1097,7 +1096,6 @@ namespace AviUtlAutoInstaller.ViewModels
                         contentsTreeRW.Write($"{SysConfig.InstallRootPath}");
                     }
 
-                    InstallProfileRW.DeleteContents(item);
                     InstallProfileRW installProfileRW = new InstallProfileRW();
                     installProfileRW.FileWrite($"{SysConfig.InstallRootPath}");
                     installProfileRW.FileRead($"{SysConfig.InstallRootPath}\\{InstallProfileRW.ReloadFileName}", InstallProfileRW.ReadType.Installed);
@@ -1127,7 +1125,7 @@ namespace AviUtlAutoInstaller.ViewModels
 
             foreach (InstallItem item in installList)
             {
-                InstallResult res = await OnInstall(item);
+                InstallResult res = await OnInstall(item, InstallItemList.RepoType.Pre);
                 if (res != InstallResult.OK)
                 {
                     failedItemList.Add(item.Name);

@@ -33,10 +33,12 @@ namespace AviUtlAutoInstaller.Models.Files
             NicoVideoID,
         }
 
+        private FileVersion fileVersion;
+
         /// <summary>
         /// FileVersionとファイルのKeyの文字列との紐付け
         /// </summary>
-        private static Dictionary<FileVersion, string> _fileVersionDic = new Dictionary<FileVersion, string>()
+        private static readonly Dictionary<FileVersion, string> _fileVersionDic = new Dictionary<FileVersion, string>()
         {
             { FileVersion.V100, "v1.0.0" },
         };
@@ -44,7 +46,7 @@ namespace AviUtlAutoInstaller.Models.Files
         /// <summary>
         /// RWKeyTypeとファイルのKeyの文字列との紐付け
         /// </summary>
-        private static Dictionary<RWKeyType, string> _rwKeyTypeDic = new Dictionary<RWKeyType, string>()
+        private static readonly Dictionary<RWKeyType, string> _rwKeyTypeDic = new Dictionary<RWKeyType, string>()
         {
             { RWKeyType.Name, "name" },
             { RWKeyType.URL, "url" },
@@ -79,41 +81,60 @@ namespace AviUtlAutoInstaller.Models.Files
         /// <param name="filePath"></param>
         public void FileWrite(string filePath)
         {
-            TomlTable table = ConvertToTomlTable();
+            TomlTable table = ConvertToTomlTable(null);
             Write(table, filePath);
         }
 
-        protected override void ConvertToData(TomlTable data)
+        private void ConvertToData(TomlTable data)
         {
-            string tomlFileVersion = data.Get<string>("version");
-
-            FileVersion version = FileVersion.None;
+            object tomlTableArray;
             try
             {
-                version = _fileVersionDic.First(x => x.Value == tomlFileVersion).Key;
+                ConvertToData(data, out tomlTableArray);
             }
             catch
             {
-                throw new KeyNotFoundException($"読み込んだファイルのバージョンが不正です({tomlFileVersion})");
+                throw;
             }
 
-            TomlTableArray array = data.Get<TomlTableArray>("data");
+            if (tomlTableArray == null)
+            {
+                return;
+            }
 
             InstallItemList.ItemClear(InstallItemList.RepoType.User);
 
-            switch (version)
+            switch (fileVersion)
             {
                 case FileVersion.V100:
-                    AddInstallItemV100(array);
+                    AddInstallItemV100((TomlTableArray)tomlTableArray);
                     break;
                 default:
                     return;
             }
         }
 
-        protected override TomlTable ConvertToTomlTable()
+        protected override void ConvertToData(TomlTable tomlData, out object data)
         {
-            var toml = Toml.Create();
+            data = null;
+            string tomlFileVersion = tomlData.Get<string>("version");
+
+            fileVersion = FileVersion.None;
+            try
+            {
+                fileVersion = _fileVersionDic.First(x => x.Value == tomlFileVersion).Key;
+            }
+            catch
+            {
+                throw new KeyNotFoundException($"読み込んだファイルのバージョンが不正です({tomlFileVersion})");
+            }
+
+            data = tomlData.Get<TomlTableArray>("data");
+        }
+
+        protected override TomlTable ConvertToTomlTable(in object data)
+        {
+            TomlTable toml = Toml.Create();
 
             toml.Add("version", _fileVersionDic.Last().Value);
 

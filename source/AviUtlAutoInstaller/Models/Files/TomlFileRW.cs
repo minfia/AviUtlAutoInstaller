@@ -49,13 +49,15 @@ namespace AviUtlAutoInstaller.Models.Files
         /// <summary>
         /// TomlTableからデータに変換
         /// </summary>
+        /// <param name="tomlData"></param>
         /// <param name="data"></param>
-        protected abstract void ConvertToData(TomlTable data);
+        protected abstract void ConvertToData(TomlTable tomlData, out object data);
 
         /// <summary>
         /// データからTomlTableに変換
         /// </summary>
+        /// <param name="data"></param>
         /// <returns></returns>
-        protected abstract TomlTable ConvertToTomlTable();
+        protected abstract TomlTable ConvertToTomlTable(in object data);
     }
 }
