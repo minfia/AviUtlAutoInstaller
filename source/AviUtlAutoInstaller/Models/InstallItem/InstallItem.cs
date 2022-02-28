@@ -238,6 +238,30 @@ namespace AviUtlAutoInstaller.Models
             private set { SetProperty(ref _installFileList, value); }
         }
 
+        private string _uninstallFile = string.Empty;
+        /// <summary>
+        /// アンインストールファイル
+        /// </summary>
+        public string UninstallFile
+        {
+            get { return _uninstallFile; }
+            set
+            {
+                SetProperty(ref _uninstallFile, value);
+                ConvertFileList(InstallFile, ref _uninstallFileList, ',');
+            }
+        }
+
+        private List<string> _uninstallFileList = new List<string>();
+        /// <summary>
+        /// アンインストールファイルのリスト
+        /// </summary>
+        public List<string> UninstallFileList
+        {
+            get { return _uninstallFileList; }
+            private set { SetProperty(ref _uninstallFileList, value); }
+        }
+
         private string _externalFile;
         /// <summary>
         /// VisualStdio再頒布パッケージ等の外部ファイル

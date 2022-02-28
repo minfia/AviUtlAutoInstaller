@@ -262,6 +262,18 @@ namespace AviUtlAutoInstaller.Models
         }
 
         /// <summary>
+        /// アンインストール情報を追加
+        /// </summary>
+        /// <param name="repoType"></param>
+        /// <param name="name"></param>
+        /// <param name="uninstallFile"></param>
+        public static void SetUninstallFileList(RepoType repoType, string name, string uninstallFile)
+        {
+            var item = _installItemList[(int)repoType].First(x => x.Name == name);
+            item.UninstallFile = uninstallFile;
+        }
+
+        /// <summary>
         /// インストールアイテムから、実際にインストールするファイル一覧を生成
         /// </summary>
         /// <param name="repoType">リポジトリの種類</param>

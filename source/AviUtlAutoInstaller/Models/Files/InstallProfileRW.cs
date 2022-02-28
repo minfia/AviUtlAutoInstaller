@@ -37,6 +37,7 @@ namespace AviUtlAutoInstaller.Models.Files
         {
             None,
             V100,
+            V110,
         }
 
         /// <summary>
@@ -48,6 +49,7 @@ namespace AviUtlAutoInstaller.Models.Files
             FileName,
             Version,
             RefType,
+            InstallFiles,
         }
 
         private class InstallationItem
@@ -56,6 +58,7 @@ namespace AviUtlAutoInstaller.Models.Files
             public string FileName;
             public string Version;
             public InstallItemList.RepoType RefRepoType;
+            public string InstallFiles;
         }
 
         /// <summary>
@@ -64,6 +67,7 @@ namespace AviUtlAutoInstaller.Models.Files
         private static readonly Dictionary<FileVersion, string> _fileVersionDic = new Dictionary<FileVersion, string>()
         {
             { FileVersion.V100, "v1.0.0" },
+            { FileVersion.V110, "v1.1.0" },
         };
 
         /// <summary>
@@ -75,6 +79,7 @@ namespace AviUtlAutoInstaller.Models.Files
             { RWKeyType.FileName, "filename" },
             { RWKeyType.Version, "version" },
             { RWKeyType.RefType, "reftype" },
+            { RWKeyType.InstallFiles, "installfiles" },
         };
 
         FileVersion fileVersion;
@@ -132,6 +137,9 @@ namespace AviUtlAutoInstaller.Models.Files
                 case FileVersion.V100:
                     installationItemList = SetEnableListV100((List<TomlTable>)tomlTableList, readType);
                     break;
+                case FileVersion.V110:
+                    installationItemList = SetEnableListV110((List<TomlTable>)tomlTableList, readType);
+                    break;
             }
 
             SetEnableItem(installationItemList, readType);
@@ -174,6 +182,37 @@ namespace AviUtlAutoInstaller.Models.Files
                     FileName = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.FileName]),
                     Version = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.Version]),
                     RefRepoType = (InstallItemList.RepoType)array[i].Get<int>(_rwKeyTypeDic[RWKeyType.RefType]),
+                    InstallFiles = "",
+                };
+
+                installationItemList.Add(installationItem);
+            }
+
+            return installationItemList;
+        }
+
+        /// <summary>
+        /// v1.0.0用読み出し
+        /// </summary>
+        /// <param name="tomlTableList"></param>
+        /// <param name="readType"></param>
+        /// <returns></returns>
+        private List<InstallationItem> SetEnableListV110(List<TomlTable> tomlTableList, ReadType readType)
+        {
+            List<InstallationItem> installationItemList = new List<InstallationItem>();
+
+            TomlTableArray array = new TomlTableArray(new Root(), tomlTableList);
+
+            for (int i = 0; i < array.Count; i++)
+            {
+
+                InstallationItem installationItem = new InstallationItem()
+                {
+                    Name = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.Name]),
+                    FileName = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.FileName]),
+                    Version = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.Version]),
+                    RefRepoType = (InstallItemList.RepoType)array[i].Get<int>(_rwKeyTypeDic[RWKeyType.RefType]),
+                    InstallFiles = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.InstallFiles]),
                 };
 
                 installationItemList.Add(installationItem);
@@ -198,6 +237,7 @@ namespace AviUtlAutoInstaller.Models.Files
                         if (!InstallItemList.CheckDuplicateName(item.RefRepoType, item.Name)) continue;
 
                         InstallItemList.SetIsSelect(item.RefRepoType, item.Name, true);
+                        InstallItemList.SetUninstallFileList(item.RefRepoType, item.Name, item.InstallFiles);
                         if ((InstallItemList.RepoType.User == item.RefRepoType) && InstallItemList.CheckDuplicateName(InstallItemList.RepoType.Pre, item.Name))
                         {
                             // ユーザーリポジトリ優先
@@ -212,6 +252,7 @@ namespace AviUtlAutoInstaller.Models.Files
                         if (!InstallItemList.CheckDuplicateName(item.RefRepoType, item.Name)) continue;
 
                         InstallItemList.SetIsInstalled(item.RefRepoType, item.Name, true);
+                        InstallItemList.SetUninstallFileList(item.RefRepoType, item.Name, item.InstallFiles);
                         if ((InstallItemList.RepoType.User == item.RefRepoType) && InstallItemList.CheckDuplicateName(InstallItemList.RepoType.Pre, item.Name))
                         {
                             // ユーザーリポジトリ優先
@@ -246,6 +287,7 @@ namespace AviUtlAutoInstaller.Models.Files
                             FileName = installItem.DownloadFileName,
                             Version = installItem.Version,
                             RefRepoType = i,
+                            InstallFiles = installItem.InstallFile,
                         };
 
                         itemList.Add(item);
@@ -274,6 +316,7 @@ namespace AviUtlAutoInstaller.Models.Files
                 tomlItem.Add(_rwKeyTypeDic[RWKeyType.FileName], item.FileName);
                 tomlItem.Add(_rwKeyTypeDic[RWKeyType.Version], item.Version);
                 tomlItem.Add(_rwKeyTypeDic[RWKeyType.RefType], (int)item.RefRepoType);
+                tomlItem.Add(_rwKeyTypeDic[RWKeyType.InstallFiles], item.InstallFiles);
 
                 tomlList.Add(tomlItem);
             }

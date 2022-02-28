@@ -57,7 +57,20 @@ namespace AviUtlAutoInstaller.Models
                 // ファイルの削除
                 FileOperation fileOperation = new FileOperation();
                 List<string> uninstallFiles = new List<string>();
-                foreach (string file in item.InstallFileList)
+
+                List<string> targetFileList = new List<string>();
+                if (item.UninstallFile == "")
+                {
+                    // アンインストール情報が無いため、インストール情報を使用する
+                    targetFileList = item.InstallFileList;
+                }
+                else
+                {
+                    // アンインストール情報を使用する
+                    targetFileList = item.UninstallFileList;
+                }
+
+                foreach (string file in targetFileList)
                 {
                     var f = file.Split('\\');
                     uninstallFiles.Add(f[f.Length - 1]);
