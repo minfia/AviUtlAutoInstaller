@@ -66,8 +66,12 @@
     </div>
     <p>また、項目をインストール後は、"済み"の箇所が以下のようになります。</p>
     <a href="../images/installlist1-2.png"><img class="install_list_img" src="../images/installlist1-2.png"></a>
-    <ol>
+    <ul>
+      <li>緑：インストール済み</li>
+      <li>橙：インストールした項目にアップデートあり</li>
+    </ul>
 
+    <ol>
       <h3 id="ExistingItem"><li>既存のものから選択</li></h3>
       <ol>
         <li>インストールしたい項目にチェックを入れる</li>
@@ -139,10 +143,16 @@
       <h3 id="PreDownload"><li>項目の事前ダウンロード</li></h3>
       <p>事前にダウンロードをすることで、インストール時のダウンロード処理を飛ばすことができます。</p>
       <img src="../images/dl1.png"/>
-      <p style="margin-top:0; margin-left:16px;">ダウンロードができる状態です。</p>
+      <p style="margin-top:0; margin-left:16px;">未ダウンロードで、ダウンロードができる状態です。</p>
       <img src="../images/dl2.png"/>
-      <p style="margin-top:0; margin-left:16px;">ダウンロードができない状態です。<br>
+      <p style="margin-top:0; margin-left:16px;">未ダウンロードで、ダウンロードができない状態です。<br>
       インストールする際は、事前にファイルを以下のフォルダに入れてください。<br>
+         <code>AviUtlAutoInstaller/cache</code></p>
+      <img src="../images/dl3.png"/>
+      <p style="margin-top:0; margin-left:16px;">ダウンロード済みで、ダウンロードができる状態です。</p>
+      <img src="../images/dl4.png"/>
+      <p style="margin-top:0; margin-left:16px;">ダウンロード済みで、ダウンロードができない状態です。<br>
+      以下のフォルダにダウンロードファイルがある状態です。<br>
          <code>AviUtlAutoInstaller/cache</code></p>
     </ol>
 
@@ -157,12 +167,19 @@
 
     <h2 id="SingleInstallUninstall">個別インストール/アンインストール</h2>
     <p>AviUtlをインストール後に、追加でプラグインやスクリプトをインストール/アンインストールをしたい場合でも、個別に行うことが出来ます。<br>
+    また、アップデート可能なものがある場合は、アップデートの選択も出来ます。</br>
     この操作は、プリインストールリポジトリでのみ有効です。</p>
     <ol>
       <h3 id="SingleInstall"><li>インストール</li></h3>
       <ol>
         <li>インストールしたい項目を右クリックする</li>
         <li>"インストール"を選択してクリックする</li>
+      </ol>
+
+      <h3 id="SingleUpdate"><li>アップデート</li></h3>
+      <ol>
+        <li>アップデートしたい項目を右クリックする</li>
+        <li>"アップデート"を選択してクリックする</li>
       </ol>
 
       <h3 id="SingleUninstall"><li>アンインストール</li></h3>
