@@ -157,6 +157,7 @@ namespace AviUtlAutoInstaller.Models.Files
                                 DownloadFileName = reader["download_file_name"].ToString(),
                                 FileType = (InstallFileType)uint.Parse(reader["file_type"].ToString()),
                                 Version = reader["version"].ToString(),
+                                ItemRevision = uint.Parse(reader["item_revision"].ToString()),
                                 ScriptDirName = reader["script_dir_name"].ToString(),
                                 InstallFile = reader["install_file"].ToString(),
                                 ExternalFile = reader["external_file"].ToString(),

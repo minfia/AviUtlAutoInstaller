@@ -160,41 +160,6 @@ namespace AviUtlAutoInstaller.Models
         }
 
         /// <summary>
-        /// インストール済みの有無をセットする
-        /// </summary>
-        /// <param name="repoType"></param>
-        /// <param name="name"></param>
-        /// <param name="b"></param>
-        public static void SetIsInstalled(RepoType repoType, string name, bool b)
-        {
-            foreach (InstallItem item in _installItemList[(int)repoType])
-            {
-                if (item.Name == name)
-                {
-                    item.IsInstalled = b;
-                    break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="repoType"></param>
-        /// <param name="name"></param>
-        /// <param name="b"></param>
-        public static void ClearIsInstalled()
-        {
-            for (RepoType i = 0; i < RepoType.MAX; i++)
-            {
-                foreach (var item in _installItemList[(int)i])
-                {
-                    item.IsInstalled = false;
-                }
-            }
-        }
-
-        /// <summary>
         /// インストールの有無をクリアする
         /// </summary>
         public static void ClearAllIsSelect()
@@ -210,6 +175,70 @@ namespace AviUtlAutoInstaller.Models
             // 必須項目のため有効
             SetIsSelect(RepoType.Pre, "AviUtl", true);
             SetIsSelect(RepoType.Pre, "拡張編集", true);
+        }
+
+        /// <summary>
+        /// インストール済みの有無をセットする
+        /// </summary>
+        /// <param name="repoType"></param>
+        /// <param name="name"></param>
+        /// <param name="status"></param>
+        public static void SetIsInstalled(RepoType repoType, string name, InstallStatus status)
+        {
+            SetIsInstalled(repoType, name, status, null);
+        }
+
+        public static void SetIsInstalled(RepoType repoType, string name, InstallStatus status, uint? revision)
+        {
+            foreach (InstallItem item in _installItemList[(int)repoType])
+            {
+                if (item.Name != name) continue;
+
+                if (revision == null)
+                {
+                    item.IsInstalled = status;
+                }
+                else if ((InstallStatus.NotInstall != status) && (revision < item.ItemRevision))
+                {
+                    item.IsInstalled = InstallStatus.Update;
+                }
+                else
+                {
+                    item.IsInstalled = status;
+                }
+            }
+        }
+
+        /// <summary>
+        /// すべてのインストール状態をNotInstallにする
+        /// </summary>
+        public static void ClearIsInstalled()
+        {
+            for (RepoType i = 0; i < RepoType.MAX; i++)
+            {
+                foreach (var item in _installItemList[(int)i])
+                {
+                    item.IsInstalled = InstallStatus.NotInstall;
+                }
+            }
+        }
+
+        /// <summary>
+        /// プロファイルにあるアイテムRevisionを設定
+        /// </summary>
+        /// <param name="repoType"></param>
+        /// <param name="name"></param>
+        /// <param name="revision"></param>
+        public static void SetProfileItemRevition(RepoType repoType, string name ,uint revision)
+        {
+            foreach (var item in _installItemList[(int)repoType])
+            {
+                if (item.Name.Equals(name))
+                {
+                    item.ProfileItemRevision = revision;
+                    return;
+                }
+            }
         }
 
         /// <summary>

@@ -73,7 +73,7 @@ namespace AviUtlAutoInstaller.Models
                 success = true;
             }
 
-            item.IsInstalled = success;
+            item.IsInstalled = success ? InstallStatus.Installed : InstallStatus.NotInstall;
             return success;
         }
 

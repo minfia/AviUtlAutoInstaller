@@ -28,6 +28,13 @@ namespace AviUtlAutoInstaller.Models
         Low
     }
 
+    public enum InstallStatus
+    {
+        NotInstall,
+        Installed,
+        Update
+    }
+
     partial class InstallItem : NotificationObject
     {
         private bool _isSelect = false;
@@ -77,11 +84,11 @@ namespace AviUtlAutoInstaller.Models
             set { SetProperty(ref _isInstallCompleted, value); }
         }
 
-        private bool _isInstalled;
+        private InstallStatus _isInstalled;
         /// <summary>
         /// インストール済みの有無
         /// </summary>
-        public bool IsInstalled
+        public InstallStatus IsInstalled
         {
             get { return _isInstalled; }
             set { SetProperty(ref _isInstalled, value); }
@@ -202,6 +209,26 @@ namespace AviUtlAutoInstaller.Models
         {
             get { return _version; }
             set { SetProperty(ref _version, value); }
+        }
+
+        private uint _profileItemRevision;
+        /// <summary>
+        /// 
+        /// </summary>
+        public uint ProfileItemRevision
+        {
+            get { return _profileItemRevision; }
+            set { SetProperty(ref _profileItemRevision, value); }
+        }
+
+        private uint _itemRevision = 0;
+        /// <summary>
+        /// リポジトリが持つこのアイテムのリビジョン番号
+        /// </summary>
+        public uint ItemRevision
+        { 
+            get { return _itemRevision; }
+            set { SetProperty(ref _itemRevision, value); }
         }
 
         private string _scriptDirName = string.Empty;

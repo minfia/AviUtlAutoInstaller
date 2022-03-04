@@ -48,6 +48,7 @@ namespace AviUtlAutoInstaller.Models.Files
             Name,
             FileName,
             Version,
+            Revision,
             RefType,
             InstallFiles,
         }
@@ -57,6 +58,7 @@ namespace AviUtlAutoInstaller.Models.Files
             public string Name;
             public string FileName;
             public string Version;
+            public uint Revision;
             public InstallItemList.RepoType RefRepoType;
             public string InstallFiles;
         }
@@ -78,6 +80,7 @@ namespace AviUtlAutoInstaller.Models.Files
             { RWKeyType.Name, "name" },
             { RWKeyType.FileName, "filename" },
             { RWKeyType.Version, "version" },
+            { RWKeyType.Revision, "revision" },
             { RWKeyType.RefType, "reftype" },
             { RWKeyType.InstallFiles, "installfiles" },
         };
@@ -181,6 +184,7 @@ namespace AviUtlAutoInstaller.Models.Files
                     Name = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.Name]),
                     FileName = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.FileName]),
                     Version = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.Version]),
+                    Revision = 0,
                     RefRepoType = (InstallItemList.RepoType)array[i].Get<int>(_rwKeyTypeDic[RWKeyType.RefType]),
                     InstallFiles = "",
                 };
@@ -191,8 +195,9 @@ namespace AviUtlAutoInstaller.Models.Files
             return installationItemList;
         }
 
+
         /// <summary>
-        /// v1.0.0用読み出し
+        /// v1.1.0用読み出し
         /// </summary>
         /// <param name="tomlTableList"></param>
         /// <param name="readType"></param>
@@ -211,6 +216,7 @@ namespace AviUtlAutoInstaller.Models.Files
                     Name = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.Name]),
                     FileName = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.FileName]),
                     Version = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.Version]),
+                    Revision = array[i].Get<uint>(_rwKeyTypeDic[RWKeyType.Revision]),
                     RefRepoType = (InstallItemList.RepoType)array[i].Get<int>(_rwKeyTypeDic[RWKeyType.RefType]),
                     InstallFiles = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.InstallFiles]),
                 };
@@ -251,12 +257,13 @@ namespace AviUtlAutoInstaller.Models.Files
                         // 指定リポジトリにないアイテムは除外
                         if (!InstallItemList.CheckDuplicateName(item.RefRepoType, item.Name)) continue;
 
-                        InstallItemList.SetIsInstalled(item.RefRepoType, item.Name, true);
+                        InstallItemList.SetIsInstalled(item.RefRepoType, item.Name, InstallStatus.Installed, item.Revision);
+                        InstallItemList.SetProfileItemRevition(item.RefRepoType, item.Name, item.Revision);
                         InstallItemList.SetUninstallFileList(item.RefRepoType, item.Name, item.InstallFiles);
                         if ((InstallItemList.RepoType.User == item.RefRepoType) && InstallItemList.CheckDuplicateName(InstallItemList.RepoType.Pre, item.Name))
                         {
                             // ユーザーリポジトリ優先
-                            InstallItemList.SetIsInstalled(InstallItemList.RepoType.Pre, item.Name, false);
+                            InstallItemList.SetIsInstalled(InstallItemList.RepoType.Pre, item.Name, InstallStatus.NotInstall);
                         }
                     }
                     break;
@@ -279,13 +286,15 @@ namespace AviUtlAutoInstaller.Models.Files
                 {
                     foreach (InstallItem installItem in installItemList.GetInstalItemList(i))
                     {
-                        if (!installItem.IsInstalled) continue;
+                        if (InstallStatus.NotInstall == installItem.IsInstalled) continue;
+                        // アップデートせずにここに来た時、どうやって
 
                         var item = new InstallationItem()
                         {
                             Name = installItem.Name,
                             FileName = installItem.DownloadFileName,
                             Version = installItem.Version,
+                            Revision = (installItem.IsInstalled == InstallStatus.Installed) ? installItem.ItemRevision : installItem.ProfileItemRevision,
                             RefRepoType = i,
                             InstallFiles = installItem.InstallFile,
                         };
@@ -315,6 +324,7 @@ namespace AviUtlAutoInstaller.Models.Files
                 tomlItem.Add(_rwKeyTypeDic[RWKeyType.Name], item.Name);
                 tomlItem.Add(_rwKeyTypeDic[RWKeyType.FileName], item.FileName);
                 tomlItem.Add(_rwKeyTypeDic[RWKeyType.Version], item.Version);
+                tomlItem.Add(_rwKeyTypeDic[RWKeyType.Revision], item.Revision);
                 tomlItem.Add(_rwKeyTypeDic[RWKeyType.RefType], (int)item.RefRepoType);
                 tomlItem.Add(_rwKeyTypeDic[RWKeyType.InstallFiles], item.InstallFiles);
 

@@ -211,6 +211,11 @@
                                                                                Path=DataContext.IsVisiblePreRepoInstallContextMenu}"
                                                           Command="{Binding Source={StaticResource proxyElement},
                                                                             Path=DataContext.SingleInstallCommand}"/>
+                                                <MenuItem Header="アップデート"
+                                                          Visibility="{Binding Source={StaticResource proxyElement},
+                                                                               Path=DataContext.IsVisiblePreRepoUpdateContextMenu}"
+                                                          Command="{Binding Source={StaticResource proxyElement},
+                                                                            Path=DataContext.SingleUpdateCommand}"/>
                                                 <MenuItem Header="アンインストール"
                                                           Visibility="{Binding Source={StaticResource proxyElement},
                                                                                Path=DataContext.IsVisiblePreRepoUninstallContextMenu}"
@@ -263,10 +268,13 @@
                                     <Style TargetType="{x:Type DataGridCell}">
                                         <Setter Property="BorderThickness" Value="0"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsInstalled}" Value="true">
+                                            <DataTrigger Binding="{Binding IsInstalled}" Value="Installed">
                                                 <Setter Property="Background" Value="PaleGreen"/>
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding IsInstalled}" Value="false">
+                                            <DataTrigger Binding="{Binding IsInstalled}" Value="Update">
+                                                <Setter Property="Background" Value="SandyBrown"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsInstalled}" Value="NotInstall">
                                                 <Setter Property="Background" Value="Transparent"/>
                                             </DataTrigger>
                                         </Style.Triggers>

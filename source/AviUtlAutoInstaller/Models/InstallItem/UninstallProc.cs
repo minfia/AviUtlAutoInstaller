@@ -23,6 +23,9 @@ namespace AviUtlAutoInstaller.Models
             {
                 case InstallFileType.Tool:
                     break;
+                case InstallFileType.Main:
+                    baseDir = $"{SysConfig.InstallRootPath}";
+                    break;
                 case InstallFileType.Script:
                     if (item.IsSpecialItem)
                     {
@@ -58,7 +61,7 @@ namespace AviUtlAutoInstaller.Models
                 FileOperation fileOperation = new FileOperation();
                 List<string> uninstallFiles = new List<string>();
 
-                List<string> targetFileList = new List<string>();
+                List<string> targetFileList;
                 if (item.UninstallFile == "")
                 {
                     // アンインストール情報が無いため、インストール情報を使用する
@@ -100,7 +103,7 @@ namespace AviUtlAutoInstaller.Models
                 }
             }
 
-            item.IsInstalled = !success;
+            item.IsInstalled = success ? InstallStatus.NotInstall : InstallStatus.Installed;
             return success;
         }
 
