@@ -327,7 +327,7 @@ namespace AviUtlAutoInstaller.Models
             else
             {
                 // ダウンロードしたファイルがスクリプトorプラグインファイル
-                File.Copy($"{SysConfig.CacheDirPath}\\{item.DownloadFileName}", $"{SysConfig.InstallExpansionDir}\\{item.DownloadFileName}", true);
+                File.Copy($"{SysConfig.CacheDirPath}\\{item.DownloadFileName}", $"{SysConfig.InstallExpansionDir}\\{item.InstallFile}", true);
                 searchSrcDir = $"{SysConfig.InstallExpansionDir}";
             }
 
