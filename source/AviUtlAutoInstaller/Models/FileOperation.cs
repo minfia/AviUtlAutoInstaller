@@ -120,6 +120,11 @@ namespace AviUtlAutoInstaller.Models
                 }
             }
 
+            if (srcDirHierarchy.Count() == 0)
+            {
+                Directory.CreateDirectory($"{destDirPath}");
+            }
+
             // 出力先のファイル一覧を生成と移動
             foreach (string file in fileList)
             {

@@ -289,8 +289,19 @@ namespace AviUtlAutoInstaller.Models
                 case SpecialScriptType.EqualizeHist:
                     UninstallEqualizeHist();
                     break;
+                case SpecialScriptType.EffectPreparation:
+                    UninstallEffectPreparation();
+                    break;
                 default:
                     return false;
+            }
+
+            // 空ディレクトリの削除
+            string scriptNameDir = $"{SysConfig.AviUtlScriptDir}\\{item.ScriptDirName}";
+            FileOperation fileOperation = new FileOperation();
+            if (fileOperation.IsDirectoryEmpty(scriptNameDir))
+            {
+                Directory.Delete(scriptNameDir, true);
             }
 
             return true;
@@ -312,6 +323,22 @@ namespace AviUtlAutoInstaller.Models
             {
                 File.Delete(path);
             }
+        }
+
+        private static void UninstallEffectPreparation()
+        {
+            string[] filePath = new string[]
+            {
+                $"{SysConfig.AviUtlScriptDir}\\jaguyama氏\\@エフェクト準備.anm",
+                $"{SysConfig.AviUtlScriptDir}\\jaguyama氏\\エフェクト表示.anm"
+            };
+
+            foreach (string path in filePath)
+            {
+                File.Delete(path);
+            }
+
+            Directory.Delete($"{SysConfig.AviUtlPluginDir}\\エフェクト準備表示", true);
         }
 
         /// <summary>

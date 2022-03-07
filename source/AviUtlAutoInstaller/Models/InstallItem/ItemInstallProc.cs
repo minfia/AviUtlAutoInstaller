@@ -425,11 +425,13 @@ namespace AviUtlAutoInstaller.Models
         private enum SpecialScriptType
         {
             EqualizeHist,
+            EffectPreparation,
         };
 
         private static readonly Dictionary<SpecialScriptType, string> _specialScriptDic = new Dictionary<SpecialScriptType, string>()
         {
             { SpecialScriptType.EqualizeHist, "自動明暗補正" },
+            { SpecialScriptType.EffectPreparation, "エフェクト準備" },
         };
 
         /// <summary>
@@ -454,6 +456,9 @@ namespace AviUtlAutoInstaller.Models
                 case SpecialScriptType.EqualizeHist:
                     InstallEqualizeHist(item.DownloadFileName);
                     break;
+                case SpecialScriptType.EffectPreparation:
+                    InstallEffectPreparation(item.DownloadFileName);
+                    break;
                 default:
                     return false;
             }
@@ -469,13 +474,29 @@ namespace AviUtlAutoInstaller.Models
         {
             FileOperation fileOperation = new FileOperation();
 
-            string extractSrcPath = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}\\{Path.GetFileNameWithoutExtension(downloadFileName)}";
+            string extractSrcPath = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}";
 
-            fileOperation.FileMove(new string[] { $"{extractSrcPath}\\opencv_world452.dll" }, SysConfig.InstallRootPath);
+            fileOperation.FileMove(new string[] { $"{extractSrcPath}\\明暗補正\\opencv_world452.dll" }, SysConfig.InstallRootPath);
 
             var list = fileOperation.GenerateFilePathList($"{extractSrcPath}\\明暗補正", new string[] { "equalizeHist.dll", "明暗補正.anm" });
 
             fileOperation.FileMove(list.ToArray(), $"{SysConfig.AviUtlScriptDir}\\ちはユキ氏");
+        }
+
+        /// <summary>
+        /// エフェクト準備のインストール
+        /// </summary>
+        /// <param name="downloadFileName"></param>
+        private static void InstallEffectPreparation(string downloadFileName)
+        {
+            FileOperation fileOperation = new FileOperation();
+
+            string extractSrcPath = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}";
+
+            fileOperation.DirectoryMove($"{extractSrcPath}\\エフェクト準備表示", $"{SysConfig.AviUtlPluginDir}\\エフェクト準備表示", null);
+            var list = fileOperation.GenerateFilePathList($"{extractSrcPath}\\script\\エフェクト準備&表示", new string[] { "@エフェクト準備.anm", "エフェクト表示.anm" });
+
+            fileOperation.FileMove(list.ToArray(), $"{SysConfig.AviUtlScriptDir}\\jaguyama氏");
         }
 
         /// <summary>
