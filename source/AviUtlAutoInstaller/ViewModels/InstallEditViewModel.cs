@@ -1241,7 +1241,7 @@ namespace AviUtlAutoInstaller.ViewModels
 
             foreach (InstallItem item in PreInstallList)
             {
-                if (item.IsSelect && (InstallStatus.NotInstall == item.IsInstalled) && !item.Name.Equals("AviUtl") && !item.Name.Equals("拡張編集"))
+                if (item.IsSelect && (InstallStatus.NotInstall != item.IsInstalled) && !item.Name.Equals("AviUtl") && !item.Name.Equals("拡張編集"))
                 {
                     uninstallList.Add(item);
                 }
