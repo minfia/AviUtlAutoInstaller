@@ -58,7 +58,7 @@ namespace AviUtlAutoInstaller.Models.Files
             {
                 while (sr.Peek() != -1)
                 {
-                    var contents = sr.ReadLine().Split(",".ToCharArray());
+                    var contents = sr.ReadLine().Split(", ".ToCharArray());
                     foreach (var c in contents)
                     {
                         if (!string.IsNullOrWhiteSpace(c))
@@ -93,7 +93,7 @@ namespace AviUtlAutoInstaller.Models.Files
                     long row = loopCnt * DivCount;
                     for (int i = 0; i < div; i++, remain--)
                     {
-                        line += contentsTreeList[row + i] + ',';
+                        line += contentsTreeList[row + i] + ' ';
                     }
                     sw.WriteLine(line);
                     loopCnt++;
