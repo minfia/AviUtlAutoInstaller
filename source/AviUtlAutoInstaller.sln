@@ -10,15 +10,20 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Early|Any CPU = Early|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{685EAA4D-9245-48EF-98F4-FB8F67AA6AFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{685EAA4D-9245-48EF-98F4-FB8F67AA6AFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{685EAA4D-9245-48EF-98F4-FB8F67AA6AFF}.Early|Any CPU.ActiveCfg = Early|Any CPU
+		{685EAA4D-9245-48EF-98F4-FB8F67AA6AFF}.Early|Any CPU.Build.0 = Early|Any CPU
 		{685EAA4D-9245-48EF-98F4-FB8F67AA6AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{685EAA4D-9245-48EF-98F4-FB8F67AA6AFF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{017180DE-5A25-41F2-8A20-DE670B423307}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{017180DE-5A25-41F2-8A20-DE670B423307}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{017180DE-5A25-41F2-8A20-DE670B423307}.Early|Any CPU.ActiveCfg = Early|Any CPU
+		{017180DE-5A25-41F2-8A20-DE670B423307}.Early|Any CPU.Build.0 = Early|Any CPU
 		{017180DE-5A25-41F2-8A20-DE670B423307}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{017180DE-5A25-41F2-8A20-DE670B423307}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

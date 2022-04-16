@@ -77,6 +77,11 @@ namespace AviUtlAutoInstaller.Models
             get { return _repoVersion; }
         }
 
+        /// <summary>
+        /// 早期ビルドバージョン
+        /// </summary>
+        public static string EralyVersion = "1";
+
         private static uint _appMatchVersion = 3;
         /// <summary>
         /// リポジトリが対応しているバージョン

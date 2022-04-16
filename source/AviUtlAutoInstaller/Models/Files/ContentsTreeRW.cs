@@ -10,7 +10,7 @@ namespace AviUtlAutoInstaller.Models.Files
     class ContentsTreeRW
     {
         private const string _saveFileName = "contents_tree.txt";
-        private static readonly List<string> _contentsList = new List<string>();
+        private static readonly List<string> _contentsList = new List<string>() { "sm39152679" };
 
         /// <summary>
         /// コンテンツツリーの要素が存在するか

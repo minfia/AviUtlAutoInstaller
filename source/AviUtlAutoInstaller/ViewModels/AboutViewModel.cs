@@ -24,7 +24,14 @@ namespace AviUtlAutoInstaller.ViewModels
         /// </summary>
         public string ApplicationVersion
         {
-            get { return $"{ProductInfo.ValidAppVersion}-{ProductInfo.SupportRepoVersion}"; }
+            get
+            {
+                return $"{ProductInfo.ValidAppVersion}-{ProductInfo.SupportRepoVersion}"
+#if EARLY
+                       + $" Early {ProductInfo.EralyVersion}"
+#endif
+                       ;
+            }
         }
 
         private string _preRepoVersion;

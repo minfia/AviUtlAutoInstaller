@@ -75,6 +75,19 @@
                         </Hyperlink.Inlines>
                     </Hyperlink>
                 </TextBlock>
+                <TextBlock Margin="0,4,0,0"
+                           Text="EarlyVersion: ">
+                    <Hyperlink NavigateUri="https://minfia.fanbox.cc/">
+                        <Interactivity:Interaction.Triggers>
+                            <Interactivity:EventTrigger EventName="RequestNavigate">
+                                <Interactivity:CallMethodAction TargetObject="{Binding .}" MethodName="OpenLink"/>
+                            </Interactivity:EventTrigger>
+                        </Interactivity:Interaction.Triggers>
+                        <Hyperlink.Inlines>
+                            <Run Text="FANBOX"/>
+                        </Hyperlink.Inlines>
+                    </Hyperlink>
+                </TextBlock>
             </StackPanel>
         </StackPanel>
         <Button BorderThickness="0.8"

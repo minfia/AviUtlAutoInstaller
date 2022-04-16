@@ -53,6 +53,15 @@
   <PropertyGroup>
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Early|AnyCPU'">
+    <OutputPath>bin\Early\</OutputPath>
+    <DefineConstants>TRACE;EARLY</DefineConstants>
+    <Optimize>true</Optimize>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -234,6 +243,13 @@
     mkdir "$(TargetDir)\repo" &gt; NUL 2&gt;&amp;1
     mkdir "$(TargetDir)\repo\user_repo" &gt; NUL 2&gt;&amp;1
     xcopy /Y "$(ProjectDir)\Assets\aai.repo" "$(TargetDir)\repo"
+)
+if "$(ConfigurationName)" == "Early" (
+    mkdir "$(TargetDir)\repo" &gt; NUL 2&gt;&amp;1
+    mkdir "$(TargetDir)\repo\user_repo" &gt; NUL 2&gt;&amp;1
+    xcopy /Y "$(ProjectDir)\Assets\aai.repo" "$(TargetDir)\repo"
+    move /y "$(TargetDir)\$(TargetName).exe" "$(TargetDir)\$(TargetName)-early.exe"
+    move /y "$(TargetDir)\$(TargetName).exe.config" "$(TargetDir)\$(TargetName)-early.exe.config"
 )</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -18,7 +18,7 @@ namespace AviUtlAutoInstaller.ViewModels
         /// <summary>
         /// インストール結果
         /// </summary>
-        enum InstallResult { 
+        enum InstallResult {
             /// <summary>
             /// 正常
             /// </summary>
@@ -40,6 +40,18 @@ namespace AviUtlAutoInstaller.ViewModels
             /// </summary>
             DownloadFailed,
         };
+
+        public string AppName
+        { 
+            get
+            {
+                return $"AviUtlAutoInstaller"
+#if EARLY
+                + " (Early)"
+#endif
+                ;
+            }
+        }
 
         #region メニューバーCommand
         private DelegateCommand _openDialogInstallSettingFileCommand;
@@ -316,6 +328,9 @@ namespace AviUtlAutoInstaller.ViewModels
 
         public MainViewModel()
         {
+#if EARLY
+            IsUpdateCheckManuEnable = false;
+#endif
             InstallDirPath = SysConfig.InstallRootPath;
             SysConfig.InstallRootPath = InstallDirPath;
             _openDialogInstallSettingFileCommand = new DelegateCommand(_ => OpenDialogInstallSettingFileCallback = OnOpenDialogInstallSettingFileCallback);
@@ -353,6 +368,9 @@ namespace AviUtlAutoInstaller.ViewModels
                     IsInstallButtonEnable = IsFileOpenMenuEnable = IsInstallEditManuEnable = IsUpdateCheckManuEnable = IsCopyBackupEnable = IsMakeShortcutEnable = IsSelectInstallDirEnable = false;
                     var result = await InstallAsync();
                     IsInstallButtonEnable = IsFileOpenMenuEnable = IsInstallEditManuEnable = IsUpdateCheckManuEnable = IsCopyBackupEnable = IsMakeShortcutEnable = IsSelectInstallDirEnable = true;
+#if EARLY
+                    IsUpdateCheckManuEnable = false;
+#endif
                     _installing = false;
                     ProgressVisiblity = Visibility.Collapsed;
 
@@ -762,8 +780,11 @@ namespace AviUtlAutoInstaller.ViewModels
             }
         }
 
+#pragma warning disable CS1998 // 非同期メソッドは、'await' 演算子がないため、同期的に実行されます
         public async void ShowWindow(object sender, EventArgs e)
+#pragma warning restore CS1998 // 非同期メソッドは、'await' 演算子がないため、同期的に実行されます
         {
+#if !EARLY
             UpdateCheck updateCheck = new UpdateCheck();
 
             UpdateCheck.CheckResult[] res = new UpdateCheck.CheckResult[2];
@@ -812,6 +833,7 @@ namespace AviUtlAutoInstaller.ViewModels
             {
                 // アップデートチェック失敗
             }
+#endif
         }
     }
 }
