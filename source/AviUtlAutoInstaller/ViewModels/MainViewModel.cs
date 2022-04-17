@@ -60,6 +60,7 @@ namespace AviUtlAutoInstaller.ViewModels
         private DelegateCommand _installEditCommand;
         private DelegateCommand _updateCheckCommand;
         private DelegateCommand _aboutCommand;
+        private DelegateCommand _earlyAccessCommand;
 
         public DelegateCommand OpenDialogInstallSettingFileCommand { get => _openDialogInstallSettingFileCommand; }
         public DelegateCommand OpenDialogUserRepoFileCommand { get => _openDialogUserRepoFileCommand; }
@@ -67,6 +68,7 @@ namespace AviUtlAutoInstaller.ViewModels
         public DelegateCommand InstallEditCommand { get => _installEditCommand; }
         public DelegateCommand UpdateCheckCommand { get => _updateCheckCommand; }
         public DelegateCommand AboutCommand { get => _aboutCommand; }
+        public DelegateCommand EarlyAccessCommand { get => _earlyAccessCommand; }
 
         #region ファイルダイアログ(インストール設定ファイル)の設定
         private Action<bool, string> _openDialogInstallSettingFileCallback;
@@ -336,6 +338,7 @@ namespace AviUtlAutoInstaller.ViewModels
             _openDialogInstallSettingFileCommand = new DelegateCommand(_ => OpenDialogInstallSettingFileCallback = OnOpenDialogInstallSettingFileCallback);
             _openDialogUserRepoFileCommand = new DelegateCommand(_ => OpenDialogUserRepoFileCallback = OnOpenDialogUserRepoFileCallback);
             _exitCommand = new DelegateCommand(_ => OnExit());
+            _earlyAccessCommand = new DelegateCommand(_ => OpenFanboxLink());
             _installEditCommand = new DelegateCommand(
                 _ =>
                 {
@@ -834,6 +837,11 @@ namespace AviUtlAutoInstaller.ViewModels
                 // アップデートチェック失敗
             }
 #endif
+        }
+
+        public void OpenFanboxLink()
+        {
+            Process.Start("https://minfia.fanbox.cc/");
         }
     }
 }
