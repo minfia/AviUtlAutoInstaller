@@ -19,16 +19,13 @@
                       Height="Auto" Width="400"
                       WindowStartupLocation="CenterOwner"
                       WindowTransitionsEnabled="False">
-    <Window.Resources>
-        <BitmapImage x:Key="AppIcon" UriSource="../Assets/app.ico"/>
-    </Window.Resources>
     <Controls:MetroWindow.DataContext>
         <vm:AboutViewModel/>
     </Controls:MetroWindow.DataContext>
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal"
                     Margin="12,12,0,12">
-            <Image Source="{StaticResource AppIcon}"/>
+            <Image Source="{Binding IconPath}"/>
             <StackPanel Orientation="Vertical"
                         Margin="12,0,0,0">
                 <TextBlock Margin="0,4,0,0"

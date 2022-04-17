@@ -11,6 +11,13 @@ namespace AviUtlAutoInstaller.ViewModels
 {
     class AboutViewModel : NotificationObject
     {
+        private string _iconPath;
+        public string IconPath
+        {
+            get { return _iconPath; }
+            private set { SetProperty(ref _iconPath, value); }
+        }
+
         /// <summary>
         /// アプリ名
         /// </summary>
@@ -46,6 +53,11 @@ namespace AviUtlAutoInstaller.ViewModels
 
         public AboutViewModel()
         {
+#if EARLY
+            IconPath = "..\\Assets\\app_early.ico";
+#else
+            IconPath = "..\\Assets\\app.ico";
+#endif
             PreRepoFileR preRepoFileR = new PreRepoFileR($"{SysConfig.RepoDirPath}\\aai.repo");
             preRepoFileR.Open();
             preRepoFileR.GetDBVersion(out uint major, out uint minor, out uint maintenance, out uint app_match);

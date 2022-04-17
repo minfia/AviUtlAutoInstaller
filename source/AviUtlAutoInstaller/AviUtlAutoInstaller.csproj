@@ -237,6 +237,9 @@
   <ItemGroup>
     <Resource Include="Assets\app.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\app_early.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if "$(ConfigurationName)" == "Release" (
