@@ -3,12 +3,31 @@
 setlocal EnableDelayedExpansion
 
 
+echo ビルドする種類を選択してください
+echo release:0 early:1
+set /P BUILD_TYPE="どれでビルドしますか？: "
+
+
+if "%BUILD_TYPE%" equ "0" (
+    set APP_RELEASE_DIR=".\\source\\AviUtlAutoInstaller\\bin\\Release"
+    set UPDATER_RELEASE_DIR=".\\source\\Updater\\bin\\Release"
+    set APP_EXE=aai.exe
+    set OUTPUT_DIR=".\\release"
+) else if "%BUILD_TYPE%" equ "1" (
+    set EARLY_VERSION_FILE=".\\source\\AviUtlAutoInstaller\\Models\\ProductInfo.cs"
+    set APP_RELEASE_DIR=".\\source\\AviUtlAutoInstaller\\bin\\Early"
+    set APP_EXE=aai-early.exe
+    set OUTPUT_DIR=".\\early"
+) else (
+    echo 選択した種類が間違っています
+    pause
+    exit
+)
+
 set APP_NAME=AviUtlAutoInstaller
 set APP_VERSION=
+set APP_EARLY_VERSION=
 set VERSION_FILE=".\\source\\AviUtlAutoInstaller\\Properties\\AssemblyInfo.cs"
-set APP_RELEASE_DIR=".\\source\\AviUtlAutoInstaller\\bin\\Release"
-set UPDATER_RELEASE_DIR=".\\source\\Updater\\bin\\Release"
-set OUTPUT_DIR=".\\release"
 set MANUAL_DIR=".\\docs"
 set LICENSE_DIR=".\\Licenses"
 
@@ -16,17 +35,19 @@ set LICENSE_DIR=".\\Licenses"
 set SV_EXE="""C:\Program Files\7-Zip\7z.exe"""
 
 @rem releaseディレクトリが存在するかチェック
-if not exist "%APP_RELEASE_DIR%\\aai.exe" (
-    echo アプリケーションをリリースビルドしてください
+if not exist "%APP_RELEASE_DIR%\\%APP_EXE%" (
+    echo アプリケーションをビルドしてください
     pause
     exit
 )
 
-@rem releaseディレクトリが存在するかチェック
-if not exist "%UPDATER_RELEASE_DIR%\\updater.exe" (
-    echo アップデーターをリリースビルドしてください
-    pause
-    exit
+if "%BUILD_TYPE%" equ "0" (
+    @rem releaseディレクトリが存在するかチェック
+    if not exist "%UPDATER_RELEASE_DIR%\\updater.exe" (
+        echo アップデーターをビルドしてください
+        pause
+        exit
+    )
 )
 
 @rem バージョン取得
@@ -39,9 +60,22 @@ call :STRLEN %APP_VERSION%
 set VER_LEN=%ERRORLEVEL%
 set /a VER_LEN2=%VER_LEN%-2
 call set APP_VERSION=%%APP_VERSION:~0,%VER_LEN2%%%
+
+
+if "%BUILD_TYPE%" equ "1" (
+    findstr /I /R "EralyVersion" "%EARLY_VERSION_FILE%" > "archive_ver.txt"
+
+    for /f "usebackq tokens=6 delims= " %%i in ("archive_ver.txt") do (
+        set APP_EARLY_VERSION=%%~i
+    )
+    set APP_EARLY_VERSION=!APP_EARLY_VERSION:~0,-2!
+
+    call set APP_VERSION=%APP_VERSION%-Early!APP_EARLY_VERSION!
+)
+
+
 echo %APP_VERSION%
 del "archive_ver.txt"
-
 
 set ARCHIVE_FILE=%APP_NAME%_v%APP_VERSION%.zip
 
@@ -56,7 +90,9 @@ rmdir /s /q "%OUTPUT_DIR%\\manual\\images\\base"
 mkdir %OUTPUT_DIR%\\Licenses
 xcopy /s %LICENSE_DIR% "%OUTPUT_DIR%\\Licenses"
 copy ".\\LICENSE" "%OUTPUT_DIR%"
-copy "%UPDATER_RELEASE_DIR%\\updater.*" %OUTPUT_DIR%
+if "%BUILD_TYPE%" equ "0" (
+    copy "%UPDATER_RELEASE_DIR%\\updater.*" %OUTPUT_DIR%
+)
 
 @rem 圧縮
 %SV_EXE% a -tzip "%ARCHIVE_FILE%" "%OUTPUT_DIR%\\*"
