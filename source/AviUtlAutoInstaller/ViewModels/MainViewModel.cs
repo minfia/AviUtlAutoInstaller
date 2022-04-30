@@ -841,7 +841,7 @@ namespace AviUtlAutoInstaller.ViewModels
 
         public void OpenFanboxLink()
         {
-            Process.Start("https://minfia.fanbox.cc/");
+            Process.Start("https://minfia.fanbox.cc/tags/AviUtlAutoInstaller");
         }
     }
 }

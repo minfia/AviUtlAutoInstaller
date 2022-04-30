@@ -74,7 +74,7 @@
                 </TextBlock>
                 <TextBlock Margin="0,4,0,0"
                            Text="EarlyVersion: ">
-                    <Hyperlink NavigateUri="https://minfia.fanbox.cc/">
+                    <Hyperlink NavigateUri="https://minfia.fanbox.cc/tags/AviUtlAutoInstaller">
                         <Interactivity:Interaction.Triggers>
                             <Interactivity:EventTrigger EventName="RequestNavigate">
                                 <Interactivity:CallMethodAction TargetObject="{Binding .}" MethodName="OpenLink"/>

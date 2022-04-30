@@ -21,9 +21,6 @@
                       WindowStartupLocation="CenterScreen"
                       WindowTransitionsEnabled="False"
                       b:WindowClosingBehavior.Callback="{Binding ClosingCallback}">
-    <Window.Resources>
-        <BitmapImage x:Key="AppEarlyIcon" UriSource="../Assets/icon_early_32.png"/>
-    </Window.Resources>
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button Margin="0,0,8,0"
