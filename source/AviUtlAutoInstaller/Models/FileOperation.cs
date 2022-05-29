@@ -5,9 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Security.Principal;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace AviUtlAutoInstaller.Models
 {
@@ -149,7 +147,7 @@ namespace AviUtlAutoInstaller.Models
         {
             var paths = Directory.EnumerateFileSystemEntries(dirPath);
 
-            return (paths.ToArray().Length == 0) ? true : false;
+            return paths.ToArray().Length == 0 ? true : false;
         }
 
         /// <summary>
@@ -160,7 +158,7 @@ namespace AviUtlAutoInstaller.Models
         /// <returns>ファイル一覧</returns>
         public List<string> GenerateFilePathList(string srcDirPath, string[] files)
         {
-            List<string> filePathList = new List<string>();
+            List<string> filePathList = new();
 
             foreach (string file in files)
             {

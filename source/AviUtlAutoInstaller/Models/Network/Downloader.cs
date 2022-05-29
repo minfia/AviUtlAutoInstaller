@@ -53,7 +53,7 @@ namespace AviUtlAutoInstaller.Models.Network
 
     class Downloader
     {
-        private string _filePath;
+        private readonly string _filePath;
         /// <summary>
         /// ダウンロード完了サイズ
         /// </summary>
@@ -89,7 +89,7 @@ namespace AviUtlAutoInstaller.Models.Network
 
         private DownloadResult GeneralDownload(string url, string fileName)
         {
-            DownloaderBase dl = new DownloaderBase();
+            DownloaderBase dl = new();
             DownloadResult res;
 
             if ((res = dl.IsConnectURL(url)) != DownloadResult.Complete)
@@ -135,7 +135,7 @@ namespace AviUtlAutoInstaller.Models.Network
 
         private DownloadResult GoogleDriveDownload(string url, string fileName)
         {
-            GDriveDownloader dl = new GDriveDownloader();
+            GDriveDownloader dl = new();
             DownloadResult res;
 
             if ((res = dl.IsConnectURL(url)) != DownloadResult.Complete)
@@ -195,7 +195,7 @@ namespace AviUtlAutoInstaller.Models.Network
         {
 
             private readonly int _blockSize = 1024;
-            private static HttpClient _httpClient = new HttpClient();
+            private static readonly HttpClient _httpClient = new();
             private Uri _uri;
             private WebHeaderCollection _header;
             private protected CookieCollection _cookieCollection;
@@ -228,7 +228,7 @@ namespace AviUtlAutoInstaller.Models.Network
                 {
                     webRequest = (HttpWebRequest)WebRequest.Create(uri);
                     webRequest.Credentials = CredentialCache.DefaultCredentials;
-                    CookieContainer cookieContainer = new CookieContainer();
+                    CookieContainer cookieContainer = new();
                     webRequest.CookieContainer = new CookieContainer();
                     webRequest.CookieContainer.Add(cookieContainer.GetCookies(webRequest.RequestUri));
                     webRequest.UserAgent = "AviUtlAutoInstaller";
@@ -468,7 +468,7 @@ namespace AviUtlAutoInstaller.Models.Network
                     _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("AviUtlAutoInstaller");
                     using (HttpResponseMessage responseMessage = _httpClient.GetAsync(_uri, HttpCompletionOption.ResponseHeadersRead).Result)
                     using (Stream inputStream = responseMessage.Content.ReadAsStreamAsync().Result)
-                    using (FileStream fs = new FileStream($"{downloadPath}\\{fileName}", FileMode.Create, FileAccess.ReadWrite))
+                    using (FileStream fs = new($"{downloadPath}\\{fileName}", FileMode.Create, FileAccess.ReadWrite))
                     {
                         byte[] temp = new byte[_blockSize];
                         int readSize;
@@ -574,7 +574,7 @@ namespace AviUtlAutoInstaller.Models.Network
             private VirusCheckResult CheckVirusRelatedHTML(string filePath)
             {
                 string htmlText;
-                using (StreamReader sr = new StreamReader(filePath))
+                using (StreamReader sr = new(filePath))
                 {
                     htmlText = sr.ReadToEnd();
                 }
@@ -620,8 +620,7 @@ namespace AviUtlAutoInstaller.Models.Network
                 string url;
                 foreach (string[] str in strArray)
                 {
-                    string temp;
-                    if (SubString(shareURL, str[0], str[1], out temp))
+                    if (SubString(shareURL, str[0], str[1], out string temp))
                     {
                         _fileId = temp;
                         break;
@@ -640,18 +639,15 @@ namespace AviUtlAutoInstaller.Models.Network
             public override bool GetFileName(out string fileName)
             {
                 fileName = "";
-                string contentType;
-                if (!base.GetFileName(out contentType))
+                if (!base.GetFileName(out string contentType))
                 {
                     return false;
                 }
-                string encodeFileName;
-                if (!SubString(contentType, "''", null, out encodeFileName))
+                if (!SubString(contentType, "''", null, out string encodeFileName))
                 {
                     return false;
                 }
-                string encodeType;
-                if (!SubString(contentType, "filename*=", "''", out encodeType))
+                if (!SubString(contentType, "filename*=", "''", out string encodeType))
                 {
                     return false;
                 }

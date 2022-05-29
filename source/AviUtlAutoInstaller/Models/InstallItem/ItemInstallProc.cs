@@ -1,12 +1,9 @@
 ﻿using AviUtlAutoInstaller.Models.Files;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AviUtlAutoInstaller.Models
 {
@@ -68,7 +65,7 @@ namespace AviUtlAutoInstaller.Models
 
             if (installDir != string.Empty)
             {
-                FileOperation fileOperation = new FileOperation();
+                FileOperation fileOperation = new();
                 fileOperation.FileMove(installFileList, installDir);
                 success = true;
             }
@@ -83,7 +80,7 @@ namespace AviUtlAutoInstaller.Models
             VSRuntime,
         }
 
-        private static readonly Dictionary<string, ExternalFileType> _externalFileDic = new Dictionary<string, ExternalFileType>()
+        private static readonly Dictionary<string, ExternalFileType> _externalFileDic = new()
         {
             { "vc2008redist_x86.exe", ExternalFileType.VSRuntime },
             { "vc2008redist_x64.exe", ExternalFileType.VSRuntime },
@@ -186,7 +183,7 @@ namespace AviUtlAutoInstaller.Models
         /// <returns>成否</returns>
         private static bool VSRuntimeInstall(string filePath, string args)
         {
-            FileOperation fileOperation = new FileOperation();
+            FileOperation fileOperation = new();
 
             try
             {
@@ -276,7 +273,7 @@ namespace AviUtlAutoInstaller.Models
             Redo,
         };
 
-        private static readonly Dictionary<SpecialPluginType, string> _specialPluginDic = new Dictionary<SpecialPluginType, string>()
+        private static readonly Dictionary<SpecialPluginType, string> _specialPluginDic = new()
         {
             { SpecialPluginType.PSDToolkit, "PSDToolKit" },
             { SpecialPluginType.ExToolBar, "拡張ツールバー" },
@@ -328,7 +325,7 @@ namespace AviUtlAutoInstaller.Models
         /// </summary>
         private static void InstallPSDToolKit(string downloadFileName)
         {
-            FileOperation fileOperation = new FileOperation();
+            FileOperation fileOperation = new();
             string psdSrcPath = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}";
 
             // 取説の移動
@@ -339,7 +336,7 @@ namespace AviUtlAutoInstaller.Models
             fileOperation.DirectoryMove(srcDocsPath, $"{psdManualDestPath}\\PSDToolKitDocs", null);
             Directory.Delete(srcDocsPath, true);
             string[] fileNames = { "GCMZDrops.txt", "PSDToolKit.txt", "PSDToolKit説明書.html", "ZRamPreview.txt", "キャッシュテキスト.txt" };
-            List<string> srcFileNamePath = new List<string>();
+            List<string> srcFileNamePath = new();
             foreach (string fileName in fileNames)
             {
                 srcFileNamePath.Add($"{psdSrcPath}\\{fileName}");
@@ -356,7 +353,7 @@ namespace AviUtlAutoInstaller.Models
         /// <param name="downloadFileName"></param>
         private static void InstallExToolBar(string downloadFileName)
         {
-            FileOperation fileOperation = new FileOperation();
+            FileOperation fileOperation = new();
             string exToolSrcPath = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}";
 
             string iconFileDestPath = $"{SysConfig.AviUtlPluginDir}";
@@ -375,7 +372,7 @@ namespace AviUtlAutoInstaller.Models
         private static void InstallCameraAssist(InstallItem item)
         {
             string cameraAssistSrcPath = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(item.DownloadFileName)}";
-            FileOperation fileOperation = new FileOperation();
+            FileOperation fileOperation = new();
 
             {
                 // プラグインの移動
@@ -415,7 +412,7 @@ namespace AviUtlAutoInstaller.Models
         /// <param name="downloadFileName"></param>
         private static void InstallRedo(string downloadFileName)
         {
-            FileOperation fileOperation = new FileOperation();
+            FileOperation fileOperation = new();
             string redoSrcPath = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}";
             string[] pluginName = new string[] { "Redo.auf" };
             var pluginList = fileOperation.GenerateFilePathList(redoSrcPath, pluginName);
@@ -428,7 +425,7 @@ namespace AviUtlAutoInstaller.Models
             EffectPreparation,
         };
 
-        private static readonly Dictionary<SpecialScriptType, string> _specialScriptDic = new Dictionary<SpecialScriptType, string>()
+        private static readonly Dictionary<SpecialScriptType, string> _specialScriptDic = new()
         {
             { SpecialScriptType.EqualizeHist, "自動明暗補正" },
             { SpecialScriptType.EffectPreparation, "エフェクト準備" },
@@ -472,7 +469,7 @@ namespace AviUtlAutoInstaller.Models
         /// <param name="downloadFileName"></param>
         private static void InstallEqualizeHist(string downloadFileName)
         {
-            FileOperation fileOperation = new FileOperation();
+            FileOperation fileOperation = new();
 
             string extractSrcPath = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}";
 
@@ -489,7 +486,7 @@ namespace AviUtlAutoInstaller.Models
         /// <param name="downloadFileName"></param>
         private static void InstallEffectPreparation(string downloadFileName)
         {
-            FileOperation fileOperation = new FileOperation();
+            FileOperation fileOperation = new();
 
             string extractSrcPath = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}";
 
@@ -505,7 +502,7 @@ namespace AviUtlAutoInstaller.Models
         /// <param name="downloadFileName"></param>
         private static void InstallRigayaEncoder(string downloadFileName)
         {
-            FileOperation fileOperation = new FileOperation();
+            FileOperation fileOperation = new();
             string tempDir = Path.GetTempPath();
             var s = downloadFileName.Split('_');
             string searchDirName = $"{s[0]}_{s[1]}";
@@ -551,12 +548,12 @@ namespace AviUtlAutoInstaller.Models
         private static void AviUtlIniFileBuild()
         {
             string aviutl_ini = $"{SysConfig.InstallRootPath}\\aviutl.ini";
-            IniFileRW iniFileRW = new IniFileRW(aviutl_ini);
+            IniFileRW iniFileRW = new(aviutl_ini);
 
             {
                 uint memSize = GetPhysicalMemSize();
                 uint cacheSize = GetCacheSize(memSize);
-                Dictionary<string, string> systemConfig = new Dictionary<string, string>()
+                Dictionary<string, string> systemConfig = new()
                 {
                     { "width", "2560" }, { "height", "1560" }, { "frame", "320000" }, { "sharecache", $"{cacheSize}" },
                     { "sse", "1" }, { "sse2", "1" }, { "vfplugin", "1" },
@@ -576,7 +573,7 @@ namespace AviUtlAutoInstaller.Models
             }
 
             {
-                Dictionary<string, string> exeditConfig = new Dictionary<string, string>()
+                Dictionary<string, string> exeditConfig = new()
                 {
                     { "disp", "1" }, { "new_w", "1280" }, { "new_h", "720" },
                 };

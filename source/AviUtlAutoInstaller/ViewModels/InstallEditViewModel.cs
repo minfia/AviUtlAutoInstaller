@@ -54,17 +54,12 @@ namespace AviUtlAutoInstaller.ViewModels
         }
 
         #region ユーザータブ
-        private DelegateCommand _openUserRepoCommand;
-        private DelegateCommand _saveUserRepoCommand;
-        private DelegateCommand _addItemCommand;
-        private DelegateCommand _modifyItemCommand;
-        private DelegateCommand<SelectCommandType> _deleteItemCommand;
 
-        public DelegateCommand OpenUserRepoCommand { get => _openUserRepoCommand; }
-        public DelegateCommand SaveUserRepoCommand { get => _saveUserRepoCommand; }
-        public DelegateCommand AddItemCommand { get => _addItemCommand; }
-        public DelegateCommand ModifyItemCommand { get => _modifyItemCommand; }
-        public DelegateCommand<SelectCommandType> DeleteItemCommand { get => _deleteItemCommand; }
+        public DelegateCommand OpenUserRepoCommand { get; }
+        public DelegateCommand SaveUserRepoCommand { get; }
+        public DelegateCommand AddItemCommand { get; }
+        public DelegateCommand ModifyItemCommand { get; }
+        public DelegateCommand<SelectCommandType> DeleteItemCommand { get; }
 
         private Action<bool, string> _openUserRepoCallback;
         public Action<bool, string> OpenUserRepoCallback
@@ -83,18 +78,12 @@ namespace AviUtlAutoInstaller.ViewModels
         #endregion
 
         #region コンテキストメニュー
-        private DelegateCommand _singleInstallCommand;
-        private DelegateCommand _singleUpdateCommand;
-        private DelegateCommand _singleUninstallCommand;
-        private DelegateCommand _batchInstallCommand;
-        private DelegateCommand _batchUninstallCommand;
-        private DelegateCommand _itemPropertyCommand;
-        public DelegateCommand SingleInstallCommand { get => _singleInstallCommand; }
-        public DelegateCommand SingleUpdateCommand { get => _singleUpdateCommand; }
-        public DelegateCommand SingleUninstallCommand { get => _singleUninstallCommand; }
-        public DelegateCommand BatchInstallCommand { get => _batchInstallCommand; }
-        public DelegateCommand BatchUninstallCommand { get => _batchUninstallCommand; }
-        public DelegateCommand ItemPropertyCommand { get => _itemPropertyCommand; }
+        public DelegateCommand SingleInstallCommand { get; }
+        public DelegateCommand SingleUpdateCommand { get; }
+        public DelegateCommand SingleUninstallCommand { get; }
+        public DelegateCommand BatchInstallCommand { get; }
+        public DelegateCommand BatchUninstallCommand { get; }
+        public DelegateCommand ItemPropertyCommand { get; }
         private Visibility _isVisiblePreRepoInstallContextMenu = Visibility.Collapsed;
         public Visibility IsVisiblePreRepoInstallContextMenu
         { 
@@ -119,8 +108,8 @@ namespace AviUtlAutoInstaller.ViewModels
             get { return _isVisiblePreRepoUninstallContextMenu; }
             private set { SetProperty(ref _isVisiblePreRepoUninstallContextMenu, value); }
         }
-        private ItemPropertyViewModel _itemPropertyViewModel = new ItemPropertyViewModel();
-        public ItemPropertyViewModel ItemPropertyViewModel { get { return _itemPropertyViewModel; } }
+
+        public ItemPropertyViewModel ItemPropertyViewModel { get; } = new();
         private Action<bool> _itemPropertyViewCallback;
         public Action<bool> ItemPropertyViewCallback
         {
@@ -134,8 +123,7 @@ namespace AviUtlAutoInstaller.ViewModels
         #endregion
 
         #region InstallItemEditViewの設定
-        private InstallItemEditViewModel _installItemEditViewModel = new InstallItemEditViewModel();
-        public InstallItemEditViewModel InstallItemEditViewModel { get { return _installItemEditViewModel; } }
+        public InstallItemEditViewModel InstallItemEditViewModel { get; } = new();
         private Action<bool> _installItemEditViewCallback;
         public Action<bool> InstallItemEditViewCallback
         {
@@ -148,10 +136,10 @@ namespace AviUtlAutoInstaller.ViewModels
         }
         #endregion
 
-        private InstallItemList _installItemList;
+        private readonly InstallItemList _installItemList;
 
-        private Queue<InstallItem> downloadQueue = new Queue<InstallItem>();
-        private Dictionary<InstallItem, string> downloadFailedList = new Dictionary<InstallItem, string>();
+        private Queue<InstallItem> downloadQueue = new();
+        private Dictionary<InstallItem, string> downloadFailedList = new();
 
         #region プリインストールアイテム
         public ObservableCollection<InstallItem> PreInstallList { get; }
@@ -225,7 +213,7 @@ namespace AviUtlAutoInstaller.ViewModels
             Section,
         }
 
-        private Dictionary<int, InstallItemList.RepoType> _selectTab = new Dictionary<int, InstallItemList.RepoType>()
+        private Dictionary<int, InstallItemList.RepoType> _selectTab = new()
         {
             { 0, InstallItemList.RepoType.Pre },
             { 1, InstallItemList.RepoType.User },
@@ -263,7 +251,7 @@ namespace AviUtlAutoInstaller.ViewModels
         }
 
         #region 状態フィルタ
-        private readonly Dictionary<int, string> _statusFilter = new Dictionary<int, string>()
+        private readonly Dictionary<int, string> _statusFilter = new()
         {
             { 0, "全て" },
             { 1, "インストール済み" },
@@ -591,8 +579,7 @@ namespace AviUtlAutoInstaller.ViewModels
         }
         #endregion
 
-        private DelegateCommand _downloadCommand;
-        public DelegateCommand DownloadCommand { get => _downloadCommand; }
+        public DelegateCommand DownloadCommand { get; }
         private int _downloadValue = 0;
         public int DownloadValue
         {
@@ -627,39 +614,39 @@ namespace AviUtlAutoInstaller.ViewModels
             UserInstallFilterList.Source = UserInstallList;
             UserInstallFilterList.Filter += FilterEvent;
 
-            _openUserRepoCommand = new DelegateCommand(
+            OpenUserRepoCommand = new DelegateCommand(
                 _ =>
                 {
                     OpenUserRepoCallback = OnOpenUserRepoCallback;
                 });
-            _saveUserRepoCommand = new DelegateCommand(
+            SaveUserRepoCommand = new DelegateCommand(
                 _ =>
                 {
                     SaveUserRepoCallback = OnSaveUserRepoCallback;
                 });
-            _addItemCommand = new DelegateCommand(
+            AddItemCommand = new DelegateCommand(
                 _ =>
                 {
-                    _installItemEditViewModel.Title = "追加";
-                    _installItemEditViewModel.EditType = InstallItemEditViewModel.EditShowType.Add;
+                    InstallItemEditViewModel.Title = "追加";
+                    InstallItemEditViewModel.EditType = InstallItemEditViewModel.EditShowType.Add;
                     InstallItemEditViewCallback = OnInstallItemEditView;
                 });
-            _modifyItemCommand = new DelegateCommand(
+            ModifyItemCommand = new DelegateCommand(
                 _ =>
                 {
                     if (UserSelectItem == null)
                     {
                         return;
                     }
-                    _installItemEditViewModel.Title = "変更";
-                    _installItemEditViewModel.EditType = InstallItemEditViewModel.EditShowType.Modify;
-                    _installItemEditViewModel.SetModifyItem(UserSelectItem);
+                    InstallItemEditViewModel.Title = "変更";
+                    InstallItemEditViewModel.EditType = InstallItemEditViewModel.EditShowType.Modify;
+                    InstallItemEditViewModel.SetModifyItem(UserSelectItem);
                     InstallItemEditViewCallback = OnInstallItemEditView;
                 });
-            _deleteItemCommand = new DelegateCommand<SelectCommandType>(
+            DeleteItemCommand = new DelegateCommand<SelectCommandType>(
                 (type) =>
                 {
-                    List<InstallItem> deleteItemList = new List<InstallItem>();
+                    List<InstallItem> deleteItemList = new();
                     if (SelectCommandType.Button == type)
                     {
                         bool isAllfalse = true;
@@ -692,8 +679,8 @@ namespace AviUtlAutoInstaller.ViewModels
                     }
                     InstallItemList.DeleteInstallItem(InstallItemList.RepoType.User, deleteItemList);
                 });
-            _downloadCommand = new DelegateCommand(async _ => await OnDownload());
-            _singleInstallCommand = new DelegateCommand(
+            DownloadCommand = new DelegateCommand(async _ => await OnDownload());
+            SingleInstallCommand = new DelegateCommand(
                 async _ =>
                 {
                     if (SysConfig.IsInstalledAviUtl && MessageBox.Show("インストールしますか？", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
@@ -736,7 +723,7 @@ namespace AviUtlAutoInstaller.ViewModels
                         MessageBox.Show(message, title, MessageBoxButton.OK, image);
                     }
                 });
-            _singleUpdateCommand = new DelegateCommand(
+            SingleUpdateCommand = new DelegateCommand(
                 async _ =>
                 {
                     if (SysConfig.IsInstalledAviUtl && MessageBox.Show("アップデートしますか？", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
@@ -786,7 +773,7 @@ namespace AviUtlAutoInstaller.ViewModels
                         MessageBox.Show(message, title, MessageBoxButton.OK, image);
                     }
                 });
-            _singleUninstallCommand = new DelegateCommand(
+            SingleUninstallCommand = new DelegateCommand(
                 async _ =>
                 {
                     if (SysConfig.IsInstalledAviUtl && MessageBox.Show("アンインストールしますか？", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
@@ -819,7 +806,7 @@ namespace AviUtlAutoInstaller.ViewModels
                         MessageBox.Show(message, title, MessageBoxButton.OK, image);
                     }
                 });
-            _batchInstallCommand = new DelegateCommand(
+            BatchInstallCommand = new DelegateCommand(
                 async _ =>
                 {
                     if (SysConfig.IsInstalledAviUtl && MessageBox.Show("まとめてインストールしますか？\n" +
@@ -843,7 +830,7 @@ namespace AviUtlAutoInstaller.ViewModels
                         MessageBox.Show(message, title, MessageBoxButton.OK, image);
                     }
                 });
-            _batchUninstallCommand = new DelegateCommand(
+            BatchUninstallCommand = new DelegateCommand(
                 async _ =>
                 {
                     if (SysConfig.IsInstalledAviUtl && MessageBox.Show("まとめてアンインストールしますか？\n" +
@@ -867,15 +854,15 @@ namespace AviUtlAutoInstaller.ViewModels
                         MessageBox.Show(message, title, MessageBoxButton.OK, image);
                     }
                 });
-            _itemPropertyCommand = new DelegateCommand(
+            ItemPropertyCommand = new DelegateCommand(
                 _ =>
                 {
                     if (PreSelectItem == null)
                     {
                         return;
                     }
-                    _itemPropertyViewModel.Title = PreSelectItem.Name;
-                    _itemPropertyViewModel.SetInstallItem(PreSelectItem);
+                    ItemPropertyViewModel.Title = PreSelectItem.Name;
+                    ItemPropertyViewModel.SetInstallItem(PreSelectItem);
                     ItemPropertyViewCallback = OnItemPropertyView;
                 });
         }
@@ -902,7 +889,7 @@ namespace AviUtlAutoInstaller.ViewModels
             {
                 try
                 {
-                    UserRepoFileRW userRepoFileRead = new UserRepoFileRW();
+                    UserRepoFileRW userRepoFileRead = new();
 
                     userRepoFileRead.FileRead(filePath);
                     UserSelectAllCheck = false;
@@ -923,7 +910,7 @@ namespace AviUtlAutoInstaller.ViewModels
         {
             if (isOk)
             {
-                UserRepoFileRW userRepoFileWrite = new UserRepoFileRW();
+                UserRepoFileRW userRepoFileWrite = new();
 
                 userRepoFileWrite.FileWrite(filePath);
             }
@@ -948,7 +935,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 return;
             }
 
-            Downloader downloader = new Downloader($"{SysConfig.CacheDirPath}");
+            Downloader downloader = new($"{SysConfig.CacheDirPath}");
             selectItem.DownloadExecute = false;
             downloadQueue.Enqueue(selectItem);
 
@@ -957,8 +944,8 @@ namespace AviUtlAutoInstaller.ViewModels
                 return;
             }
 
-            List<string> url = new List<string>();
-            List<string> fileName = new List<string>();
+            List<string> url = new();
+            List<string> fileName = new();
             while (downloadQueue.Count != 0)
             {
                 DownloadValue = 0;
@@ -975,7 +962,7 @@ namespace AviUtlAutoInstaller.ViewModels
 
                 int count = url.Count;
 
-                Func<string, string, DownloadResult> func = new Func<string, string, DownloadResult>(downloader.DownloadStart);
+                Func<string, string, DownloadResult> func = new(downloader.DownloadStart);
 
                 for (int i = 0; i < count; i++)
                 {
@@ -1099,7 +1086,7 @@ namespace AviUtlAutoInstaller.ViewModels
             // インストール
             Directory.CreateDirectory(SysConfig.InstallExpansionDir);
             {
-                InstallItemList installItemList = new InstallItemList();
+                InstallItemList installItemList = new();
                 var func = new Func<InstallItem, string[], bool>(InstallItem.Install);
                 var installFileList = installItemList.GenerateInstalList(_selectTab[TabControlSelectIndex], item);
                 var task = Task.Run(() => func(item, installFileList.ToArray()));
@@ -1115,12 +1102,12 @@ namespace AviUtlAutoInstaller.ViewModels
                 if ("sm".Length < item.NicoVideoID.Length)
                 {
                     ContentsTreeRW.AddContents(item.NicoVideoID);
-                    ContentsTreeRW contentsTreeRW = new ContentsTreeRW();
+                    ContentsTreeRW contentsTreeRW = new();
                     contentsTreeRW.Write($"{SysConfig.InstallRootPath}");
                 }
 
                 item.IsInstallCompleted = false;
-                InstallProfileRW installProfileRW = new InstallProfileRW();
+                InstallProfileRW installProfileRW = new();
                 installProfileRW.FileWrite($"{SysConfig.InstallRootPath}");
                 installProfileRW.FileRead($"{SysConfig.InstallRootPath}\\{InstallProfileRW.ReloadFileName}", InstallProfileRW.ReadType.Installed);
             }
@@ -1192,11 +1179,11 @@ namespace AviUtlAutoInstaller.ViewModels
                     if ("sm".Length < item.NicoVideoID.Length)
                     {
                         ContentsTreeRW.DeleteContents(item.NicoVideoID);
-                        ContentsTreeRW contentsTreeRW = new ContentsTreeRW();
+                        ContentsTreeRW contentsTreeRW = new();
                         contentsTreeRW.Write($"{SysConfig.InstallRootPath}");
                     }
 
-                    InstallProfileRW installProfileRW = new InstallProfileRW();
+                    InstallProfileRW installProfileRW = new();
                     installProfileRW.FileWrite($"{SysConfig.InstallRootPath}");
                     installProfileRW.FileRead($"{SysConfig.InstallRootPath}\\{InstallProfileRW.ReloadFileName}", InstallProfileRW.ReadType.Installed);
                 }
@@ -1211,7 +1198,7 @@ namespace AviUtlAutoInstaller.ViewModels
 
         private async Task<List<string>> OnBatchInstall()
         {
-            List<InstallItem> installList = new List<InstallItem>();
+            List<InstallItem> installList = new();
 
             foreach (InstallItem item in PreInstallList)
             {
@@ -1221,7 +1208,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 }
             }
 
-            List<string> failedItemList = new List<string>();
+            List<string> failedItemList = new();
 
             foreach (InstallItem item in installList)
             {
@@ -1237,7 +1224,7 @@ namespace AviUtlAutoInstaller.ViewModels
 
         private async Task<List<string>> OnBatchUninstall()
         {
-            List<InstallItem> uninstallList = new List<InstallItem>();
+            List<InstallItem> uninstallList = new();
 
             foreach (InstallItem item in PreInstallList)
             {
@@ -1247,7 +1234,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 }
             }
 
-            List<string> failedItemList = new List<string>();
+            List<string> failedItemList = new();
 
             foreach (InstallItem item in uninstallList)
             {

@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AviUtlAutoInstaller.Models
 {
     class ProductInfo
     {
-        private static Assembly assembly = Assembly.GetExecutingAssembly();
+        private static readonly Assembly assembly = Assembly.GetExecutingAssembly();
 
         private static readonly string _appName = assembly.GetName().Name;
         /// <summary>

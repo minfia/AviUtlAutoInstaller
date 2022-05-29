@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AviUtlAutoInstaller.Models
 {
@@ -58,8 +55,8 @@ namespace AviUtlAutoInstaller.Models
             if (baseDir != string.Empty)
             {
                 // ファイルの削除
-                FileOperation fileOperation = new FileOperation();
-                List<string> uninstallFiles = new List<string>();
+                FileOperation fileOperation = new();
+                List<string> uninstallFiles = new();
 
                 List<string> targetFileList;
                 if (item.UninstallFile == "")
@@ -216,7 +213,7 @@ namespace AviUtlAutoInstaller.Models
                 "カメラ制御(視点移動).exa"
             };
 
-            FileOperation fileOperation = new FileOperation();
+            FileOperation fileOperation = new();
             var fileList = fileOperation.GenerateFilePathList($"{SysConfig.AviUtlPluginDir}", uninstallItem);
 
             foreach(var filePath in fileList)
@@ -249,7 +246,7 @@ namespace AviUtlAutoInstaller.Models
                 "Redo.auf"
             };
 
-            FileOperation fileOperation = new FileOperation();
+            FileOperation fileOperation = new();
             var fileList = fileOperation.GenerateFilePathList($"{SysConfig.AviUtlPluginDir}", uninstallItem);
 
             foreach (var filePath in fileList)
@@ -298,7 +295,7 @@ namespace AviUtlAutoInstaller.Models
 
             // 空ディレクトリの削除
             string scriptNameDir = $"{SysConfig.AviUtlScriptDir}\\{item.ScriptDirName}";
-            FileOperation fileOperation = new FileOperation();
+            FileOperation fileOperation = new();
             if (fileOperation.IsDirectoryEmpty(scriptNameDir))
             {
                 Directory.Delete(scriptNameDir, true);
@@ -403,7 +400,7 @@ namespace AviUtlAutoInstaller.Models
                 return;
             }
 
-            FileOperation fileOperation = new FileOperation();
+            FileOperation fileOperation = new();
             string exe_filesDir = $"{SysConfig.InstallRootPath}\\exe_files";
 
             {

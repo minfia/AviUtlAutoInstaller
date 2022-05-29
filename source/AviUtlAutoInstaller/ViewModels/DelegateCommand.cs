@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Input;
 
 namespace AviUtlAutoInstaller.ViewModels
 {
     class DelegateCommand : ICommand
     {
-        private Action<object> _execute;
-        private Func<object, bool> _canExecute;
+        private readonly Action<object> _execute;
+        private readonly Func<object, bool> _canExecute;
 
         public DelegateCommand(Action<object> exetute) : this(exetute, null)
         {
@@ -43,8 +41,8 @@ namespace AviUtlAutoInstaller.ViewModels
 
     class DelegateCommand<T> : ICommand
     {
-        private Action<T> _execute;
-        private Func<T, bool> _canExecute;
+        private readonly Action<T> _execute;
+        private readonly Func<T, bool> _canExecute;
 
         public DelegateCommand(Action<T> exetute) : this(exetute, null)
         {

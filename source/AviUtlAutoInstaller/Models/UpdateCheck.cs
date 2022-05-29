@@ -4,9 +4,6 @@ using AviUtlAutoInstaller.Models.Network.Parser;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AviUtlAutoInstaller.Models
 {
@@ -63,16 +60,16 @@ namespace AviUtlAutoInstaller.Models
         /// <summary>
         /// プリインストールリポジトリのGitHub APIのURL
         /// </summary>
-        private string _preRepoGitHubUrl = "https://api.github.com/repos/minfia/AAI_Repo/releases";
+        private readonly string _preRepoGitHubUrl = "https://api.github.com/repos/minfia/AAI_Repo/releases";
         /// <summary>
         /// アプリケーションのGitHub APIのURL
         /// </summary>
-        private string _applicationGitHubUrl = "https://api.github.com/repos/minfia/AviUtlAutoInstaller/releases";
+        private readonly string _applicationGitHubUrl = "https://api.github.com/repos/minfia/AviUtlAutoInstaller/releases";
 
         /// <summary>
         /// 削除除外ディレクトリリスト
         /// </summary>
-        private List<string> _delExcludeDirList = new List<string>()
+        private readonly List<string> _delExcludeDirList = new()
         {
             "cache", "repo", "AviUtl"
         };
@@ -80,7 +77,7 @@ namespace AviUtlAutoInstaller.Models
         /// <summary>
         /// 削除除外ファイルリスト
         /// </summary>
-        private List<string> _delExcludeFileList = new List<string>()
+        private List<string> _delExcludeFileList = new()
         {
         };
 
@@ -114,9 +111,9 @@ namespace AviUtlAutoInstaller.Models
                     break;
             }
 
-            GitHub github = new GitHub();
+            GitHub github = new();
 
-            Uri uri = new Uri(url);
+            Uri uri = new(url);
             try
             {
                 if (!github.Parse(uri))
@@ -177,7 +174,7 @@ namespace AviUtlAutoInstaller.Models
         /// <returns>実行結果</returns>
         public RepoUpdateResult UpdatePreRepo(string url)
         {
-            Downloader downloader = new Downloader($"{SysConfig.CacheDirPath}");
+            Downloader downloader = new($"{SysConfig.CacheDirPath}");
 
             string fileName = "aai.repo";
             var res = downloader.DownloadStart(url, fileName);
@@ -185,10 +182,10 @@ namespace AviUtlAutoInstaller.Models
 
             if ((res == DownloadResult.Complete) && File.Exists(cacheFile))
             {
-                PreRepoFileR preRepoFileR = new PreRepoFileR(cacheFile);
+                PreRepoFileR preRepoFileR = new(cacheFile);
                 preRepoFileR.Open();
                 preRepoFileR.GetDBVersion(out uint major, out uint minor, out uint maintenance, out uint app_match);
-                ProductInfo productInfo = new ProductInfo();
+                ProductInfo productInfo = new();
 
                 if (!productInfo.IsSupportRepoVersion(app_match))
                 {
@@ -215,7 +212,7 @@ namespace AviUtlAutoInstaller.Models
         /// <param name="url">アプリケーションのURL</param>
         public void UpdateApplication(string url)
         {
-            FileOperation fileOperation = new FileOperation();
+            FileOperation fileOperation = new();
 
             string delExcludeDirArgs = "";
             foreach (string arg in _delExcludeDirList)
@@ -240,7 +237,7 @@ namespace AviUtlAutoInstaller.Models
         /// <param name="preRepoURL">プリインストールリポジトリのURL</param>
         public void UpdateApplication(string appURL, string preRepoURL)
         {
-            FileOperation fileOperation = new FileOperation();
+            FileOperation fileOperation = new();
 
             string delExcludeDirArgs = "";
             foreach (string arg in _delExcludeDirList)

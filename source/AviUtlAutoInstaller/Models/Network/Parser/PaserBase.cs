@@ -5,7 +5,7 @@ namespace AviUtlAutoInstaller.Models.Network.Parser
 {
     class PaserBase
     {
-        private static HttpClient _httpClient = new HttpClient();
+        private static readonly HttpClient _httpClient = new();
 
         /// <summary>
         /// 接続先のHTMLを文字列で取得

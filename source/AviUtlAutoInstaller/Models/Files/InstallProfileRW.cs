@@ -1,11 +1,8 @@
 ﻿using Nett;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AviUtlAutoInstaller.Models.Files
 {
@@ -66,7 +63,7 @@ namespace AviUtlAutoInstaller.Models.Files
         /// <summary>
         /// ファイルバージョンKeyと文字列の紐付け
         /// </summary>
-        private static readonly Dictionary<FileVersion, string> _fileVersionDic = new Dictionary<FileVersion, string>()
+        private static readonly Dictionary<FileVersion, string> _fileVersionDic = new()
         {
             { FileVersion.V100, "v1.0.0" },
             { FileVersion.V110, "v1.1.0" },
@@ -75,7 +72,7 @@ namespace AviUtlAutoInstaller.Models.Files
         /// <summary>
         /// RWKeyTypeと文字列の紐付け
         /// </summary>
-        private static readonly Dictionary<RWKeyType, string> _rwKeyTypeDic = new Dictionary<RWKeyType, string>()
+        private static readonly Dictionary<RWKeyType, string> _rwKeyTypeDic = new()
         {
             { RWKeyType.Name, "name" },
             { RWKeyType.FileName, "filename" },
@@ -133,7 +130,7 @@ namespace AviUtlAutoInstaller.Models.Files
             InstallItemList.ClearIsInstalled();
             InstallItemList.ClearAllIsSelect();
 
-            List<InstallationItem> installationItemList = new List<InstallationItem>();
+            List<InstallationItem> installationItemList = new();
 
             switch (fileVersion)
             {
@@ -173,13 +170,13 @@ namespace AviUtlAutoInstaller.Models.Files
         /// <returns></returns>
         private List<InstallationItem> SetEnableListV100(List<TomlTable> tomlTableList, ReadType readType)
         {
-            List<InstallationItem> installationItemList = new List<InstallationItem>();
+            List<InstallationItem> installationItemList = new();
 
-            TomlTableArray array = new TomlTableArray(new Root(), tomlTableList);
+            TomlTableArray array = new(new Root(), tomlTableList);
 
             for (int i = 0; i < array.Count; i++)
             {
-                InstallationItem installationItem = new InstallationItem()
+                InstallationItem installationItem = new()
                 {
                     Name = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.Name]),
                     FileName = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.FileName]),
@@ -204,14 +201,14 @@ namespace AviUtlAutoInstaller.Models.Files
         /// <returns></returns>
         private List<InstallationItem> SetEnableListV110(List<TomlTable> tomlTableList, ReadType readType)
         {
-            List<InstallationItem> installationItemList = new List<InstallationItem>();
+            List<InstallationItem> installationItemList = new();
 
-            TomlTableArray array = new TomlTableArray(new Root(), tomlTableList);
+            TomlTableArray array = new(new Root(), tomlTableList);
 
             for (int i = 0; i < array.Count; i++)
             {
 
-                InstallationItem installationItem = new InstallationItem()
+                InstallationItem installationItem = new()
                 {
                     Name = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.Name]),
                     FileName = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.FileName]),
@@ -277,10 +274,10 @@ namespace AviUtlAutoInstaller.Models.Files
         public void FileWrite(string dirPath)
         {
             // InstallItemListから、IsInstalledを抽出して、itemListにする
-            List<InstallationItem> itemList = new List<InstallationItem>();
+            List<InstallationItem> itemList = new();
             {
                 // List<InstallationItem>に変換
-                InstallItemList installItemList = new InstallItemList();
+                InstallItemList installItemList = new();
 
                 for (var i = InstallItemList.RepoType.Pre; i < InstallItemList.RepoType.MAX; i++)
                 {
@@ -317,7 +314,7 @@ namespace AviUtlAutoInstaller.Models.Files
 
             toml.Add("version", _fileVersionDic.Last().Value);
 
-            List<TomlTable> tomlList = new List<TomlTable>();
+            List<TomlTable> tomlList = new();
             foreach (var item in (List<InstallationItem>)data)
             {
                 var tomlItem = Toml.Create();
@@ -332,7 +329,7 @@ namespace AviUtlAutoInstaller.Models.Files
             }
 
             tomlList = tomlList.Distinct(new TomlTableComparer()).ToList();
-            TomlTableArray tomlTableArray = new TomlTableArray(new Root(), tomlList);
+            TomlTableArray tomlTableArray = new(new Root(), tomlList);
             toml.Add(_mainKeyName, tomlTableArray);
 
             return toml;

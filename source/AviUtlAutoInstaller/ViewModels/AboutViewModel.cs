@@ -1,10 +1,5 @@
 ﻿using AviUtlAutoInstaller.Models;
 using AviUtlAutoInstaller.Models.Files;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Documents;
 
 namespace AviUtlAutoInstaller.ViewModels
@@ -58,7 +53,7 @@ namespace AviUtlAutoInstaller.ViewModels
 #else
             IconPath = "..\\Assets\\app.ico";
 #endif
-            PreRepoFileR preRepoFileR = new PreRepoFileR($"{SysConfig.RepoDirPath}\\aai.repo");
+            PreRepoFileR preRepoFileR = new($"{SysConfig.RepoDirPath}\\aai.repo");
             preRepoFileR.Open();
             preRepoFileR.GetDBVersion(out uint major, out uint minor, out uint maintenance, out uint app_match);
             preRepoFileR.Close();

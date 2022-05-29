@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AviUtlAutoInstaller.Models
 {
@@ -310,17 +308,17 @@ namespace AviUtlAutoInstaller.Models
         /// <returns></returns>
         public List<string> GenerateInstalList(RepoType repoType, InstallItem item)
         {
-            List<string> readyInstallFiles = new List<string>(); // インストールするファイルのパス一覧
+            List<string> readyInstallFiles = new(); // インストールするファイルのパス一覧
 
             string searchSrcDir;
 
-            FileOperation fileOperation = new FileOperation();
+            FileOperation fileOperation = new();
             if (IsExtractExtension(item.DownloadFileName))
             {
                 // ダウンロードしたファイルが圧縮ファイル
                 string extractFile = $"{SysConfig.CacheDirPath}\\{item.DownloadFileName}";   // 解凍するファイルのパス: .\cache\FileName.圧縮形式
                 string extractDestDir = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(item.DownloadFileName)}";  //解凍先: root\EX_TEMP\FileNameDir\
-                Extractor extractor = new Extractor();
+                Extractor extractor = new();
                 extractor.Extract(extractFile, extractDestDir);
                 searchSrcDir = extractDestDir;
             }

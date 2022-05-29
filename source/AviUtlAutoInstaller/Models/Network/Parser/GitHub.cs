@@ -1,11 +1,5 @@
-﻿using AngleSharp.Html.Parser;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AviUtlAutoInstaller.Models.Network.Parser
 {
@@ -46,7 +40,7 @@ namespace AviUtlAutoInstaller.Models.Network.Parser
                 return false;
             }
 
-            Json json = new Json();
+            Json json = new();
 
             try
             {
@@ -81,7 +75,7 @@ namespace AviUtlAutoInstaller.Models.Network.Parser
         /// <exception cref="System.Security.SecurityException"></exception>
         public bool Parse(Uri uri)
         {
-            string jsonText = "";
+            string jsonText;
             try
             {
                 jsonText = GetRestAPI(uri);
@@ -100,7 +94,7 @@ namespace AviUtlAutoInstaller.Models.Network.Parser
         /// <param name="list"></param>
         private bool ParseVersionList(List<Dictionary<string, object>> list)
         {
-            List<string> verList = new List<string>();
+            List<string> verList = new();
 
             foreach (var item in list)
             {
@@ -126,7 +120,7 @@ namespace AviUtlAutoInstaller.Models.Network.Parser
         /// <param name="list"></param>
         private bool ParseVersionLinkList(List<Dictionary<string, object>> list)
         {
-            List<string> versionLinkList = new List<string>();
+            List<string> versionLinkList = new();
 
             foreach (var item in list)
             {
@@ -163,7 +157,7 @@ namespace AviUtlAutoInstaller.Models.Network.Parser
         /// <returns></returns>
         private bool ParseVersionBodyList(List<Dictionary<string, object>> list)
         {
-            List<string> bodyList = new List<string>();
+            List<string> bodyList = new();
 
             foreach (var item in list)
             {

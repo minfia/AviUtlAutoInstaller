@@ -1,16 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AviUtlAutoInstaller.Models.Network.Parser
 {
     class Json
     {
-        private List<Dictionary<string, object>> parseResult = new List<Dictionary<string, object>>();
+        private readonly List<Dictionary<string, object>> parseResult = new List<Dictionary<string, object>>();
 
         public Json()
         {
@@ -63,13 +59,13 @@ namespace AviUtlAutoInstaller.Models.Network.Parser
             {
                 if (jProperty.Value.Type == JTokenType.Object)
                 {
-                    Dictionary<string, object> obj = new Dictionary<string, object>();
+                    Dictionary<string, object> obj = new();
                     ((Dictionary<string, object>)target).Add(jProperty.Name, obj);
                     Parse(jProperty.Value, obj);
                 }
                 else if (jProperty.Value.Type == JTokenType.Array)
                 {
-                    List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
+                    List<Dictionary<string, object>> list = new();
                     ((Dictionary<string, object>)target).Add(jProperty.Name, list);
                     Parse(jProperty.Value, list);
                 }
@@ -79,7 +75,7 @@ namespace AviUtlAutoInstaller.Models.Network.Parser
                 }
                 else if (target.GetType() == typeof(List<Dictionary<string, object>>))
                 {
-                    Dictionary<string, object> obj = new Dictionary<string, object>();
+                    Dictionary<string, object> obj = new();
                     ((List<Dictionary<string, object>>)target).Add(obj);
                     Parse(jObject, obj);
                     break;

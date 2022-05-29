@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AviUtlAutoInstaller.Models
 {
@@ -255,7 +252,7 @@ namespace AviUtlAutoInstaller.Models
             }
         }
 
-        private List<string> _installFileList = new List<string>();
+        private List<string> _installFileList = new();
         /// <summary>
         /// インストールファイルのリスト
         /// </summary>
@@ -279,7 +276,7 @@ namespace AviUtlAutoInstaller.Models
             }
         }
 
-        private List<string> _uninstallFileList = new List<string>();
+        private List<string> _uninstallFileList = new();
         /// <summary>
         /// アンインストールファイルのリスト
         /// </summary>
@@ -303,7 +300,7 @@ namespace AviUtlAutoInstaller.Models
             }
         }
 
-        private List<string> _externalFileList = new List<string>();
+        private List<string> _externalFileList = new();
         /// <summary>
         /// VisualStdio再頒布パッケージ等の外部ファイルのリスト
         /// </summary>
@@ -327,7 +324,7 @@ namespace AviUtlAutoInstaller.Models
             }
         }
 
-        private List<string> _externalFileURLList = new List<string>();
+        private List<string> _externalFileURLList = new();
         /// <summary>
         /// VisualStdio再頒布パッケージ等の外部ファイルのURLリスト
         /// </summary>
@@ -408,12 +405,12 @@ namespace AviUtlAutoInstaller.Models
             set { SetProperty(ref _guideURL, value); }
         }
 
-        public static Dictionary<int, string> MakerTypeDic = new Dictionary<int, string>();
+        public static Dictionary<int, string> MakerTypeDic = new();
 
         /// <summary>
         /// ファイルタイプに対応する文字列
         /// </summary>
-        private static Dictionary<InstallFileType, string> _fileTypeDic = new Dictionary<InstallFileType, string>()
+        private static readonly Dictionary<InstallFileType, string> _fileTypeDic = new()
         {
             { InstallFileType.Tool, "ツール" },
             { InstallFileType.Main, "メイン" },
@@ -441,7 +438,7 @@ namespace AviUtlAutoInstaller.Models
         /// <summary>
         /// セクションタイプに対応する文字列
         /// </summary>
-        public static Dictionary<int, string> SectionTypeDic = new Dictionary<int, string>();
+        public static Dictionary<int, string> SectionTypeDic = new();
 
         /// <summary>
         /// FileからFileListへ変換

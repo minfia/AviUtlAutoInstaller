@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AviUtlAutoInstaller.Models.Files
 {
@@ -60,8 +56,8 @@ namespace AviUtlAutoInstaller.Models.Files
         /// <returns>取得した文字列</returns>
         public string GetStringValue(string sectionName, string keyName)
         {
-            StringBuilder value = new StringBuilder(0x400);
-            uint strSize = GetPrivateProfileString(sectionName, keyName, "", value, (uint)value.Capacity, IniFilePath);
+            StringBuilder value = new(0x400);
+            GetPrivateProfileString(sectionName, keyName, "", value, (uint)value.Capacity, IniFilePath);
             return value.ToString();
         }
 

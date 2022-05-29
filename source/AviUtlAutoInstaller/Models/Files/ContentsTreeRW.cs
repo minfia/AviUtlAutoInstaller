@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AviUtlAutoInstaller.Models.Files
 {
     class ContentsTreeRW
     {
         private const string _saveFileName = "contents_tree.txt";
-        private static readonly List<string> _contentsList = new List<string>() { "sm39152679" };
+        private static readonly List<string> _contentsList = new() { "sm39152679" };
 
         /// <summary>
         /// コンテンツツリーの要素が存在するか
@@ -54,7 +52,7 @@ namespace AviUtlAutoInstaller.Models.Files
             }
             _contentsList.Clear();
 
-            using (StreamReader sr = new StreamReader($"{dirPath}\\{_saveFileName}", Encoding.UTF8))
+            using (StreamReader sr = new($"{dirPath}\\{_saveFileName}", Encoding.UTF8))
             {
                 while (sr.Peek() != -1)
                 {
@@ -77,7 +75,7 @@ namespace AviUtlAutoInstaller.Models.Files
         public void Write(string dirPath)
         {
             const int DivCount = 10;
-            using (StreamWriter sw = new StreamWriter($"{dirPath}\\{_saveFileName}", false, Encoding.UTF8))
+            using (StreamWriter sw = new($"{dirPath}\\{_saveFileName}", false, Encoding.UTF8))
             {
                 sw.NewLine = "\n";
                 var contentsTreeList = _contentsList.Distinct().ToArray();

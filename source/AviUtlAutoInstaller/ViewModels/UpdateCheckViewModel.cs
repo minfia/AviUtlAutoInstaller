@@ -199,7 +199,7 @@ namespace AviUtlAutoInstaller.ViewModels
         /// <returns>true: 正常終了, false: 異常終了</returns>
         private bool PreRepoUpdateCheck()
         {
-            UpdateCheck updateCheck = new UpdateCheck();
+            UpdateCheck updateCheck = new();
 
             var res = updateCheck.Check(UpdateCheck.CheckTarget.PreRepo, PreRepoVersion, out string getVersion, out _preRepoURL);
             switch (res)
@@ -229,7 +229,7 @@ namespace AviUtlAutoInstaller.ViewModels
         /// <returns>true: 正常終了, false: 異常終了</returns>
         private bool AppUpdateCheck()
         {
-            UpdateCheck updateCheck = new UpdateCheck();
+            UpdateCheck updateCheck = new();
 
             var res = updateCheck.Check(UpdateCheck.CheckTarget.App, ApplicationVersion, out string getVersion, out _appURL);
             switch (res)
@@ -259,7 +259,7 @@ namespace AviUtlAutoInstaller.ViewModels
         /// <returns></returns>
         private async Task<bool> PreRepoUpdate()
         {
-            UpdateCheck updateCheck = new UpdateCheck();
+            UpdateCheck updateCheck = new();
 
             Task<UpdateCheck.RepoUpdateResult> task = Task.Run(() => updateCheck.UpdatePreRepo(_preRepoURL));
             await task;
@@ -294,7 +294,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 AppUpdateEnable = UpdateCheckButtonEnable = true;
                 return;
             }
-            UpdateCheck updateCheck = new UpdateCheck();
+            UpdateCheck updateCheck = new();
 
             updateCheck.UpdateApplication(_appURL);
             App.Current.Shutdown();

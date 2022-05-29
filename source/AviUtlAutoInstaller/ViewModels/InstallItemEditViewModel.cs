@@ -35,13 +35,10 @@ namespace AviUtlAutoInstaller.ViewModels
         /// </summary>
         private InstallItem _installItem;
 
-        #region Acceptボタンの設定
-        private DelegateCommand _acceptCommand;
-        public DelegateCommand AcceptCommand
-        {
-            get { return _acceptCommand; }
-        }
-        #endregion
+        /// <summary>
+        /// Acceptボタン
+        /// </summary>
+        public DelegateCommand AcceptCommand { get; }
 
         #region 設定項目の設定
         private string _name;
@@ -277,24 +274,21 @@ namespace AviUtlAutoInstaller.ViewModels
         /// ファイルタイプの選択文字列
         /// </summary>
         public string FileTypeSelectValue { get; set; }
-        private Dictionary<InstallFileType, string> _fileTypeDic;
+
         /// <summary>
         /// ファイルタイプと文字列の辞書
         /// </summary>
-        public Dictionary<InstallFileType, string> FileTypeDic
-        {
-            get { return _fileTypeDic; }
-        }
+        public Dictionary<InstallFileType, string> FileTypeDic { get; }
         #endregion
 
         public InstallItemEditViewModel()
         {
-            _fileTypeDic = new Dictionary<InstallFileType, string>()
+            FileTypeDic = new Dictionary<InstallFileType, string>()
             {
                 { InstallFileType.Script, InstallItem.GetFileTypeString(InstallFileType.Script) },
                 { InstallFileType.Plugin, InstallItem.GetFileTypeString(InstallFileType.Plugin) },
             };
-            _acceptCommand = new DelegateCommand(
+            AcceptCommand = new DelegateCommand(
                 (window) =>
                 {
                     OnAccept(EditType);
@@ -452,7 +446,7 @@ namespace AviUtlAutoInstaller.ViewModels
             }
             try
             {
-                Uri uri = new Uri(URL);
+                Uri uri = new(URL);
             }
             catch
             {
@@ -543,7 +537,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 AppendFileError = "前後に空白は使用できません";
             }
             string[] array = AppendFile.Split(',');
-            HashSet<string> duplicate = new HashSet<string>();
+            HashSet<string> duplicate = new();
             foreach (string str in array)
             {
                 if (IsInvalidChar(str.Trim()) && (str.IndexOf('*') < 0))

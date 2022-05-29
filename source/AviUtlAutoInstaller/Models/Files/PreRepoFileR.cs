@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data.SQLite;
 
 namespace AviUtlAutoInstaller.Models.Files
 {
@@ -20,7 +15,7 @@ namespace AviUtlAutoInstaller.Models.Files
 
         public PreRepoFileR(string databaseFilePath)
         {
-            SQLiteConnectionStringBuilder connectionSB = new SQLiteConnectionStringBuilder() { DataSource = databaseFilePath };
+            SQLiteConnectionStringBuilder connectionSB = new() { DataSource = databaseFilePath };
             connection = new SQLiteConnection(connectionSB.ToString());
         }
 
@@ -49,7 +44,7 @@ namespace AviUtlAutoInstaller.Models.Files
 
             try
             {
-                using (SQLiteCommand cmd = new SQLiteCommand(connection))
+                using (SQLiteCommand cmd = new(connection))
                 {
                     cmd.CommandText = $"select * from {_versionTableName} where id = 1";
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
@@ -81,7 +76,7 @@ namespace AviUtlAutoInstaller.Models.Files
             InstallItem.SectionTypeDic.Add(cnt++, "全て");
             try
             {
-                using (SQLiteCommand cmd = new SQLiteCommand(connection))
+                using (SQLiteCommand cmd = new(connection))
                 {
                     cmd.CommandText = $"select * from {_sectionTableName}";
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
@@ -111,7 +106,7 @@ namespace AviUtlAutoInstaller.Models.Files
             InstallItem.MakerTypeDic.Add(cnt++, "全て");
             try
             {
-                using (SQLiteCommand cmd = new SQLiteCommand(connection))
+                using (SQLiteCommand cmd = new(connection))
                 {
                     cmd.CommandText = $"select * from {_makerTableName}";
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
@@ -139,14 +134,14 @@ namespace AviUtlAutoInstaller.Models.Files
             InstallItemList.ItemClear(InstallItemList.RepoType.Pre);
             try
             {
-                using (SQLiteCommand cmd = new SQLiteCommand(connection))
+                using (SQLiteCommand cmd = new(connection))
                 {
                     cmd.CommandText = $"select * from {_installTableName} natural join {_priorityTableName} natural join {_fileTypeTableName} natural join {_sectionTableName} natural join {_makerTableName} natural join {_dependentTableName}";
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            InstallItem item = new InstallItem
+                            InstallItem item = new()
                             {
                                 Priority = (InstallPriority)uint.Parse(reader["priority"].ToString()),
                                 Name = reader["name"].ToString(),

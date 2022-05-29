@@ -54,21 +54,13 @@ namespace AviUtlAutoInstaller.ViewModels
         }
 
         #region メニューバーCommand
-        private DelegateCommand _openDialogInstallSettingFileCommand;
-        private DelegateCommand _openDialogUserRepoFileCommand;
-        private DelegateCommand _exitCommand;
-        private DelegateCommand _installEditCommand;
-        private DelegateCommand _updateCheckCommand;
-        private DelegateCommand _aboutCommand;
-        private DelegateCommand _earlyAccessCommand;
-
-        public DelegateCommand OpenDialogInstallSettingFileCommand { get => _openDialogInstallSettingFileCommand; }
-        public DelegateCommand OpenDialogUserRepoFileCommand { get => _openDialogUserRepoFileCommand; }
-        public DelegateCommand ExitCommand { get => _exitCommand; }
-        public DelegateCommand InstallEditCommand { get => _installEditCommand; }
-        public DelegateCommand UpdateCheckCommand { get => _updateCheckCommand; }
-        public DelegateCommand AboutCommand { get => _aboutCommand; }
-        public DelegateCommand EarlyAccessCommand { get => _earlyAccessCommand; }
+        public DelegateCommand OpenDialogInstallSettingFileCommand { get; }
+        public DelegateCommand OpenDialogUserRepoFileCommand { get; }
+        public DelegateCommand ExitCommand { get; }
+        public DelegateCommand InstallEditCommand { get; }
+        public DelegateCommand UpdateCheckCommand { get; }
+        public DelegateCommand AboutCommand { get; }
+        public DelegateCommand EarlyAccessCommand { get; }
 
         #region ファイルダイアログ(インストール設定ファイル)の設定
         private Action<bool, string> _openDialogInstallSettingFileCallback;
@@ -83,7 +75,7 @@ namespace AviUtlAutoInstaller.ViewModels
             {
                 try
                 {
-                    InstallProfileRW installProfileRW = new InstallProfileRW();
+                    InstallProfileRW installProfileRW = new();
 
                     installProfileRW.FileRead(filePath, InstallProfileRW.ReadType.Select);
                 }
@@ -113,7 +105,7 @@ namespace AviUtlAutoInstaller.ViewModels
             {
                 try
                 {
-                    UserRepoFileRW userRepoFileRead = new UserRepoFileRW();
+                    UserRepoFileRW userRepoFileRead = new();
 
                     userRepoFileRead.FileRead(filePath);
                 }
@@ -181,14 +173,14 @@ namespace AviUtlAutoInstaller.ViewModels
                 SysConfig.InstallRootPath = SysConfig.IsInstalledAviUtl ? $"{installPath}" : $"{installPath}\\AviUtl";
                 if (SysConfig.IsInstalledAviUtl)
                 {
-                    ContentsTreeRW contentsTreeRW = new ContentsTreeRW();
+                    ContentsTreeRW contentsTreeRW = new();
                     contentsTreeRW.Read(SysConfig.InstallRootPath);
 
                     {
-                        FileOperation fileOperation = new FileOperation();
+                        FileOperation fileOperation = new();
                         string[] array = { "InstallationList_*_*.profile" };
                         var list = fileOperation.GenerateFilePathList(SysConfig.InstallRootPath, array);
-                        InstallProfileRW installProfileRW = new InstallProfileRW();
+                        InstallProfileRW installProfileRW = new();
                         installProfileRW.FileRead(list[list.Count - 1], InstallProfileRW.ReadType.Installed);
                     }
                 }
@@ -283,7 +275,7 @@ namespace AviUtlAutoInstaller.ViewModels
             Install,
         };
 
-        private Dictionary<ProcessState, string> _processStateDic = new Dictionary<ProcessState, string>()
+        private readonly Dictionary<ProcessState, string> _processStateDic = new()
         {
             { ProcessState.Download, "ダウンロード" },
             { ProcessState.Install, "インストール" },
@@ -326,7 +318,7 @@ namespace AviUtlAutoInstaller.ViewModels
             private set { SetProperty(ref _progressVisiblity, value); }
         }
 
-        private List<string> InstallFailedList = new List<string>();
+        private List<string> InstallFailedList = new();
 
         public MainViewModel()
         {
@@ -335,28 +327,28 @@ namespace AviUtlAutoInstaller.ViewModels
 #endif
             InstallDirPath = SysConfig.InstallRootPath;
             SysConfig.InstallRootPath = InstallDirPath;
-            _openDialogInstallSettingFileCommand = new DelegateCommand(_ => OpenDialogInstallSettingFileCallback = OnOpenDialogInstallSettingFileCallback);
-            _openDialogUserRepoFileCommand = new DelegateCommand(_ => OpenDialogUserRepoFileCallback = OnOpenDialogUserRepoFileCallback);
-            _exitCommand = new DelegateCommand(_ => OnExit());
-            _earlyAccessCommand = new DelegateCommand(_ => OpenFanboxLink());
-            _installEditCommand = new DelegateCommand(
+            OpenDialogInstallSettingFileCommand = new DelegateCommand(_ => OpenDialogInstallSettingFileCallback = OnOpenDialogInstallSettingFileCallback);
+            OpenDialogUserRepoFileCommand = new DelegateCommand(_ => OpenDialogUserRepoFileCallback = OnOpenDialogUserRepoFileCallback);
+            ExitCommand = new DelegateCommand(_ => OnExit());
+            EarlyAccessCommand = new DelegateCommand(_ => OpenFanboxLink());
+            InstallEditCommand = new DelegateCommand(
                 _ =>
                 {
-                    InstallEditView window = new InstallEditView();
+                    InstallEditView window = new();
                     window.Owner = Application.Current.MainWindow;
                     window.ShowDialog();
                 });
-            _updateCheckCommand = new DelegateCommand(
+            UpdateCheckCommand = new DelegateCommand(
                 _ =>
                 {
-                    UpdateCheckView window = new UpdateCheckView();
+                    UpdateCheckView window = new();
                     window.Owner = Application.Current.MainWindow;
                     window.ShowDialog();
                 });
-            _aboutCommand = new DelegateCommand(
+            AboutCommand = new DelegateCommand(
                 _ =>
                 {
-                    AboutView window = new AboutView();
+                    AboutView window = new();
                     window.Owner = Application.Current.MainWindow;
                     window.ShowDialog();
                 });
@@ -427,10 +419,10 @@ namespace AviUtlAutoInstaller.ViewModels
             InstallResult installResult = InstallResult.OK;
             SetupDirectory();
 
-            List<InstallItem> installItems = new List<InstallItem>();
-            List<string> discordItemList = new List<string>();
+            List<InstallItem> installItems = new();
+            List<string> discordItemList = new();
             {
-                InstallItemList installItemList = new InstallItemList();
+                InstallItemList installItemList = new();
 
                 for (var i = InstallItemList.RepoType.Pre; i < InstallItemList.RepoType.MAX; i++)
                 {
@@ -468,7 +460,7 @@ namespace AviUtlAutoInstaller.ViewModels
             if (0 < failedList.Count)
             {
                 bool pr = false;
-                using (StreamWriter sw = new StreamWriter($"{SysConfig.DownloadFailedFile}"))
+                using (StreamWriter sw = new($"{SysConfig.DownloadFailedFile}"))
                 {
                     sw.WriteLine("ダウンロード失敗リスト");
                     sw.WriteLine("項目名, ダウンロードURL, ダウンロードファイル名");
@@ -497,10 +489,10 @@ namespace AviUtlAutoInstaller.ViewModels
             await Installs(installItems);
             Directory.Delete(SysConfig.InstallExpansionDir, true);
 
-            InstallProfileRW installProfileRW = new InstallProfileRW();
+            InstallProfileRW installProfileRW = new();
             installProfileRW.FileWrite($"{SysConfig.InstallRootPath}");
 
-            ContentsTreeRW contentsTreeRW = new ContentsTreeRW();
+            ContentsTreeRW contentsTreeRW = new();
             if (contentsTreeRW.IsExistContents)
             {
                 contentsTreeRW.Write($"{SysConfig.InstallRootPath}");
@@ -513,7 +505,7 @@ namespace AviUtlAutoInstaller.ViewModels
 
             if (IsMakeShortcut)
             {
-                FileOperation fileOperation = new FileOperation();
+                FileOperation fileOperation = new();
                 fileOperation.MakeShortcut($"{InstallDirPath}\\AviUtl.exe", "AviUtl");
             }
 
@@ -609,20 +601,20 @@ namespace AviUtlAutoInstaller.ViewModels
             StateName = _processStateDic[ProcessState.Download];
             StateItemMax = installItems.Count;
             StateItemNow = 0;
-            Downloader downloader = new Downloader($"{SysConfig.CacheDirPath}");
-            List<bool> downloadComp = new List<bool>();
+            Downloader downloader = new($"{SysConfig.CacheDirPath}");
+            List<bool> downloadComp = new();
 
             foreach (InstallItem item in installItems)
             {
                 item.IsDownloadCompleted = false;
-                List<string> itemUrls = new List<string>();
-                List<string> itemFileNames= new List<string>();
+                List<string> itemUrls = new();
+                List<string> itemFileNames= new();
                 itemUrls.Add(item.URL);
                 itemUrls.AddRange(item.ExternalFileURLList);
                 itemFileNames.Add(item.DownloadFileName);
                 itemFileNames.AddRange(item.ExternalFileList);
 
-                Func<string, string, DownloadResult> func = new Func<string, string, DownloadResult>(downloader.DownloadStart);
+                Func<string, string, DownloadResult> func = new(downloader.DownloadStart);
                 for (int i = 0; i < itemUrls.Count; i++)
                 {
                     if (File.Exists($"{SysConfig.CacheDirPath}\\{itemFileNames[i]}"))
@@ -679,7 +671,7 @@ namespace AviUtlAutoInstaller.ViewModels
         /// <returns>ダウンロードされていないファイル一覧</returns>
         private List<string> VerifyInstallFile(List<InstallItem> installItems)
         {
-            List<string> faileVerifyList = new List<string>();
+            List<string> faileVerifyList = new();
             string[] cacheFileList = Directory.GetFiles(SysConfig.CacheDirPath);
 
             foreach (InstallItem item in installItems)
@@ -708,7 +700,7 @@ namespace AviUtlAutoInstaller.ViewModels
                 string aviutl = $"{SysConfig.InstallRootPath}\\aviutl.exe";
                 if (File.Exists(aviutl))
                 {
-                    FileOperation fileOperation = new FileOperation();
+                    FileOperation fileOperation = new();
                     if (fileOperation.ExecApp(aviutl, FileOperation.ExecAppType.GUI, out Process process))
                     {
                         await Task.Delay(1000);
@@ -725,7 +717,7 @@ namespace AviUtlAutoInstaller.ViewModels
             StateItemMax = installItems.Count;
             StateItemNow = 0;
 
-            InstallItemList installItemList = new InstallItemList();
+            InstallItemList installItemList = new();
 
             for (var i = InstallItemList.RepoType.Pre; i < InstallItemList.RepoType.MAX; i++)
             {
@@ -788,7 +780,7 @@ namespace AviUtlAutoInstaller.ViewModels
 #pragma warning restore CS1998 // 非同期メソッドは、'await' 演算子がないため、同期的に実行されます
         {
 #if !EARLY
-            UpdateCheck updateCheck = new UpdateCheck();
+            UpdateCheck updateCheck = new();
 
             UpdateCheck.CheckResult[] res = new UpdateCheck.CheckResult[2];
             res[0] = updateCheck.Check(UpdateCheck.CheckTarget.PreRepo, ProductInfo.RepoVersion, out string getRepoVersion, out string repoURL);

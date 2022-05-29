@@ -1,9 +1,4 @@
 ﻿using SevenZipExtractor;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AviUtlAutoInstaller.Models.Files
 {
@@ -16,7 +11,7 @@ namespace AviUtlAutoInstaller.Models.Files
         /// <param name="destPath">解凍先のパス</param>
         public void Extract(string srcFilePath, string destPath)
         {
-            using (ArchiveFile file = new ArchiveFile(srcFilePath))
+            using (ArchiveFile file = new(srcFilePath))
             {
                 file.Extract(destPath, true);
             }

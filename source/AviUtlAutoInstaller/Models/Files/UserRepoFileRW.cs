@@ -1,9 +1,6 @@
 ﻿using Nett;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AviUtlAutoInstaller.Models.Files
 {
@@ -38,7 +35,7 @@ namespace AviUtlAutoInstaller.Models.Files
         /// <summary>
         /// FileVersionとファイルのKeyの文字列との紐付け
         /// </summary>
-        private static readonly Dictionary<FileVersion, string> _fileVersionDic = new Dictionary<FileVersion, string>()
+        private static readonly Dictionary<FileVersion, string> _fileVersionDic = new()
         {
             { FileVersion.V100, "v1.0.0" },
         };
@@ -46,7 +43,7 @@ namespace AviUtlAutoInstaller.Models.Files
         /// <summary>
         /// RWKeyTypeとファイルのKeyの文字列との紐付け
         /// </summary>
-        private static readonly Dictionary<RWKeyType, string> _rwKeyTypeDic = new Dictionary<RWKeyType, string>()
+        private static readonly Dictionary<RWKeyType, string> _rwKeyTypeDic = new()
         {
             { RWKeyType.Name, "name" },
             { RWKeyType.URL, "url" },
@@ -138,8 +135,8 @@ namespace AviUtlAutoInstaller.Models.Files
 
             toml.Add("version", _fileVersionDic.Last().Value);
 
-            List<TomlTable> table = new List<TomlTable>();
-            InstallItemList installItemList = new InstallItemList();
+            List<TomlTable> table = new();
+            InstallItemList installItemList = new();
             var itemList = installItemList.GetInstalItemList(InstallItemList.RepoType.User);
 
             foreach (InstallItem item in itemList)
@@ -157,7 +154,7 @@ namespace AviUtlAutoInstaller.Models.Files
 
                 table.Add(tomlItem);
             }
-            TomlTableArray array = new TomlTableArray(new Root(), table);
+            TomlTableArray array = new(new Root(), table);
             toml.Add("data", array);
 
             return toml;
@@ -171,7 +168,7 @@ namespace AviUtlAutoInstaller.Models.Files
         {
             for (int i = 0; i < array.Count; i++)
             {
-                InstallItem item = new InstallItem
+                InstallItem item = new()
                 {
                     Name = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.Name]),
                     URL = array[i].Get<string>(_rwKeyTypeDic[RWKeyType.URL]),

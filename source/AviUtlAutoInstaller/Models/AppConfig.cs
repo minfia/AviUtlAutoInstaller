@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AviUtlAutoInstaller.Models
 {
@@ -82,7 +78,7 @@ namespace AviUtlAutoInstaller.Models
             KeyValueConfigurationCollection appConfig = null;
             try
             {
-                ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap();
+                ExeConfigurationFileMap fileMap = new();
                 fileMap.ExeConfigFilename = configFile;
                 appConfig = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None).AppSettings.Settings;
             }
@@ -146,7 +142,7 @@ namespace AviUtlAutoInstaller.Models
         {
             try
             {
-                ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap();
+                ExeConfigurationFileMap fileMap = new();
                 fileMap.ExeConfigFilename = configFile;
                 Configuration saveConfigFile = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
                 KeyValueConfigurationCollection settings = saveConfigFile.AppSettings.Settings;
