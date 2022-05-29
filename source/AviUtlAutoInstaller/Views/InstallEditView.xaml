@@ -251,7 +251,8 @@
                             <DataGridTemplateColumn CanUserResize="False"
                                                     HeaderStyle="{StaticResource DataGridCheckBoxHeaderStyle}">
                                 <DataGridTemplateColumn.Header>
-                                    <CheckBox IsChecked="{Binding Source={StaticResource proxyElement}, Path=DataContext.PreSelectAllCheck}"/>
+                                    <CheckBox IsChecked="{Binding Source={StaticResource proxyElement}, Path=DataContext.PreSelectAllCheck}"
+                                              Command="{Binding Source={StaticResource proxyElement}, Path=DataContext.AllCheckCommand}"/>
                                 </DataGridTemplateColumn.Header>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -392,7 +393,8 @@
                                 <DataGridTemplateColumn CanUserResize="False"
                                                         HeaderStyle="{StaticResource DataGridCheckBoxHeaderStyle}">
                                     <DataGridTemplateColumn.Header>
-                                        <CheckBox IsChecked="{Binding Source={StaticResource proxyElement}, Path=DataContext.UserSelectAllCheck}"/>
+                                        <CheckBox IsChecked="{Binding Source={StaticResource proxyElement}, Path=DataContext.UserSelectAllCheck}"
+                                                  Command="{Binding Source={StaticResource proxyElement}, Path=DataContext.AllCheckCommand}"/>
                                     </DataGridTemplateColumn.Header>
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>

@@ -289,6 +289,19 @@ namespace AviUtlAutoInstaller.Models
         }
 
         /// <summary>
+        /// 選択アイテムに応じて全体チェックボックスのtrue/falseを取得
+        /// </summary>
+        /// <param name="array"></param>
+        /// <returns></returns>
+        public static bool IsAllCheckItem(InstallItem[] array)
+        {
+            int trueCnt = array.Where(x => x.IsSelect).Count();
+            bool allFlag = trueCnt == array.Length ? true : false;
+
+            return (allFlag && (trueCnt != 0)) ? true : false;
+        }
+
+        /// <summary>
         /// アンインストール情報を追加
         /// </summary>
         /// <param name="repoType"></param>

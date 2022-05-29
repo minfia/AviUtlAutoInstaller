@@ -123,6 +123,7 @@ namespace AviUtlAutoInstaller.ViewModels
         #endregion
 
         #region InstallItemEditViewの設定
+        public DelegateCommand AllCheckCommand { get; }
         public InstallItemEditViewModel InstallItemEditViewModel { get; } = new();
         private Action<bool> _installItemEditViewCallback;
         public Action<bool> InstallItemEditViewCallback
@@ -157,18 +158,7 @@ namespace AviUtlAutoInstaller.ViewModels
         public bool PreSelectAllCheck
         {
             get { return _preSelectAllCheck; }
-            set
-            {
-                SetProperty(ref _preSelectAllCheck, value);
-                foreach (InstallItem item in PreInstallList)
-                {
-                    if (item.CommandName == "aviutl" || item.CommandName == "exedit")
-                    {
-                        continue;
-                    }
-                    item.IsSelect = value;
-                }
-            }
+            set { SetProperty(ref _preSelectAllCheck, value); }
         }
         #endregion
 
@@ -188,14 +178,7 @@ namespace AviUtlAutoInstaller.ViewModels
         public bool UserSelectAllCheck
         {
             get { return _userSelectAllCheck; }
-            set
-            {
-                SetProperty(ref _userSelectAllCheck, value);
-                foreach (InstallItem item in UserInstallList)
-                {
-                    item.IsSelect = value;
-                }
-            }
+            set { SetProperty(ref _userSelectAllCheck, value); }
         }
         #endregion
 
@@ -213,7 +196,7 @@ namespace AviUtlAutoInstaller.ViewModels
             Section,
         }
 
-        private Dictionary<int, InstallItemList.RepoType> _selectTab = new()
+        private readonly Dictionary<int, InstallItemList.RepoType> _selectTab = new()
         {
             { 0, InstallItemList.RepoType.Pre },
             { 1, InstallItemList.RepoType.User },
@@ -543,10 +526,12 @@ namespace AviUtlAutoInstaller.ViewModels
             if (InstallItemList.RepoType.Pre == selectTab)
             {
                 PreInstallFilterList.View.Refresh();
+                PreSelectAllCheck = InstallItemList.IsAllCheckItem(PreInstallFilterList.View.Cast<InstallItem>().ToArray());
             }
             else if (InstallItemList.RepoType.User == selectTab)
             {
                 UserInstallFilterList.View.Refresh();
+                UserSelectAllCheck = InstallItemList.IsAllCheckItem(UserInstallFilterList.View.Cast<InstallItem>().ToArray());
             }
         }
 
@@ -864,6 +849,28 @@ namespace AviUtlAutoInstaller.ViewModels
                     ItemPropertyViewModel.Title = PreSelectItem.Name;
                     ItemPropertyViewModel.SetInstallItem(PreSelectItem);
                     ItemPropertyViewCallback = OnItemPropertyView;
+                });
+            AllCheckCommand = new DelegateCommand(
+                _ =>
+                {
+                    if (InstallItemList.RepoType.Pre == _selectTab[TabControlSelectIndex])
+                    {
+                        foreach (InstallItem item in PreInstallFilterList.View)
+                        {
+                            if (item.CommandName == "aviutl" || item.CommandName == "exedit")
+                            {
+                                continue;
+                            }
+                            item.IsSelect = PreSelectAllCheck;
+                        }
+                    }
+                    else if (InstallItemList.RepoType.User == _selectTab[TabControlSelectIndex])
+                    {
+                        foreach (InstallItem item in UserInstallFilterList.View)
+                        {
+                            item.IsSelect = UserSelectAllCheck;
+                        }
+                    }
                 });
         }
 
