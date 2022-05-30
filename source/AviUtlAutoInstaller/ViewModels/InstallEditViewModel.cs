@@ -123,7 +123,8 @@ namespace AviUtlAutoInstaller.ViewModels
         #endregion
 
         #region InstallItemEditViewの設定
-        public DelegateCommand AllCheckCommand { get; }
+        public DelegateCommand AllSelectCommand { get; }
+        public DelegateCommand ItemSelectCommand { get; }
         public InstallItemEditViewModel InstallItemEditViewModel { get; } = new();
         private Action<bool> _installItemEditViewCallback;
         public Action<bool> InstallItemEditViewCallback
@@ -850,7 +851,7 @@ namespace AviUtlAutoInstaller.ViewModels
                     ItemPropertyViewModel.SetInstallItem(PreSelectItem);
                     ItemPropertyViewCallback = OnItemPropertyView;
                 });
-            AllCheckCommand = new DelegateCommand(
+            AllSelectCommand = new DelegateCommand(
                 _ =>
                 {
                     if (InstallItemList.RepoType.Pre == _selectTab[TabControlSelectIndex])
@@ -870,6 +871,18 @@ namespace AviUtlAutoInstaller.ViewModels
                         {
                             item.IsSelect = UserSelectAllCheck;
                         }
+                    }
+                });
+            ItemSelectCommand = new DelegateCommand(
+                _ =>
+                {
+                    if (InstallItemList.RepoType.Pre == _selectTab[TabControlSelectIndex])
+                    {
+                        PreSelectAllCheck = InstallItemList.IsAllCheckItem(PreInstallFilterList.View.Cast<InstallItem>().ToArray());
+                    }
+                    else if (InstallItemList.RepoType.User == _selectTab[TabControlSelectIndex])
+                    {
+                        UserSelectAllCheck = InstallItemList.IsAllCheckItem(UserInstallFilterList.View.Cast<InstallItem>().ToArray());
                     }
                 });
         }

@@ -252,14 +252,15 @@
                                                     HeaderStyle="{StaticResource DataGridCheckBoxHeaderStyle}">
                                 <DataGridTemplateColumn.Header>
                                     <CheckBox IsChecked="{Binding Source={StaticResource proxyElement}, Path=DataContext.PreSelectAllCheck}"
-                                              Command="{Binding Source={StaticResource proxyElement}, Path=DataContext.AllCheckCommand}"/>
+                                              Command="{Binding Source={StaticResource proxyElement}, Path=DataContext.AllSelectCommand}"/>
                                 </DataGridTemplateColumn.Header>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox HorizontalAlignment="Center"
                                                   VerticalAlignment="Center"
                                                   IsChecked="{Binding IsSelect, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                  IsEnabled="{Binding IsItemSelectEnable}"/>
+                                                  IsEnabled="{Binding IsItemSelectEnable}"
+                                                  Command="{Binding Source={StaticResource proxyElement}, Path=DataContext.ItemSelectCommand}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -394,13 +395,14 @@
                                                         HeaderStyle="{StaticResource DataGridCheckBoxHeaderStyle}">
                                     <DataGridTemplateColumn.Header>
                                         <CheckBox IsChecked="{Binding Source={StaticResource proxyElement}, Path=DataContext.UserSelectAllCheck}"
-                                                  Command="{Binding Source={StaticResource proxyElement}, Path=DataContext.AllCheckCommand}"/>
+                                                  Command="{Binding Source={StaticResource proxyElement}, Path=DataContext.AllSelectCommand}"/>
                                     </DataGridTemplateColumn.Header>
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <CheckBox HorizontalAlignment="Center"
                                                       VerticalAlignment="Center"
-                                                      IsChecked="{Binding IsSelect, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                      IsChecked="{Binding IsSelect, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      Command="{Binding Source={StaticResource proxyElement}, Path=DataContext.ItemSelectCommand}"/>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
