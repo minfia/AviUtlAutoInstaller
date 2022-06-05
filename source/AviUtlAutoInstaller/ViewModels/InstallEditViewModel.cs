@@ -1134,7 +1134,7 @@ namespace AviUtlAutoInstaller.ViewModels
 
             if (!string.IsNullOrWhiteSpace(item.ExternalFile))
             {
-                var exFunc = new Func<string[], bool>(InstallItem.ExternalInstall);
+                var exFunc = new Func<string[], InstallItem.ExInstallResult>(InstallItem.ExternalInstall);
                 var exTask = Task.Run(() => exFunc(item.ExternalFileList.ToArray()));
                 var res = await exTask;
             }

@@ -9,6 +9,13 @@ namespace AviUtlAutoInstaller.Models
 {
     partial class InstallItem
     {
+        public enum ExInstallResult
+        {
+            Success,
+            Failed,
+            VSRuntimeRestart,
+        };
+
         /// <summary>
         /// インストール
         /// </summary>
@@ -99,7 +106,7 @@ namespace AviUtlAutoInstaller.Models
         /// </summary>
         /// <param name="externalFiles"></param>
         /// <returns></returns>
-        public static bool ExternalInstall(string[] externalFiles)
+        public static ExInstallResult ExternalInstall(string[] externalFiles)
         {
             foreach (string exFile in externalFiles)
             {
@@ -117,9 +124,11 @@ namespace AviUtlAutoInstaller.Models
                                 {
                                     break;
                                 }
-                                if (VSRuntimeInstall(exFilePath, args))
+                                ExInstallResult res = VSRuntimeInstall(exFilePath, args);
+                                if (ExInstallResult.Failed != res)
                                 {
                                     RegistVSRuntime(exFile);
+                                    return res;
                                 }
                             }
                             break;
@@ -129,7 +138,7 @@ namespace AviUtlAutoInstaller.Models
                 }
             }
 
-            return true;
+            return ExInstallResult.Failed;
         }
 
         /// <summary>
@@ -151,25 +160,25 @@ namespace AviUtlAutoInstaller.Models
                     (exFile.Contains("_x86") && !AppConfig.Runtime.vs2010_x86) ||
                     (exFile.Contains("_x64") && !AppConfig.Runtime.vs2010_x64))
             {
-                args = "/q";
+                args = "/q /norestart";
             }
             else if (exFile.Contains("vc2012") &&
                      (exFile.Contains("_x86") && !AppConfig.Runtime.vs2012_x86) ||
                      (exFile.Contains("_x64") && !AppConfig.Runtime.vs2012_x64))
             {
-                args = "/quiet";
+                args = "/quiet /norestart";
             }
             else if (exFile.Contains("vc2013") &&
                      (exFile.Contains("_x86") && !AppConfig.Runtime.vs2013_x86) ||
                      (exFile.Contains("_x64") && !AppConfig.Runtime.vs2013_x64))
             {
-                args = "/quiet";
+                args = "/quiet /norestart";
             }
             else if (exFile.Contains("vc201X") &&
                      (exFile.Contains("_x86") && !AppConfig.Runtime.vs201X_x86) ||
                      (exFile.Contains("_x64") && !AppConfig.Runtime.vs201X_x64))
             {
-                args = "/quiet";
+                args = "/quiet /norestart";
             }
 
             return args;
@@ -181,7 +190,7 @@ namespace AviUtlAutoInstaller.Models
         /// <param name="filePath">インストーラのパス</param>
         /// <param name="args">インストーラの引数</param>
         /// <returns>成否</returns>
-        private static bool VSRuntimeInstall(string filePath, string args)
+        private static ExInstallResult VSRuntimeInstall(string filePath, string args)
         {
             FileOperation fileOperation = new();
 
@@ -189,15 +198,22 @@ namespace AviUtlAutoInstaller.Models
             {
                 if (!fileOperation.ExecApp(filePath, args, FileOperation.ExecAppType.CUI, out Process process))
                 {
-                    return false;
+                    return ExInstallResult.Failed;
                 }
                 process.WaitForExit();
-
-                return true;
+                switch (process.ExitCode)
+                {
+                    case 0:
+                        return ExInstallResult.Success;
+                    case 3001:
+                        return ExInstallResult.VSRuntimeRestart;
+                    default:
+                        return ExInstallResult.Failed;
+                }
             }
             catch
             {
-                return false;
+                return ExInstallResult.Failed;
             }
         }
 
