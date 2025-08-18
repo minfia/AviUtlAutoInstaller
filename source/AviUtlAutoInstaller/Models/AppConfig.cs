@@ -14,8 +14,8 @@ namespace AviUtlAutoInstaller.Models
         private const string KEY_RUNTIME_VS2012_x64 = "vs2012runtime_x64";
         private const string KEY_RUNTIME_VS2013_x86 = "vs2013runtime_x86";
         private const string KEY_RUNTIME_VS2013_x64 = "vs2013runtime_x64";
-        private const string KEY_RUNTIME_VS201X_x86 = "vs201Xruntime_x86";
-        private const string KEY_RUNTIME_VS201X_x64 = "vs201Xruntime_x64";
+        private const string KEY_RUNTIME_VS20XX_x86 = "vs20XXruntime_x86";
+        private const string KEY_RUNTIME_VS20XX_x64 = "vs20XXruntime_x64";
         #endregion
 
         /// <summary>
@@ -58,11 +58,11 @@ namespace AviUtlAutoInstaller.Models
             /// <summary>
             /// VS201Xランタイム(x86)
             /// </summary>
-            public static bool vs201X_x86 = false;
+            public static bool vs20XX_x86 = false;
             /// <summary>
             /// VS201Xランタイム(x64)
             /// </summary>
-            public static bool vs201X_x64 = false;
+            public static bool vs20XX_x64 = false;
         }
 
         /// <summary>
@@ -124,13 +124,13 @@ namespace AviUtlAutoInstaller.Models
                 {
                     Runtime.vs2013_x64 = Convert.ToBoolean(appConfig[key].Value);
                 }
-                if (key == KEY_RUNTIME_VS201X_x86)
+                if (key == KEY_RUNTIME_VS20XX_x86)
                 {
-                    Runtime.vs201X_x86 = Convert.ToBoolean(appConfig[key].Value);
+                    Runtime.vs20XX_x86 = Convert.ToBoolean(appConfig[key].Value);
                 }
-                if (key == KEY_RUNTIME_VS201X_x64)
+                if (key == KEY_RUNTIME_VS20XX_x64)
                 {
-                    Runtime.vs201X_x64 = Convert.ToBoolean(appConfig[key].Value);
+                    Runtime.vs20XX_x64 = Convert.ToBoolean(appConfig[key].Value);
                 }
             }
         }
@@ -155,8 +155,8 @@ namespace AviUtlAutoInstaller.Models
                 Update(settings, KEY_RUNTIME_VS2012_x64, Runtime.vs2012_x64.ToString());
                 Update(settings, KEY_RUNTIME_VS2013_x86, Runtime.vs2013_x86.ToString());
                 Update(settings, KEY_RUNTIME_VS2013_x64, Runtime.vs2013_x64.ToString());
-                Update(settings, KEY_RUNTIME_VS201X_x86, Runtime.vs201X_x86.ToString());
-                Update(settings, KEY_RUNTIME_VS201X_x64, Runtime.vs201X_x64.ToString());
+                Update(settings, KEY_RUNTIME_VS20XX_x86, Runtime.vs20XX_x86.ToString());
+                Update(settings, KEY_RUNTIME_VS20XX_x64, Runtime.vs20XX_x64.ToString());
 
                 saveConfigFile.Save(ConfigurationSaveMode.Modified);
                 ConfigurationManager.RefreshSection(saveConfigFile.AppSettings.SectionInformation.Name);

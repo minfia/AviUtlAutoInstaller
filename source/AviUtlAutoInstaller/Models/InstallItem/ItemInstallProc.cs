@@ -97,8 +97,8 @@ namespace AviUtlAutoInstaller.Models
             { "vc2012redist_x64.exe", ExternalFileType.VSRuntime },
             { "vc2013redist_x86.exe", ExternalFileType.VSRuntime },
             { "vc2013redist_x64.exe", ExternalFileType.VSRuntime },
-            { "vc201Xredist_x86.exe", ExternalFileType.VSRuntime },
-            { "vc201Xredist_x64.exe", ExternalFileType.VSRuntime },
+            { "vc20XXredist_x86.exe", ExternalFileType.VSRuntime },
+            { "vc20XXredist_x64.exe", ExternalFileType.VSRuntime },
         };
 
         /// <summary>
@@ -174,9 +174,9 @@ namespace AviUtlAutoInstaller.Models
             {
                 args = "/quiet /norestart";
             }
-            else if (exFile.Contains("vc201X") &&
-                     (exFile.Contains("_x86") && !AppConfig.Runtime.vs201X_x86) ||
-                     (exFile.Contains("_x64") && !AppConfig.Runtime.vs201X_x64))
+            else if (exFile.Contains("vc20XX") &&
+                     (exFile.Contains("_x86") && !AppConfig.Runtime.vs20XX_x86) ||
+                     (exFile.Contains("_x64") && !AppConfig.Runtime.vs20XX_x64))
             {
                 args = "/quiet /norestart";
             }
@@ -267,15 +267,15 @@ namespace AviUtlAutoInstaller.Models
                     AppConfig.Runtime.vs2013_x64 = true;
                 }
             }
-            else if (exFile.Contains("vc201X"))
+            else if (exFile.Contains("vc20XX"))
             {
                 if (exFile.Contains("_x86"))
                 {
-                    AppConfig.Runtime.vs201X_x86 = true;
+                    AppConfig.Runtime.vs20XX_x86 = true;
                 }
                 else if (exFile.Contains("_x64"))
                 {
-                    AppConfig.Runtime.vs201X_x64 = true;
+                    AppConfig.Runtime.vs20XX_x64 = true;
                 }
             }
             AppConfig.Save();
@@ -518,43 +518,28 @@ namespace AviUtlAutoInstaller.Models
         /// <param name="downloadFileName"></param>
         private static void InstallRigayaEncoder(string downloadFileName)
         {
-            FileOperation fileOperation = new();
-            string tempDir = Path.GetTempPath();
-            var s = downloadFileName.Split('_');
-            string searchDirName = $"{s[0]}_{s[1]}";
+            FileOperation  fileOperation = new();
+            string extractSrcPath = $"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}";
 
-            string extractDirPath = $"{tempDir}{searchDirName}";
-
-            // すでにエンコーダのディレクトリが存在していたら削除
+            // 不要なファイルを削除する(aou_setupとか)
             {
-                if (Directory.Exists(extractDirPath))
+                // plugins
+                var fileList = fileOperation.GenerateFilePathList(extractSrcPath, ["auo*.*", "VC_redist.*", "ndp48*.*", "check*.*"]);
+                foreach (var filePath in fileList)
                 {
-                    Directory.Delete(extractDirPath, true);
+                    File.Delete(filePath);
                 }
+                
             }
+            //{
+            //    // exe_files
+            //    var fileList = fileOperation.GenerateFilePathList(extractSrcPath, ["auo_*.*"]);
+            //    File.Delete(extractSrcPath);
+            //}
 
-            fileOperation.DirectoryMove($"{SysConfig.InstallExpansionDir}\\{Path.GetFileNameWithoutExtension(downloadFileName)}", tempDir, null);
-
-            string[] exe = { "auo_setup.exe" };
-            var exeList = fileOperation.GenerateFilePathList(extractDirPath, exe);
-
-            foreach (var exeFile in exeList)
-            {
-                if (!fileOperation.ExecApp(exeFile, $"-autorun -nogui -dir \"{SysConfig.InstallRootPath}\"", FileOperation.ExecAppType.CUI, out Process process))
-                {
-                    break;
-                }
-
-                process.WaitForExit();
-            }
-
-            // エンコーダのディレクトリを削除
-            {
-                if (Directory.Exists(extractDirPath))
-                {
-                    Directory.Delete(extractDirPath, true);
-                }
-            }
+            // ファイル移動
+            fileOperation.DirectoryMove($"{extractSrcPath}\\plugins", SysConfig.AviUtlPluginDir, null);
+            fileOperation.DirectoryMove($"{extractSrcPath}\\exe_files", $"{SysConfig.InstallRootPath}\\exe_files", null);
         }
 
 

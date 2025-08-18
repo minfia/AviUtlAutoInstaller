@@ -216,7 +216,7 @@ namespace AviUtlAutoInstaller.Models
             FileOperation fileOperation = new();
             var fileList = fileOperation.GenerateFilePathList($"{SysConfig.AviUtlPluginDir}", uninstallItem);
 
-            foreach(var filePath in fileList)
+            foreach (var filePath in fileList)
             {
                 if (File.Exists(filePath))
                 {
@@ -349,49 +349,48 @@ namespace AviUtlAutoInstaller.Models
             if (item.Name.Equals("x264guiEx"))
             {
                 // 削除対象
-                // \exe_files\boxdumper.exe
                 // \exe_files\ffmpeg_audenc.exe
-                // \exe_files\muxer.exe
-                // \exe_files\remuxer.exe
-                // \exe_files\timelineeditor.exe
+                // \exe_files\muxer*.exe
+                // \exe_files\remuxer*.exe
+                // \exe_files\timelineeditor*.exe
                 // \exe_files\x264_*.exe
-                // \plugins\x264guiEx_stg
+                // \plugins\x264guiEx_stg\
                 // \plugins\x264guiEx.auo
                 // \plugins\x264guiEx.conf
-                // \plugins\x264guiEx.ini
+                // \plugins\x264guiEx*.ini
 
                 delEncName = "x264guiEx";
             }
             else if (item.Name.Equals("QSVEnc"))
             {
                 // 削除対象
-                // \exe_files\QSVEncC
+                // \exe_files\QSVEncC\
                 // \plugins\QSVEnc_stg
                 // \plugins\QSVEnc.auo
                 // \plugins\QSVEnc.conf
-                // \plugins\QSVEnc.ini
+                // \plugins\QSVEnc*.ini
 
                 delEncName = "QSVEnc";
             }
             else if (item.Name.Equals("NVEnc"))
             {
                 // 削除対象
-                // \exe_files\NVEncC
+                // \exe_files\NVEncC\
                 // \plugins\NVEnc_stg
                 // \plugins\NVEnc.auo
                 // \plugins\NVEnc.conf
-                // \plugins\NVEnc.ini
+                // \plugins\NVEnc*.ini
 
                 delEncName = "NVEnc";
             }
             else if (item.Name.Equals("VCEEnc"))
             {
                 // 削除対象
-                // \exe_files\VCEEncC
+                // \exe_files\VCEEncC\
                 // \plugins\VCEEnc_stg
                 // \plugins\VCEEnc.auo
                 // \plugins\VCEEnc.conf
-                // \plugins\VCEEnc.ini
+                // \plugins\VCEEnc*.ini
 
                 delEncName = "VCEEnc";
             }
@@ -407,7 +406,7 @@ namespace AviUtlAutoInstaller.Models
                 // exe_files配下のファイル/ディレクトリ削除
                 if (item.Name.Equals("x264guiEx"))
                 {
-                    string[] files = { "boxdumper.exe", "ffmpeg_audenc.exe", "muxer.exe", "remuxer.exe", "timelineeditor.exe", "x264_*.exe" };
+                    string[] files = { "ffmpeg_audenc.exe", "muxer*.exe", "remuxer*.exe", "timelineeditor*.exe", "x264_*.exe" };
                     var delFiles = fileOperation.GenerateFilePathList(exe_filesDir, files).ToArray();
 
                     foreach (string delFile in delFiles)
@@ -423,7 +422,11 @@ namespace AviUtlAutoInstaller.Models
 
             {
                 // plugins配下のファイル/ディレクトリ削除
-                Directory.Delete($"{SysConfig.AviUtlPluginDir}\\{delEncName}_stg", true);
+                try
+                {
+                    Directory.Delete($"{SysConfig.AviUtlPluginDir}\\{delEncName}_stg", true);
+                }
+                catch { } // ここに来る場合はディレクトリが存在しない場合
                 string[] files = { $"{delEncName}.*" };
                 var delFiles = fileOperation.GenerateFilePathList(SysConfig.AviUtlPluginDir, files).ToArray();
 
@@ -433,12 +436,10 @@ namespace AviUtlAutoInstaller.Models
                 }
             }
 
-            if (fileOperation.IsDirectoryEmpty(exe_filesDir))
+            if (Directory.Exists(exe_filesDir) && fileOperation.IsDirectoryEmpty(exe_filesDir))
             {
                 Directory.Delete(exe_filesDir);
             }
         }
-
-
     }
 }

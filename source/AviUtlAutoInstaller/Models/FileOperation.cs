@@ -174,10 +174,16 @@ namespace AviUtlAutoInstaller.Models
                         srcDir += "\\" + f[i];
                     }
                 }
-                string[] pathList = Directory.GetFiles(srcDir, targetFile, SearchOption.AllDirectories);
-                foreach (string path in pathList)
+                try
                 {
-                    filePathList.Add(path);
+                    string[] pathList = Directory.GetFiles(srcDir, targetFile, SearchOption.AllDirectories);
+                    foreach (string path in pathList)
+                    {
+                        filePathList.Add(path);
+                    }
+                }
+                catch
+                {
                 }
             }
 
