@@ -351,7 +351,7 @@ namespace AviUtlAutoInstaller.Models
             string srcDocsPath = $"{psdSrcPath}\\PSDToolKitDocs";
             fileOperation.DirectoryMove(srcDocsPath, $"{psdManualDestPath}\\PSDToolKitDocs", null);
             Directory.Delete(srcDocsPath, true);
-            string[] fileNames = { "GCMZDrops.txt", "PSDToolKit.txt", "PSDToolKit説明書.html", "ZRamPreview.txt", "キャッシュテキスト.txt" };
+            string[] fileNames = { "GCMZDrops.txt", "PSDToolKit.txt", "PSDToolKit説明書.html", "ZRamPreview.txt", "キャッシュテキスト.txt", "Extram2.txt", "AudioMixer.txt" };
             List<string> srcFileNamePath = new();
             foreach (string fileName in fileNames)
             {

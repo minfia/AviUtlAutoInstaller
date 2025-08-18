@@ -169,11 +169,18 @@ namespace AviUtlAutoInstaller.Models
                 $"{SysConfig.AviUtlPluginDir}\\ZRamPreview.auo",
                 $"{SysConfig.AviUtlPluginDir}\\ZRamPreview.exe",
                 $"{SysConfig.AviUtlPluginDir}\\キャッシュテキスト.exa",
+                $"{SysConfig.AviUtlPluginDir}\\キャッシュテキスト2.exa",
                 $"{SysConfig.AviUtlScriptDir}\\CacheText.anm",
                 $"{SysConfig.AviUtlScriptDir}\\CacheText.lua",
+                $"{SysConfig.AviUtlScriptDir}\\@Cache2.anm",
+                $"{SysConfig.AviUtlScriptDir}\\Cache2.lua",
                 $"{SysConfig.AviUtlScriptDir}\\Extram.dll",
-                $"{SysConfig.AviUtlScriptDir}\\PSDToolKit.lua"
+                $"{SysConfig.AviUtlScriptDir}\\Extram2.exe",
+                $"{SysConfig.AviUtlScriptDir}\\Extram2.dll",
+                $"{SysConfig.AviUtlScriptDir}\\PSDToolKit.lua",
+                $"{SysConfig.AviUtlScriptDir}\\Intram2.dll",
             };
+
 
             foreach (string path in psdFilePath)
             {
