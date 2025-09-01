@@ -7,9 +7,8 @@ AviUtlの動画作成環境を自動で行うツールです。
 - ユーザー独自のインストール項目の作成
 
 ## 動作環境
-* Windows7
-* Windows8.1
 * Windows10
+* Windows11
 
 このツールは、.Net Framework4.8のインストールが必要です(Windows10は標準でインストール)。
 
@@ -29,8 +28,8 @@ AviUtlAutoInstallerで使用しているaai.repoは[こちら](https://github.co
 ## 開発環境
 |           ツール名           | version |     備考     |
 | ---------------------------- | ------- | ------------ |
-| Windows10 Pro                | 20H2    | 動作確認含む |
-| Visual Studio Community 2019 | 16.11   | 言語はC#7.3  |
+| Windows11 Pro                | 23H2    | 動作確認含む |
+| Visual Studio Community 2022 | 17.14   | 言語はC#     |
 | .Net Framework               | 4.8     |              |
 
 ## 使用ライブラリ
